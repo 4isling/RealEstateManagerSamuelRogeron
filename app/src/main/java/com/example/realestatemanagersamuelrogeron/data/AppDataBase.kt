@@ -17,8 +17,9 @@ import com.example.realestatemanagersamuelrogeron.data.model.EstatePictures
     ],
     version = 1
 )
+
 abstract class AppDataBase: RoomDatabase() {
-    abstract val estateDao: EstateDao
+    abstract fun getEstateDao(): EstateDao
 
     companion object{
         @Volatile
