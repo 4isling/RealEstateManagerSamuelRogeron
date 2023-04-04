@@ -13,11 +13,13 @@ import androidx.navigation.NavController
 import com.example.realestatemanagersamuelrogeron.R
 import com.example.realestatemanagersamuelrogeron.data.model.Estate
 import com.example.realestatemanagersamuelrogeron.ui.navigation.Screen
+import com.example.realestatemanagersamuelrogeron.ui.viewmodel.EstatesListViewModel
 
 @Composable
 fun EstateItem(
     entry: Estate,
     navController: NavController,
+    viewModel: EstatesListViewModel
 ) {
     Row(
         Modifier

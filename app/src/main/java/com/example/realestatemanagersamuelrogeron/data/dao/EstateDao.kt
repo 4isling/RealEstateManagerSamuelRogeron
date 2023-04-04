@@ -24,12 +24,12 @@ interface EstateDao {
     fun getAllEstates(): Flow<List<Estate>>
 
     @Transaction
-    @Query("SELECT * FROM estate_pictures WHERE estateId = :id")
-    suspend fun getPicturesWithEstate(estateId: Int): List<PicturesWithEstate>
+    @Query("SELECT * FROM estates WHERE id = :id")
+    suspend fun getPicturesWithEstate(id: Long): List<PicturesWithEstate>
 
     @Transaction
-    @Query("SELECT * FROM estate_interest_points WHERE estateId = :id")
-    suspend fun getInterestPointsWithEstate(estateId: Int): List<InterestPointsWithEstate>
+    @Query("SELECT * FROM estates WHERE id = :id")
+    suspend fun getInterestPointsWithEstate(id: Long): List<InterestPointsWithEstate>
 
     @Delete
     fun delete(estate: Estate)
@@ -40,11 +40,11 @@ interface EstateDao {
     @Delete
     fun delete(pictures: EstatePictures)
 
-    @Query("DELETE * FROM estate_interest_points WHERE estateId = :estateId")
-    fun deleteAllInterestPointWithEstate(estateId: Int)
+    @Query("DELETE FROM estate_interest_points WHERE estateId = :estateId")
+    fun deleteAllInterestPointWithEstate(estateId: Long)
 
-    @Query("DELETE * FROM estate_pictures WHERE estateId = :estateId")
-    fun deleteAllPicturesWithEstate(estateId: Int)
+    @Query("DELETE FROM estate_pictures WHERE estateId = :estateId")
+    fun deleteAllPicturesWithEstate(estateId: Long)
 
 
 }

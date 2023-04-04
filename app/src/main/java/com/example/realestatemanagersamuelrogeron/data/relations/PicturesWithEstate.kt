@@ -5,6 +5,7 @@ import androidx.room.Relation
 import com.example.realestatemanagersamuelrogeron.data.model.Estate
 import com.example.realestatemanagersamuelrogeron.data.model.EstatePictures
 
+
 data class PicturesWithEstate(
     @Embedded val estate: Estate,
     @Relation(

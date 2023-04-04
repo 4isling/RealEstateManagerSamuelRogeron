@@ -1,6 +1,12 @@
 package com.example.realestatemanagersamuelrogeron.ui.viewmodel
 
 import android.media.Image
+import android.media.MediaScannerConnection
+import android.os.Environment
+import android.provider.MediaStore
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,7 +16,9 @@ import com.example.realestatemanagersamuelrogeron.data.model.EstatePictures
 import com.example.realestatemanagersamuelrogeron.data.repository.EstateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 
 
 @HiltViewModel
@@ -42,6 +50,10 @@ class AddEstateViewModel @Inject constructor(
     val estateInterestPoints = listOf<EstateInterestPoints>()
     val estateInterestPointsString = ""
 
+    fun saveNewEstate(){
+        validate()
+        addEstate()
+    }
 
     fun addEstate() {
         viewModelScope.launch {
@@ -78,7 +90,7 @@ class AddEstateViewModel @Inject constructor(
 
     }
 
-    fun addEstatePicture(pictures: Image) {
+    fun addEstatePicture() {
 
     }
 

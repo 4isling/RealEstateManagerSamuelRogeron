@@ -9,4 +9,13 @@ sealed class Screen(val route: String){
     object EstateList: Screen(route = "list_screen")
     object EstateDetail: Screen(route = "detail_screen")
     object AddEstate: Screen(route = "add_screen")
+
+    fun  withArgs(vararg args: String): String{
+        return buildString {
+            append(route)
+            args.forEach { arg ->
+                append("/$arg")
+            }
+        }
+    }
 }

@@ -8,16 +8,17 @@ import com.example.realestatemanagersamuelrogeron.data.dao.EstateDao
 import com.example.realestatemanagersamuelrogeron.data.model.Estate
 import com.example.realestatemanagersamuelrogeron.data.model.EstateInterestPoints
 import com.example.realestatemanagersamuelrogeron.data.model.EstatePictures
+import com.example.realestatemanagersamuelrogeron.data.relations.InterestPointsWithEstate
+import com.example.realestatemanagersamuelrogeron.data.relations.PicturesWithEstate
 
 @Database(
     entities = [
         Estate::class,
         EstateInterestPoints::class,
-        EstatePictures::class
+        EstatePictures::class,
     ],
     version = 1
 )
-
 abstract class AppDataBase: RoomDatabase() {
     abstract fun getEstateDao(): EstateDao
 

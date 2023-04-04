@@ -1,6 +1,12 @@
 package com.example.realestatemanagersamuelrogeron.ui.screens
 
+import android.provider.MediaStore
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -17,11 +23,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.realestatemanagersamuelrogeron.R
+import com.example.realestatemanagersamuelrogeron.ui.composable.add_screen.AddTextField
+import com.example.realestatemanagersamuelrogeron.ui.composable.add_screen.AddTextFieldNoIcon
 import com.example.realestatemanagersamuelrogeron.ui.viewmodel.AddEstateViewModel
+import com.srogeron.testcompose.ui.composables.SelectTypeTextField
 
 
 @Composable
 fun AddEstateScreen(navController: NavController, addEstatesViewModel: AddEstateViewModel){
+    val picker = rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()){
+        uri -> Log.d("AddEstateScreen", "Media selected: $uri")
+    }
+
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
         Column(
             Modifier
@@ -30,7 +44,17 @@ fun AddEstateScreen(navController: NavController, addEstatesViewModel: AddEstate
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(painterResource(id = ), contentDescription = "imagesAjouter")
+            Image(
+                painterResource(id = R.drawable.baseline_add_a_photo_24),
+                contentDescription = "imagesAdd",
+                modifier =
+                Modifier
+                    .clickable(
+                        true,
+                        onClick = {
+            picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+        }
+                ))
             SelectNumberOf(what = "Rooms")
             AddTextFieldNoIcon(what = "Estate Name")
             AddTextField(what = "address", icon = Icons.Default.LocationOn)
@@ -43,7 +67,15 @@ fun AddEstateScreen(navController: NavController, addEstatesViewModel: AddEstate
             }) {
                 Row() {
                     Text(text = "Save")
-                    Icon(imageVector = Icons.Default.Check, contentDescription = "SaveEstate btn")
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = "SaveEstate btn",
+                        modifier = Modifier.clickable(
+                            onClick = {
+                                addEstatesViewModel.saveNewEstate()
+                            }
+                        )
+                        )
                 }
             }
         }

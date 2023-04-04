@@ -14,9 +14,27 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object DaggerModule {
     @Provides
-    fun provideAppContext(@ApplicationContext app: Context): Context{
-        return app
+    @Singleton
+    fun provideAppDataBase(
+        @ApplicationContext app: Context
+    ) = Room.databaseBuilder(
+        app,
+        AppDataBase::class.java,
+        "real_estate_db"
+    ).build()
+
+
+    @Provides
+    @Singleton
+    fun provideEstateDao(db: AppDataBase): EstateDao {
+        return db.getEstateDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideEstateRepository(dao: EstateDao): EstateRepository {
+        return EstateRepositoryImpl(dao)
     }
 }
