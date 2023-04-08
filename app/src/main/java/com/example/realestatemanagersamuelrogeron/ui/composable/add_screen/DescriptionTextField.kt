@@ -1,21 +1,21 @@
 package com.example.realestatemanagersamuelrogeron.ui.composable.add_screen
 
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 
 @Composable
-fun AddEtages(what: String, icon: ImageVector){
+fun DescriptionTextField(uText: String = "",what: String, icon: ImageVector) {
     var text by remember {
-        mutableStateOf(what)
+        mutableStateOf(uText)
     }
-    TextField(value = text, onValueChange = {
-            newText ->
-        text = newText
-    },
+    OutlinedTextField(modifier = Modifier.fillMaxWidth(),
+        value = text,
+        onValueChange = { newText ->
+            text = newText
+        },
         label = {
             Text(text = what)
         },
@@ -24,7 +24,7 @@ fun AddEtages(what: String, icon: ImageVector){
                 Icon(imageVector = icon, contentDescription = "Icon of $what")
             }
         },
-        singleLine = true,
-
-        )
+        singleLine = false,
+        maxLines = 5
+    )
 }

@@ -51,8 +51,9 @@ class AddEstateViewModel @Inject constructor(
     val estateInterestPointsString = ""
 
     fun saveNewEstate(){
-        validate()
-        addEstate()
+        if(validate()){
+            addEstate()
+        }
     }
 
     fun addEstate() {

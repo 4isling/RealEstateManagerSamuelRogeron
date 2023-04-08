@@ -1,12 +1,16 @@
 package com.example.realestatemanagersamuelrogeron.ui.composable.add_screen
 
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 
@@ -17,29 +21,38 @@ import androidx.compose.ui.tooling.preview.Preview
  * @icon: is the image-vector that will be display on the left of the text-field
  */
 @Composable
-fun AddTextField(what: String, icon: ImageVector){
+fun AddTextField(uText: String = "",what: String, icon: ImageVector,modifier: Modifier) {
     var text by remember {
-        mutableStateOf(what)
+        mutableStateOf(uText)
     }
-    TextField(value = text, onValueChange = {
-        newText ->
-        text = newText
-    },
-    label = {
-        Text(text = what)
-    },
-    leadingIcon = {
-        IconButton(onClick = { /*TODO*/ }) {
-            Icon(imageVector = icon, contentDescription = "Icon of $what")
-        }
-    },
+    OutlinedTextField(
+        value = text,
+        onValueChange = { newText ->
+            text = newText
+        },
+        label = {
+            Text(text = what)
+        },
+        leadingIcon = {
+
+                Icon(imageVector = icon, contentDescription = "Icon of $what")
+
+        },
         singleLine = true,
 
     )
 }
 
+
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview(){
-        AddTextField(what = "test", icon = Icons.Default.Email )
+fun DefaultPreview() {
+    Surface(Modifier.fillMaxSize()) {
+        Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically ) {
+            AddTextField(what = "place", icon = Icons.Default.LocationOn, modifier = Modifier.fillMaxWidth(0.7f))
+            AddTextField(what = "test", icon = Icons.Default.Email, modifier = Modifier.fillMaxWidth(0.3f))
+        }
+
+    }
+
 }

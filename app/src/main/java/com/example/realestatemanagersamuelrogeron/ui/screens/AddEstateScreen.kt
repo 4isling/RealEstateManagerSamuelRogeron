@@ -1,6 +1,5 @@
 package com.example.realestatemanagersamuelrogeron.ui.screens
 
-import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -10,10 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -26,24 +22,28 @@ import androidx.navigation.NavController
 import com.example.realestatemanagersamuelrogeron.R
 import com.example.realestatemanagersamuelrogeron.ui.composable.add_screen.AddTextField
 import com.example.realestatemanagersamuelrogeron.ui.composable.add_screen.AddTextFieldNoIcon
+import com.example.realestatemanagersamuelrogeron.ui.composable.add_screen.DescriptionTextField
 import com.example.realestatemanagersamuelrogeron.ui.viewmodel.AddEstateViewModel
-import com.srogeron.testcompose.ui.composables.SelectTypeTextField
+import com.srogeron.testcompose.ui.composables.SelectTextField
 
 
 @Composable
-fun AddEstateScreen(navController: NavController, addEstatesViewModel: AddEstateViewModel){
-    val picker = rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()){
-        uri -> Log.d("AddEstateScreen", "Media selected: $uri")
-    }
+fun AddEstateScreen(navController: NavController, addEstatesViewModel: AddEstateViewModel) {
+    val picker =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) { uri ->
+            Log.d("AddEstateScreen", "Media selected: $uri")
+        }
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(8.dp),
+                .padding(8.dp)
+                .safeContentPadding(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Image(
                 painterResource(id = R.drawable.baseline_add_a_photo_24),
                 contentDescription = "imagesAdd",
@@ -52,15 +52,21 @@ fun AddEstateScreen(navController: NavController, addEstatesViewModel: AddEstate
                     .clickable(
                         true,
                         onClick = {
-            picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
-        }
-                ))
+                            picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+                        }
+                    ))
+
+
             SelectNumberOf(what = "Rooms")
-            AddTextFieldNoIcon(what = "Estate Name")
-            AddTextField(what = "address", icon = Icons.Default.LocationOn)
-            AddTextField(what = "City", icon = Icons.Default.LocationOn)
-            AddTextField(what = "PostalCode", icon = Icons.Default.LocationOn)
-            SelectTypeTextField()
+            AddTextFieldNoIcon(what = "Estate Name", modifier = Modifier.fillMaxWidth())
+            AddTextField(uText = "",what = "Address", icon = Icons.Default.LocationOn, modifier = Modifier.fillMaxWidth())
+            Row() {
+                AddTextField(uText = "",what = "City", icon = Icons.Default.LocationOn, modifier = Modifier.fillMaxWidth(0.4f))
+                AddTextFieldNoIcon(uText = "",what = "PostalCode", modifier = Modifier.fillMaxWidth())
+            }
+            SelectTextField(what = "Type of Offer", listOf("Rent", "Sell", "Rent or Sell"))
+            SelectTextField(what = "Estate Type", choices = listOf("House", "Apartment", "Garage", "Land"))
+            DescriptionTextField(what = "Description", icon = Icons.Default.Edit)
 
             Button(onClick = {
 
@@ -75,7 +81,7 @@ fun AddEstateScreen(navController: NavController, addEstatesViewModel: AddEstate
                                 addEstatesViewModel.saveNewEstate()
                             }
                         )
-                        )
+                    )
                 }
             }
         }
@@ -86,7 +92,7 @@ fun AddEstateScreen(navController: NavController, addEstatesViewModel: AddEstate
 }
 
 @Composable
-fun SelectNumberOf(what: String){
+fun SelectNumberOf(what: String) {
     Column(modifier = Modifier.padding(16.dp)) {
         val count: MutableState<Int> = remember {
             mutableStateOf(value = 0)
@@ -94,7 +100,7 @@ fun SelectNumberOf(what: String){
         Text(text = "$what :")
         Row(verticalAlignment = Alignment.CenterVertically) {
 
-            IconButton(onClick = {count.value--}, Modifier.size(32.dp)) {
+            IconButton(onClick = { count.value-- }, Modifier.size(32.dp)) {
                 Icon(imageVector = Icons.Default.Close, contentDescription = "remove")
             }
             Text(text = count.value.toString(), Modifier.padding(8.dp))
@@ -107,7 +113,7 @@ fun SelectNumberOf(what: String){
 
 
 @Composable
-fun AddTextBox(what: String){
+fun AddTextBox(what: String) {
     Row {
         Text(text = "$what :")
 

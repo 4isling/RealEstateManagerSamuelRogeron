@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.realestatemanagersamuelrogeron.ui.theme.Shapes
 import java.io.IOException
 
 @Composable
@@ -23,14 +24,14 @@ fun AddListOfPictures( ){
             .padding(16.dp)
             .fillMaxWidth()
             .fillMaxHeight(0.1f)
-            ) {
+            .border(2.dp, Color.Black, Shapes.medium)) {
         Box(
             Modifier
                 .fillMaxHeight()
                 .fillMaxWidth(0.1f)
                 .border(border = BorderStroke(4.dp, Color.Black))
                 .clickable{
-
+                    onAddImageClick()
                 }) {
             Icons.Default.Add
         }
