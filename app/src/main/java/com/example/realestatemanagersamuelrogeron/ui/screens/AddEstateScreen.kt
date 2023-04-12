@@ -34,7 +34,10 @@ fun AddEstateScreen(navController: NavController, addEstatesViewModel: AddEstate
             Log.d("AddEstateScreen", "Media selected: $uri")
         }
 
-    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colors.background
+    ) {
         Column(
             Modifier
                 .fillMaxSize()
@@ -52,43 +55,62 @@ fun AddEstateScreen(navController: NavController, addEstatesViewModel: AddEstate
                     .clickable(
                         true,
                         onClick = {
-                            picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+                            picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                         }
-                    ))
-
-
+                    )
+            )
             SelectNumberOf(what = "Rooms")
-            AddTextFieldNoIcon(what = "Estate Name", modifier = Modifier.fillMaxWidth())
-            AddTextField(uText = "",what = "Address", icon = Icons.Default.LocationOn, modifier = Modifier.fillMaxWidth())
+            AddTextFieldNoIcon(
+                what = "Estate Name",
+                modifier = Modifier.fillMaxWidth()
+            )
+            AddTextField(
+                uText = "",
+                what = "Address",
+                icon = Icons.Default.LocationOn,
+                modifier = Modifier.fillMaxWidth()
+            )
             Row() {
-                AddTextField(uText = "",what = "City", icon = Icons.Default.LocationOn, modifier = Modifier.fillMaxWidth(0.4f))
-                AddTextFieldNoIcon(uText = "",what = "PostalCode", modifier = Modifier.fillMaxWidth())
+                AddTextField(
+                    uText = "",
+                    what = "City",
+                    icon = Icons.Default.LocationOn,
+                    modifier = Modifier.fillMaxWidth(0.4f)
+                )
+                AddTextFieldNoIcon(
+                    uText = "",
+                    what = "PostalCode",
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
-            SelectTextField(what = "Type of Offer", listOf("Rent", "Sell", "Rent or Sell"))
-            SelectTextField(what = "Estate Type", choices = listOf("House", "Apartment", "Garage", "Land"))
-            DescriptionTextField(what = "Description", icon = Icons.Default.Edit)
+            SelectTextField(
+                what = "Type of Offer",
+                listOf("Rent", "Sell", "Rent or Sell")
+            )
+            SelectTextField(
+                what = "Estate Type",
+                choices = listOf("House", "Apartment", "Garage", "Land")
+            )
+            DescriptionTextField(
+                what = "Description",
+                icon = Icons.Default.Edit
+            )
 
-            Button(onClick = {
-
-            }) {
+            Button(
+                onClick = {
+                addEstatesViewModel.saveNewEstate()
+            }
+            ) {
                 Row() {
                     Text(text = "Save")
                     Icon(
                         imageVector = Icons.Default.Check,
                         contentDescription = "SaveEstate btn",
-                        modifier = Modifier.clickable(
-                            onClick = {
-                                addEstatesViewModel.saveNewEstate()
-                            }
-                        )
                     )
                 }
             }
         }
-
-
     }
-
 }
 
 @Composable
@@ -101,7 +123,7 @@ fun SelectNumberOf(what: String) {
         Row(verticalAlignment = Alignment.CenterVertically) {
 
             IconButton(onClick = { count.value-- }, Modifier.size(32.dp)) {
-                Icon(imageVector = Icons.Default.Close, contentDescription = "remove")
+                Icon(imageVector = Icons.Default.Delete, contentDescription = "remove")
             }
             Text(text = count.value.toString(), Modifier.padding(8.dp))
             IconButton(onClick = { count.value++ }, Modifier.size(32.dp)) {
