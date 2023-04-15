@@ -10,16 +10,18 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class EstatesListViewModel @Inject constructor(private val estateRepository: EstateRepository): ViewModel() {
+class EstatesListViewModel @Inject constructor(
+    private val estateRepository: EstateRepository
+) : ViewModel() {
 
-    private val _estates = MutableLiveData<List<Estate>> ()
+    private val _estates = MutableLiveData<List<Estate>>()
 
     val estate: MutableLiveData<List<Estate>> get() = _estates
 
     fun getAllEstates(): MutableLiveData<List<Estate>> {
         val result = MutableLiveData<List<Estate>>()
         viewModelScope.launch {
-            estateRepository.getAllEstate().collect(){
+            estateRepository.getAllEstate().collect() {
                 _estates.value = it
             }
         }

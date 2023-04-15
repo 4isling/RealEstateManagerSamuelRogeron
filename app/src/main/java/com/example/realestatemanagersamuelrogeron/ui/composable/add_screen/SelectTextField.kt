@@ -19,7 +19,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.toSize
 
 @Composable
-fun SelectTextField(what: String,choices: List<String>){
+fun SelectTextField(what: String,choices: List<String>, modifier: Modifier){
 
     // Declaring a boolean value to store
     // the expanded state of the Text Field
@@ -38,7 +38,7 @@ fun SelectTextField(what: String,choices: List<String>){
     else
         Icons.Filled.KeyboardArrowDown
 
-    Column() {
+    Column(modifier = modifier) {
 
         // Create an Outlined Text Field
         // with icon and not expanded
@@ -46,13 +46,13 @@ fun SelectTextField(what: String,choices: List<String>){
             value = mSelectedText,
             onValueChange = { mSelectedText = it },
             modifier = Modifier
-                .fillMaxWidth()
                 .clickable { mExpanded = !mExpanded }
                 .onGloballyPositioned { coordinates ->
                     // This value is used to assign to
                     // the DropDown the same width
                     mTextFieldSize = coordinates.size.toSize()
                 },
+
             label = {Text(what)},
             trailingIcon = {
                 Icon(icon,"contentDescription")

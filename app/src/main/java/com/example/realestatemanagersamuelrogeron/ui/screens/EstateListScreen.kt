@@ -29,7 +29,6 @@ import com.example.realestatemanagersamuelrogeron.ui.viewmodel.EstatesListViewMo
 @Composable
 fun EstateListScreen(navController: NavController, estatesListViewModel: EstatesListViewModel){
     val result = estatesListViewModel.getAllEstates().observeAsState(listOf())
-
     Scaffold(
         topBar = {
             TopAppBar(

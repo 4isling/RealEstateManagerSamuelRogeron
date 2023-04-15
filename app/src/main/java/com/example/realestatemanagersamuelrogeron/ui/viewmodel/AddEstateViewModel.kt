@@ -2,6 +2,7 @@ package com.example.realestatemanagersamuelrogeron.ui.viewmodel
 
 import android.media.Image
 import android.media.MediaScannerConnection
+import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
@@ -28,6 +29,7 @@ class AddEstateViewModel @Inject constructor(
     private val _estate = MutableLiveData<Estate>()
     private val _estatePictures = MutableLiveData<List<EstatePictures>>()
     private val _estateInterestPoints = MutableLiveData<List<EstateInterestPoints>>()
+    private val _estatePictureUri = MutableLiveData<List<Uri>>()
 
     val estateTitle = ""
     val estateType = ""
@@ -88,6 +90,15 @@ class AddEstateViewModel @Inject constructor(
             )
 
         }
+
+    }
+
+    fun addPicsUri(uri: Uri): MutableList<Uri>{
+        val mUri = mutableListOf<Uri>()
+        viewModelScope.launch {
+            mUri.add(uri)
+        }
+        return mUri
 
     }
 

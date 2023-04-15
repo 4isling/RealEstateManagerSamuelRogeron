@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.realestatemanagersamuelrogeron.data.dao.EstateDao
 import com.example.realestatemanagersamuelrogeron.data.model.Estate
 import com.example.realestatemanagersamuelrogeron.data.model.EstateInterestPoints
@@ -32,8 +34,9 @@ abstract class AppDataBase: RoomDatabase() {
                 return INSTANCE ?: Room.databaseBuilder(
                     context.applicationContext,
                     AppDataBase::class.java,
-                    "App_db"
-                ).build().also {
+                    "app_db"
+                )   .addCallback()
+                    .build().also {
                     INSTANCE = it
                 }
             }

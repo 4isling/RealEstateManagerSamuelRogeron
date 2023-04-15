@@ -1,44 +1,49 @@
 package com.example.realestatemanagersamuelrogeron.ui.screens
 
+import android.content.ClipData.Item
+import android.net.Uri
 import android.util.Log
+import android.view.RoundedCorner
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.AddCircle
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.realestatemanagersamuelrogeron.R
-import com.example.realestatemanagersamuelrogeron.ui.composable.add_screen.AddTextField
-import com.example.realestatemanagersamuelrogeron.ui.composable.add_screen.AddTextFieldNoIcon
-import com.example.realestatemanagersamuelrogeron.ui.composable.add_screen.DescriptionTextField
+import com.example.realestatemanagersamuelrogeron.ui.composable.add_screen.*
 import com.example.realestatemanagersamuelrogeron.ui.viewmodel.AddEstateViewModel
 import com.srogeron.testcompose.ui.composables.SelectTextField
 
 
 @Composable
 fun AddEstateScreen(navController: NavController, addEstatesViewModel: AddEstateViewModel) {
-    val picker =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) { uri ->
-            Log.d("AddEstateScreen", "Media selected: $uri")
-        }
-
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
-        Column(
+        LazyColumn(
             Modifier
                 .fillMaxSize()
                 .padding(8.dp)
@@ -46,93 +51,154 @@ fun AddEstateScreen(navController: NavController, addEstatesViewModel: AddEstate
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Image(
-                painterResource(id = R.drawable.baseline_add_a_photo_24),
-                contentDescription = "imagesAdd",
-                modifier =
-                Modifier
-                    .clickable(
-                        true,
-                        onClick = {
-                            picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                        }
-                    )
-            )
-            SelectNumberOf(what = "Rooms")
-            AddTextFieldNoIcon(
-                what = "Estate Name",
-                modifier = Modifier.fillMaxWidth()
-            )
-            AddTextField(
-                uText = "",
-                what = "Address",
-                icon = Icons.Default.LocationOn,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Row() {
-                AddTextField(
-                    uText = "",
-                    what = "City",
-                    icon = Icons.Default.LocationOn,
-                    modifier = Modifier.fillMaxWidth(0.4f)
-                )
+            item {
+                AddListOfPictures()
+            }
+            item {
+                SelectNumberOf(what = "Rooms")
                 AddTextFieldNoIcon(
-                    uText = "",
-                    what = "PostalCode",
+                    what = "Estate Name",
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-            SelectTextField(
-                what = "Type of Offer",
-                listOf("Rent", "Sell", "Rent or Sell")
-            )
-            SelectTextField(
-                what = "Estate Type",
-                choices = listOf("House", "Apartment", "Garage", "Land")
-            )
-            DescriptionTextField(
-                what = "Description",
-                icon = Icons.Default.Edit
-            )
 
-            Button(
-                onClick = {
-                addEstatesViewModel.saveNewEstate()
+            item {
+                AddTextField(
+                    uText = "",
+                    what = "Address",
+                    icon = Icons.Default.LocationOn,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
-            ) {
-                Row() {
-                    Text(text = "Save")
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = "SaveEstate btn",
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    AddTextField(
+                        uText = "",
+                        what = "City",
+                        icon = Icons.Default.LocationOn,
+                        modifier = Modifier.fillMaxWidth(0.50f)
+                    )
+                    AddTextFieldNoIcon(
+                        uText = "",
+                        what = "ZipCode",
+                        modifier = Modifier.fillMaxWidth(0.50f)
                     )
                 }
             }
+
+            item {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceAround,
+                    modifier = Modifier.fillMaxWidth()
+                    ) {
+                    SelectTextField(
+                        what = "Estate Type",
+                        choices = listOf("House", "Apartment", "Garage", "Land"),
+                        modifier = Modifier.fillMaxWidth(0.50f)
+                    )
+                    SelectTextField(
+                        what = "Type of Offer",
+                        choices =  listOf("Rent", "Sell", "Rent or Sell"),
+                        modifier = Modifier.fillMaxWidth(0.50f)
+                    )
+                }
+            }
+            item {
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                ){
+                    AddNumberTextField(
+                        modifier = Modifier.fillMaxWidth(1f),
+                        what = "Price",
+                        uText = "",
+                        resId = (R.drawable.baseline_attach_money_24)
+                    )
+                    AddNumberTextField(
+                        modifier = Modifier.fillMaxWidth(1f),
+                        what = "Rent",
+                        uText = "",
+                        resId = (R.drawable.baseline_attach_money_24)
+                    )
+                }
+            }
+            item {
+                AddNumberTextField(modifier = Modifier.fillMaxWidth(), what = "Surface", uText = "")
+            }
+            item{
+                AddNumberTextField(modifier = Modifier.fillMaxWidth(1f), what = "Etage", uText = "")
+            }
+
+            item {
+                DescriptionTextField(
+                    what = "Description",
+                    icon = Icons.Default.Edit
+                )
+            }
+            item {
+                InterestPointsTextField(modifier =Modifier.fillMaxWidth())
+            }
+            item {
+                Button(
+                    onClick = {
+                        addEstatesViewModel.saveNewEstate()
+                    }
+                ) {
+                    Row() {
+                        Text(text = "Save")
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = "SaveEstate btn",
+                        )
+                    }
+                }
+            }
+
         }
     }
 }
 
 @Composable
 fun SelectNumberOf(what: String) {
-    Column(modifier = Modifier.padding(16.dp)) {
-        val count: MutableState<Int> = remember {
-            mutableStateOf(value = 0)
-        }
-        Text(text = "$what :")
-        Row(verticalAlignment = Alignment.CenterVertically) {
-
-            IconButton(onClick = { count.value-- }, Modifier.size(32.dp)) {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = "remove")
+    Surface(
+        shape = RoundedCornerShape(25.dp),
+        border = BorderStroke(2.dp, Color.Black)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            val count: MutableState<Int> = remember {
+                mutableStateOf(value = 0)
             }
-            Text(text = count.value.toString(), Modifier.padding(8.dp))
-            IconButton(onClick = { count.value++ }, Modifier.size(32.dp)) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "add")
+            Text(text = "$what :")
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                IconButton(
+                    onClick = { count.value-- },
+                    Modifier.size(32.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.baseline_remove_circle_24),
+                        contentDescription = "remove"
+                    )
+                }
+                Text(
+                    text = count.value.toString(),
+                    Modifier.padding(8.dp)
+                )
+                IconButton(
+                    onClick = { count.value++ },
+                    Modifier.size(32.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.AddCircle,
+                        contentDescription = "add"
+                    )
+                }
             }
         }
     }
 }
-
 
 @Composable
 fun AddTextBox(what: String) {

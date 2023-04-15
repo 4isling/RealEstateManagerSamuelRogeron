@@ -24,7 +24,4 @@ data class EstatePictures(
     val estateId: Long = 0,
     val pictureUri: String,
     val name: String,
-    val width: Int,
-    val height: Int,
-    val isExternal: Boolean = false
 )

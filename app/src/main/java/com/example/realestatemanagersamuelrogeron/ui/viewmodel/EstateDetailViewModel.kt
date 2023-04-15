@@ -12,7 +12,7 @@ import javax.inject.Inject
 class EstateDetailViewModel @Inject constructor(private val estateRepository: EstateRepository): ViewModel() {
     private val _estate = MutableLiveData<Estate> ()
 
-    fun getEstateDetail(){
-
+    fun getEstateDetail(): MutableLiveData<Estate>{
+        return _estate
     }
 }
