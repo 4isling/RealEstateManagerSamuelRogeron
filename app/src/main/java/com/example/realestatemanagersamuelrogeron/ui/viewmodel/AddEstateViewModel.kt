@@ -74,10 +74,8 @@ class AddEstateViewModel @Inject constructor(
                         estateEtages,
                         estateDescriptions,
                         estateAddress,
-                        estateStatus,
                         estateAddDate,
                         estateSellDate,
-                        estateAgent
                     )
                 )
             //list of pictures the user add to the estate
@@ -88,9 +86,7 @@ class AddEstateViewModel @Inject constructor(
             estateRepository.addEstateInterestPoints(
                 estateInterestPoints = estateInterestPoints
             )
-
         }
-
     }
 
     fun addPicsUri(uri: Uri): MutableList<Uri>{
@@ -99,7 +95,6 @@ class AddEstateViewModel @Inject constructor(
             mUri.add(uri)
         }
         return mUri
-
     }
 
     fun addEstatePicture() {

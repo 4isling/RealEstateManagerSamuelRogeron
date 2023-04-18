@@ -39,6 +39,49 @@ import com.srogeron.testcompose.ui.composables.SelectTextField
 
 @Composable
 fun AddEstateScreen(navController: NavController, addEstatesViewModel: AddEstateViewModel) {
+    var pTitle by remember {
+        mutableStateOf("")
+    }
+    var pTypeOfEstate by remember {
+        mutableStateOf("")
+    }
+    var pTypeOfOffer by remember {
+        mutableStateOf("")
+    }
+    var pSellingPrice by remember {
+        mutableStateOf("")
+    }
+    var pRent by remember {
+        mutableStateOf("")
+    }
+    var pSurface by remember {
+        mutableStateOf("")
+    }
+    var pNbRooms by remember {
+        mutableStateOf("")
+    }
+    var pEtage by remember {
+        mutableStateOf("")
+    }
+    var pAddress by remember {
+        mutableStateOf("")
+    }
+    var pZipCode by remember {
+        mutableStateOf("")
+    }
+    var pCity by remember {
+        mutableStateOf("")
+    }
+    var pDescription by remember {
+        mutableStateOf("")
+    }
+    var pListOfPictures by remember {
+        mutableStateOf<List<Uri>>(value = emptyList())
+    }
+    var pListOfInterestPoints by remember {
+        mutableStateOf<List<String>>(value = emptyList())
+    }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
@@ -136,7 +179,7 @@ fun AddEstateScreen(navController: NavController, addEstatesViewModel: AddEstate
                 )
             }
             item {
-                InterestPointsTextField(modifier =Modifier.fillMaxWidth())
+                InterestPointsTextField(modifier = Modifier.fillMaxWidth())
             }
             item {
                 Button(
@@ -144,7 +187,10 @@ fun AddEstateScreen(navController: NavController, addEstatesViewModel: AddEstate
                         addEstatesViewModel.saveNewEstate()
                     }
                 ) {
-                    Row() {
+                    Row(modifier = Modifier.clickable {
+
+                    }
+                    ) {
                         Text(text = "Save")
                         Icon(
                             imageVector = Icons.Default.Check,
@@ -153,7 +199,6 @@ fun AddEstateScreen(navController: NavController, addEstatesViewModel: AddEstate
                     }
                 }
             }
-
         }
     }
 }

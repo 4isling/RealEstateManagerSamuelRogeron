@@ -27,6 +27,4 @@ class EstatesListViewModel @Inject constructor(
         }
         return result
     }
-
-
 }

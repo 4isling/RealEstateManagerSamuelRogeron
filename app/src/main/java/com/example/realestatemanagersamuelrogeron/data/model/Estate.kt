@@ -16,13 +16,13 @@ data class Estate(
     val surface: Int = 0,//
     val nbRooms: Int = 0,
     val etage: String = "",//
-    val description: String = "",//
     val address: String = "",//
-    //val zipCode: String,
-    //val city: String,
+    val zipCode: String,
+    val city: String,
+    val description: String = "",//
     val status: Boolean = true,
     val addDate: String,
     val sellDate: String,
     val agent: String = "Stephane",
-    //val isFav: Boolean
+    val isFav: Boolean
 )

@@ -35,8 +35,7 @@ abstract class AppDataBase: RoomDatabase() {
                     context.applicationContext,
                     AppDataBase::class.java,
                     "app_db"
-                )   .addCallback()
-                    .build().also {
+                ).build().also {
                     INSTANCE = it
                 }
             }
