@@ -24,5 +24,6 @@ data class Estate(
     val addDate: String,
     val sellDate: String,
     val agent: String = "Stephane",
-    val isFav: Boolean
+    val isFav: Boolean = false
 )
+

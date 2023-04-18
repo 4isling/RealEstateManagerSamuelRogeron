@@ -1,13 +1,6 @@
 package com.example.realestatemanagersamuelrogeron.ui.viewmodel
 
-import android.media.Image
-import android.media.MediaScannerConnection
 import android.net.Uri
-import android.os.Environment
-import android.provider.MediaStore
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,10 +10,7 @@ import com.example.realestatemanagersamuelrogeron.data.model.EstatePictures
 import com.example.realestatemanagersamuelrogeron.data.repository.EstateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.io.File
 import javax.inject.Inject
-import kotlin.coroutines.coroutineContext
-
 
 @HiltViewModel
 class AddEstateViewModel @Inject constructor(
@@ -45,10 +35,11 @@ class AddEstateViewModel @Inject constructor(
     val estateAddDate = ""
     val estateSellDate = ""
     val estateAgent = ""
-
-    val estatePictures = listOf<EstatePictures>()
+    val estateZipCode = ""
+    val estateCity = ""
     val estateUri = ""
     val estateUrl = ""
+    val estatePictures = listOf<EstatePictures>()
     val estateInterestPoints = listOf<EstateInterestPoints>()
     val estateInterestPointsString = ""
 
@@ -74,6 +65,8 @@ class AddEstateViewModel @Inject constructor(
                         estateEtages,
                         estateDescriptions,
                         estateAddress,
+                        estateZipCode,
+                        estateCity,
                         estateAddDate,
                         estateSellDate,
                     )
