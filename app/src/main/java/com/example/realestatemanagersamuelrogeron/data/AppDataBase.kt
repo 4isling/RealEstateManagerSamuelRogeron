@@ -4,14 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.realestatemanagersamuelrogeron.data.dao.EstateDao
-import com.example.realestatemanagersamuelrogeron.data.model.Estate
-import com.example.realestatemanagersamuelrogeron.data.model.EstateInterestPoints
-import com.example.realestatemanagersamuelrogeron.data.model.EstatePictures
-import com.example.realestatemanagersamuelrogeron.data.relations.InterestPointsWithEstate
-import com.example.realestatemanagersamuelrogeron.data.relations.PicturesWithEstate
+import com.example.realestatemanagersamuelrogeron.domain.model.Estate
+import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
+import com.example.realestatemanagersamuelrogeron.domain.model.EstatePictures
 
 @Database(
     entities = [
@@ -19,26 +15,10 @@ import com.example.realestatemanagersamuelrogeron.data.relations.PicturesWithEst
         EstateInterestPoints::class,
         EstatePictures::class,
     ],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
+
 abstract class AppDataBase: RoomDatabase() {
-    abstract fun getEstateDao(): EstateDao
-
-    companion object{
-        @Volatile
-        private var INSTANCE: AppDataBase? = null
-
-        fun getInstance(context: Context): AppDataBase {
-            synchronized(this){
-
-                return INSTANCE ?: Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDataBase::class.java,
-                    "app_db"
-                ).build().also {
-                    INSTANCE = it
-                }
-            }
-        }
-    }
+    abstract val dao: EstateDao
 }

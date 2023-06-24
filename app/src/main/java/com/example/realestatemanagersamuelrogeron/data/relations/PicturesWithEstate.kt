@@ -2,8 +2,8 @@ package com.example.realestatemanagersamuelrogeron.data.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.example.realestatemanagersamuelrogeron.data.model.Estate
-import com.example.realestatemanagersamuelrogeron.data.model.EstatePictures
+import com.example.realestatemanagersamuelrogeron.domain.model.Estate
+import com.example.realestatemanagersamuelrogeron.domain.model.EstatePictures
 
 
 data class PicturesWithEstate(

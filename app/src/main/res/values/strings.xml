@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">RealEstateManagerSamuelRogeron</string>
+    <string name="empty_values">Some values shouldn\'t be empty</string>
 </resources>

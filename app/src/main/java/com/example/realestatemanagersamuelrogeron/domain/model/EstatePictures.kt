@@ -1,4 +1,4 @@
-package com.example.realestatemanagersamuelrogeron.data.model
+package com.example.realestatemanagersamuelrogeron.domain.model
 
 import android.net.Uri
 import androidx.room.Entity
@@ -9,14 +9,14 @@ import androidx.room.util.foreignKeyCheck
 
 @Entity(
     tableName = "estate_pictures",
-    foreignKeys = [
+    /*foreignKeys = [
         ForeignKey(
             entity = Estate::class,
             parentColumns = ["id"],
             childColumns = ["estateId"],
             onDelete = CASCADE
             )
-    ]
+    ]*/
 )
 data class EstatePictures(
     @PrimaryKey(autoGenerate = true)

@@ -21,17 +21,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.realestatemanagersamuelrogeron.R
+import com.example.realestatemanagersamuelrogeron.data.event.AddScreenEvent
+import com.example.realestatemanagersamuelrogeron.data.state.EstateState
+import com.example.realestatemanagersamuelrogeron.ui.viewmodel.AddEstateViewModel
 
 @Composable
-fun InterestPointsTextField(uText: String = "", modifier: Modifier) {
+fun InterestPointsTextField(
+    viewModel: AddEstateViewModel,
+    modifier: Modifier,
+    ) {
 
     Column() {
         var interestPoints by remember {
-            mutableStateOf<List<String>>(value = emptyList())
+            mutableStateOf(emptyList<String>())
         }
 
         var text by remember {
-            mutableStateOf(uText)
+            mutableStateOf("")
         }
 
         OutlinedTextField(
@@ -45,6 +51,7 @@ fun InterestPointsTextField(uText: String = "", modifier: Modifier) {
             keyboardActions = KeyboardActions(
                 onDone = {
                     interestPoints = interestPoints.toMutableList().also { it.add(text) }
+                    viewModel.onInterestPointsValueChange(interestPoints)
                     text = ""
                 }
             ),
@@ -58,7 +65,7 @@ fun InterestPointsTextField(uText: String = "", modifier: Modifier) {
                 items(interestPoints) { point ->
 
                     Row(modifier= Modifier
-                        .clip(RoundedCornerShape(10.dp))
+                        .clip(RoundedCornerShape(5.dp))
                         .background(Color.Gray)
                         ) {
                         Text(text = point)

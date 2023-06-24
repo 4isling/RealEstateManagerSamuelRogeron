@@ -1,4 +1,4 @@
-package com.example.realestatemanagersamuelrogeron.data.model
+package com.example.realestatemanagersamuelrogeron.domain.model
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
