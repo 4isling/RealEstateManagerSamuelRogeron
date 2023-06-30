@@ -30,7 +30,7 @@ class AddEstateViewModel @Inject constructor(
     private val AddInterestPoint: AddInterestPointsToEstateUseCaseImpl,
     private val AddPicsToEstateUseCase: AddPicsToEstateUseCaseImpl
 ) : ViewModel() {
-
+    private val TAG = "AddEstateViewModel"
     private val _viewState = MutableStateFlow<AddViewState>(AddViewState.Loading)
     val state = MutableStateFlow(AddEstateState())
     private lateinit var _estate: Estate
@@ -40,7 +40,7 @@ class AddEstateViewModel @Inject constructor(
     private val _estateSellingPrice = MutableStateFlow<String>("")
     private val _estateRent = MutableStateFlow<String>("")
     private val _estateSurface = MutableStateFlow("")
-    private val _estateNbRooms = MutableStateFlow("0")
+    private val _estateNbRooms = MutableStateFlow(0)
     private val _estateEtages = MutableStateFlow("")
     private val _estateDescriptions = MutableStateFlow("")
     private val _estateAddress = MutableStateFlow("")
@@ -50,8 +50,6 @@ class AddEstateViewModel @Inject constructor(
     private val _estateAgent = "Steph"
     private val _estateZipCode = MutableStateFlow("")
     private val _estateCity = MutableStateFlow("")
-    lateinit var estatePicture: EstatePictures
-    lateinit var estateInterestPoint: EstateInterestPoints
     private val _estatePictures = MutableStateFlow(emptyList<Uri>())
     private val _estateInterestPointsStrings = MutableStateFlow(emptyList<String>())
     private val _estatePicturesList = MutableStateFlow<List<EstatePictures>>(emptyList())
@@ -62,7 +60,7 @@ class AddEstateViewModel @Inject constructor(
     val estateSellingPrice: MutableStateFlow<String> get() = _estateSellingPrice
     val estateRent: MutableStateFlow<String> get() = _estateRent
     val estateSurface: MutableStateFlow<String> get() = _estateSurface
-    val estateNbRooms: MutableStateFlow<String> get() = _estateNbRooms
+    val estateNbRooms: MutableStateFlow<Int> get() = _estateNbRooms
     val estateEtages: MutableStateFlow<String> get() = _estateEtages
     val estateDescriptions: MutableStateFlow<String> get() = _estateDescriptions
     val estateAddress: MutableStateFlow<String> get() = _estateAddress
@@ -90,7 +88,7 @@ class AddEstateViewModel @Inject constructor(
         _estateSurface.value.isNotEmpty()
     }
     val roomIsNotEmpty = derivedStateOf {
-        _estateNbRooms.value != "0"
+        _estateNbRooms.value != 0
     }
     val etageIsNotEmpty = derivedStateOf {
         _estateEtages.value.isNotBlank()
@@ -111,129 +109,198 @@ class AddEstateViewModel @Inject constructor(
     val onInterestPointsIsNotEmpty = derivedStateOf {
         _estateInterestPointsStrings.value.isNotEmpty()
     }
-    val enableSave = derivedStateOf {
+
+    fun enableSave(): Boolean {
+
+        Log.i(TAG, "enableSave:")
         when (_estateOffer.value) {
             "Rent" -> {
-                titleIsNotEmpty
-                typeIsNotEmpty
-                offerIsNotEmpty
-                rentIsNotEmpty
-                surfaceIsNotEmpty
-                roomIsNotEmpty
-                etageIsNotEmpty
-                descriptionsIsNotEmpty
-                addressIsNotEmpty
-                zipCodeIsNotEmpty
-                cityIsNotEmpty
-                onInterestPointsIsNotEmpty
+                Log.i(TAG, "enableSave: Rent " +
+                        "title:${titleIsNotEmpty.value} "+
+                        "type: ${typeIsNotEmpty.value} " +
+                        "offer: ${offerIsNotEmpty.value} " +
+                        "rent:${rentIsNotEmpty.value} " +
+                        "surface:${surfaceIsNotEmpty.value} " +
+                        "room: ${roomIsNotEmpty.value} " +
+                        "etage: ${etageIsNotEmpty.value} " +
+                        "description: ${descriptionsIsNotEmpty.value} " +
+                        "address: ${addressIsNotEmpty.value} " +
+                        "zipCode: ${zipCodeIsNotEmpty.value} " +
+                        "city: ${cityIsNotEmpty.value} " +
+                        "Ipts: ${onInterestPointsIsNotEmpty.value} ")
+                return (
+                        titleIsNotEmpty.value &&
+                        typeIsNotEmpty.value &&
+                        offerIsNotEmpty.value &&
+                        rentIsNotEmpty.value &&
+                        surfaceIsNotEmpty.value &&
+                        roomIsNotEmpty.value &&
+                        etageIsNotEmpty.value &&
+                        descriptionsIsNotEmpty.value &&
+                        addressIsNotEmpty.value &&
+                        zipCodeIsNotEmpty.value &&
+                        cityIsNotEmpty.value &&
+                        onInterestPointsIsNotEmpty.value
+                        )
+
             }
 
             "Sell" -> {
-                titleIsNotEmpty
-                typeIsNotEmpty
-                offerIsNotEmpty
-                sellingPriceIsNotEmpty
-                surfaceIsNotEmpty
-                roomIsNotEmpty
-                etageIsNotEmpty
-                descriptionsIsNotEmpty
-                addressIsNotEmpty
-                zipCodeIsNotEmpty
-                cityIsNotEmpty
-                onInterestPointsIsNotEmpty
+                Log.i(TAG, "enableSave: Sell"+
+                        "title:${titleIsNotEmpty.value} "+
+                        "type: ${typeIsNotEmpty.value} " +
+                        "offer: ${offerIsNotEmpty.value} " +
+                        "sell:${sellingPriceIsNotEmpty.value} " +
+                        "surface:${surfaceIsNotEmpty.value} " +
+                        "room: ${roomIsNotEmpty.value} " +
+                        "etage: ${etageIsNotEmpty.value} " +
+                        "description: ${descriptionsIsNotEmpty.value} " +
+                        "address: ${addressIsNotEmpty.value} " +
+                        "zipCode: ${zipCodeIsNotEmpty.value} " +
+                        "city: ${cityIsNotEmpty.value} " +
+                        "Ipts: ${onInterestPointsIsNotEmpty.value} ")
+                return (
+                        titleIsNotEmpty.value &&
+                         typeIsNotEmpty.value &&
+                         offerIsNotEmpty.value &&
+                         sellingPriceIsNotEmpty.value &&
+                         surfaceIsNotEmpty.value &&
+                         roomIsNotEmpty.value &&
+                         etageIsNotEmpty.value &&
+                         descriptionsIsNotEmpty.value &&
+                         addressIsNotEmpty.value &&
+                         zipCodeIsNotEmpty.value &&
+                         cityIsNotEmpty.value &&
+                         onInterestPointsIsNotEmpty.value
+                        )
             }
 
             "Rent or Sell" -> {
-                titleIsNotEmpty
-                typeIsNotEmpty
-                offerIsNotEmpty
-                sellingPriceIsNotEmpty
-                rentIsNotEmpty
-                surfaceIsNotEmpty
-                roomIsNotEmpty
-                etageIsNotEmpty
-                descriptionsIsNotEmpty
-                addressIsNotEmpty
-                zipCodeIsNotEmpty
-                cityIsNotEmpty
-                onInterestPointsIsNotEmpty
+                Log.i(TAG, "enableSave: Rent or Sell"+
+                        "title:${titleIsNotEmpty.value} "+
+                        "type: ${typeIsNotEmpty.value} " +
+                        "offer: ${offerIsNotEmpty.value} " +
+                        "rent:${rentIsNotEmpty.value} " +
+                        "sell:${sellingPriceIsNotEmpty.value} " +
+                        "surface:${surfaceIsNotEmpty.value} " +
+                        "room: ${roomIsNotEmpty.value} " +
+                        "etage: ${etageIsNotEmpty.value} " +
+                        "description: ${descriptionsIsNotEmpty.value} " +
+                        "address: ${addressIsNotEmpty.value} " +
+                        "zipCode: ${zipCodeIsNotEmpty.value} " +
+                        "city: ${cityIsNotEmpty.value} " +
+                        "Ipts: ${onInterestPointsIsNotEmpty.value} ")
+                return (
+                        titleIsNotEmpty.value &&
+                                typeIsNotEmpty.value &&
+                                offerIsNotEmpty.value &&
+                                sellingPriceIsNotEmpty.value &&
+                                rentIsNotEmpty.value &&
+                                surfaceIsNotEmpty.value &&
+                                roomIsNotEmpty.value &&
+                                etageIsNotEmpty.value &&
+                                descriptionsIsNotEmpty.value &&
+                                addressIsNotEmpty.value &&
+                                zipCodeIsNotEmpty.value &&
+                                cityIsNotEmpty.value &&
+                                onInterestPointsIsNotEmpty.value)
             }
 
-            else -> {false}
+            else -> {
+                Log.i(TAG,"enableSave: else"+
+                        "title:${titleIsNotEmpty.value} "+
+                        "type: ${typeIsNotEmpty.value} " +
+                        "offer: ${offerIsNotEmpty.value} " +
+                        "rent:${rentIsNotEmpty.value} " +
+                        "sell:${sellingPriceIsNotEmpty.value} " +
+                        "surface:${surfaceIsNotEmpty.value} " +
+                        "room: ${roomIsNotEmpty.value} " +
+                        "etage: ${etageIsNotEmpty.value} " +
+                        "description: ${descriptionsIsNotEmpty.value} " +
+                        "address: ${addressIsNotEmpty.value} " +
+                        "zipCode: ${zipCodeIsNotEmpty.value} " +
+                        "city: ${cityIsNotEmpty.value} " +
+                        "Ipts: ${onInterestPointsIsNotEmpty.value} ")
+                return false
+            }
         }
-
-
-
     }
 
 
     fun onTitleValueChange(newValue: String) {
         _estateTitle.value = newValue
-        println("addEstateViewModel: titleValueChange:$newValue")
+        Log.i(TAG, "titleValueChange:${_estateTitle.value}")
     }
 
     fun onTypeValueChange(newValue: String) {
         _estateType.value = newValue
-        println("addEstateViewModel: typeValueChange: $newValue")
+        Log.i(TAG, "typeValueChange: ${_estateType.value}")
     }
 
     fun onOfferValueChange(newValue: String) {
         _estateOffer.value = newValue
-        println("addEstateViewModel: offerValueChange: $newValue")
+
+        Log.i(TAG, "offerValueChange: ${_estateOffer.value}")
     }
 
     fun onSellingPriceValueChange(newValue: String) {
         _estateSellingPrice.value = newValue
-        println("addEstateViewModel: sellValueChange: $newValue")
+        Log.i(TAG, "sellValueChange: ${_estateSellingPrice.value}")
     }
 
     fun onRentValueChange(newValue: String) {
         _estateRent.value = newValue
-        println("addEstateViewModel: rentValueChange: $newValue")
+        Log.i(TAG, "rentValueChange: ${_estateRent.value}")
     }
 
     fun onSurfaceValueChange(newValue: String) {
         _estateSurface.value = newValue
-        println("addEstateViewModel: surfaceValueChange: $newValue")
+        Log.i(TAG, "surfaceValueChange: ${_estateSurface.value}")
     }
 
-    fun onRoomValueChange(newValue: String) {
+    fun onRoomValueChange(newValue: Int) {
         _estateNbRooms.value = newValue
+        Log.i(TAG, "roomValueChange: ${_estateNbRooms.value}")
     }
 
     fun onEtageValueChange(newValue: String) {
         _estateEtages.value = newValue
+        Log.i(TAG, "onEtageValueChange: ${_estateEtages.value}")
     }
 
     fun onDescriptionValueChange(newValue: String) {
         _estateDescriptions.value = newValue
+        Log.i(TAG, "onDescriptionValueChange: ${_estateDescriptions.value}")
     }
 
     fun onAddressValueChange(newValue: String) {
         _estateAddress.value = newValue
+        Log.i(TAG, "onAddressValueChange: ${_estateAddress.value}")
     }
 
     fun onZipCodeValueChange(newValue: String) {
         _estateZipCode.value = newValue
+        Log.i(TAG, "onZipCodeValueChange: ${_estateZipCode.value}")
     }
 
     fun onCityValueChange(newValue: String) {
         _estateCity.value = newValue
+        Log.i(TAG, "onCityValueChange: ${_estateCity.value}")
     }
 
     fun onPicturesValueChange(newValue: List<Uri>) {
         _estatePictures.value = newValue
-        println("addEstateViewModel: picValueChange: ${newValue.size}pics")
+        Log.i(TAG, "picValueChange: ${_estatePictures.value.size}pics")
     }
 
     fun onInterestPointsValueChange(newValue: List<String>) {
         _estateInterestPointsStrings.value = newValue
-        println("addEstateViewModel: interestPointsValueChange: $newValue")
+        Log.i(TAG, "interestPointsValueChange: ${_estateInterestPointsStrings.value}")
     }
 
     suspend fun addEstateSus(estate: Estate) {
         withContext(Dispatchers.IO) {
-            println("addEstateSus")
+            Log.i(TAG, "addEstateSus log 1")
             AddEstateUseCaseImpl.invoke(
                 estate,
                 interestPoints = _estateInterestPointsStrings.value,
@@ -243,84 +310,88 @@ class AddEstateViewModel @Inject constructor(
                     _viewState.emit(AddViewState.Error(exception.message ?: "Unknown error"))
                 }
                 .collectLatest { estateId ->
-                    println("addEstateSus:$estateId")
+                    Log.i(TAG, "addEstateSus:$estateId")
                 }
         }
 
     }
 
     private fun addEstate(estate: Estate) = viewModelScope.launch {
-        println("addEstateViewModel: addEstate$estate")
+        Log.i(TAG, "addEstate: $estate   call addEstateSus")
         addEstateSus(estate)
     }
 
     fun onSaveButtonClick() {
-        when (_estateOffer.value) {
-            "Rent" -> {
-                _estate = Estate(
-                    title = _estateTitle.value,
-                    typeOfEstate = _estateType.value,
-                    typeOfOffer = _estateOffer.value,
-                    rent = _estateRent.value.toInt(),
-                    surface = _estateSurface.value.toInt(),
-                    nbRooms = _estateNbRooms.value.toInt(),
-                    etage = _estateEtages.value,
-                    description = _estateDescriptions.value,
-                    address = _estateAddress.value,
-                    status = _estateStatus,
-                    addDate = _estateAddDate,
-                    sellDate = _estateSellDate,
-                    agent = _estateAgent,
-                    zipCode = _estateZipCode.value,
-                    city = _estateCity.value,
-                )
-            }
+        if (enableSave()) {
+            when (_estateOffer.value) {
+                "Rent" -> {
+                    Log.i(TAG, "onSaveButtonClick:Rent")
+                    _estate = Estate(
+                        title = _estateTitle.value,
+                        typeOfEstate = _estateType.value,
+                        typeOfOffer = _estateOffer.value,
+                        rent = _estateRent.value.toInt(),
+                        surface = _estateSurface.value.toInt(),
+                        nbRooms = _estateNbRooms.value.toInt(),
+                        etage = _estateEtages.value,
+                        description = _estateDescriptions.value,
+                        address = _estateAddress.value,
+                        status = _estateStatus,
+                        addDate = _estateAddDate,
+                        sellDate = _estateSellDate,
+                        agent = _estateAgent,
+                        zipCode = _estateZipCode.value,
+                        city = _estateCity.value,)
+                    addEstate(_estate)
+                }
 
-            "Sell" -> {
-                _estate = Estate(
-                    title = _estateTitle.value,
-                    typeOfEstate = _estateType.value,
-                    typeOfOffer = _estateOffer.value,
-                    sellingPrice = _estateSellingPrice.value.toInt(),
-                    surface = _estateSurface.value.toInt(),
-                    nbRooms = _estateNbRooms.value.toInt(),
-                    etage = _estateEtages.value,
-                    description = _estateDescriptions.value,
-                    address = _estateAddress.value,
-                    status = _estateStatus,
-                    addDate = _estateAddDate,
-                    sellDate = _estateSellDate,
-                    agent = _estateAgent,
-                    zipCode = _estateZipCode.value,
-                    city = _estateCity.value,
-                )
-            }
+                "Sell" -> {
+                    Log.i(TAG, "onSaveButtonClick:Sell")
+                    _estate = Estate(
+                        title = _estateTitle.value,
+                        typeOfEstate = _estateType.value,
+                        typeOfOffer = _estateOffer.value,
+                        sellingPrice = _estateSellingPrice.value.toInt(),
+                        surface = _estateSurface.value.toInt(),
+                        nbRooms = _estateNbRooms.value.toInt(),
+                        etage = _estateEtages.value,
+                        description = _estateDescriptions.value,
+                        address = _estateAddress.value,
+                        status = _estateStatus,
+                        addDate = _estateAddDate,
+                        sellDate = _estateSellDate,
+                        agent = _estateAgent,
+                        zipCode = _estateZipCode.value,
+                        city = _estateCity.value,
+                    )
+                    addEstate(_estate)
+                }
 
-            "Rent or Sell" -> {
-                _estate = Estate(
-                    title = _estateTitle.value,
-                    typeOfEstate = _estateType.value,
-                    typeOfOffer = _estateOffer.value,
-                    sellingPrice = _estateSellingPrice.value.toInt(),
-                    rent = _estateRent.value.toInt(),
-                    surface = _estateSurface.value.toInt(),
-                    nbRooms = _estateNbRooms.value.toInt(),
-                    etage = _estateEtages.value,
-                    description = _estateDescriptions.value,
-                    address = _estateAddress.value,
-                    status = _estateStatus,
-                    addDate = _estateAddDate,
-                    sellDate = _estateSellDate,
-                    agent = _estateAgent,
-                    zipCode = _estateZipCode.value,
-                    city = _estateCity.value,
-                )
+                "Rent or Sell" -> {
+                    Log.i(TAG, "onSaveButtonClick:Rent or Sell")
+                    _estate = Estate(
+                        title = _estateTitle.value,
+                        typeOfEstate = _estateType.value,
+                        typeOfOffer = _estateOffer.value,
+                        sellingPrice = _estateSellingPrice.value.toInt(),
+                        rent = _estateRent.value.toInt(),
+                        surface = _estateSurface.value.toInt(),
+                        nbRooms = _estateNbRooms.value.toInt(),
+                        etage = _estateEtages.value,
+                        description = _estateDescriptions.value,
+                        address = _estateAddress.value,
+                        status = _estateStatus,
+                        addDate = _estateAddDate,
+                        sellDate = _estateSellDate,
+                        agent = _estateAgent,
+                        zipCode = _estateZipCode.value,
+                        city = _estateCity.value,
+                    )
+                    addEstate(_estate)
+                }
             }
         }
-        println("AddEstateViewModel: onSaveButtonClick:$_estate")
-        addEstate(_estate)
     }
-
     fun showBlankValue() {
         //TODO
     }

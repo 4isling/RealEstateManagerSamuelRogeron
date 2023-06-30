@@ -89,20 +89,6 @@ fun AddEstateScreen(
     val pSurface by viewModel.estateSurface.collectAsState("")
     val pNbRoom by viewModel.estateNbRooms.collectAsState("0")
 
-    val titleFilled by viewModel.titleIsNotEmpty
-    val addressFilled by viewModel.addressIsNotEmpty
-    val zipCodeFilled by viewModel.zipCodeIsNotEmpty
-    val cityFilled by viewModel.cityIsNotEmpty
-    val typeFilled by viewModel.typeIsNotEmpty
-    val descriptionFilled by viewModel.descriptionsIsNotEmpty
-    val sellPricefilled by viewModel.sellingPriceIsNotEmpty
-    val rentFilled by viewModel.rentIsNotEmpty
-    val offerFilled by viewModel.offerIsNotEmpty
-    val etageFilled by viewModel.etageIsNotEmpty
-    val interestPointsFilled by viewModel.onInterestPointsIsNotEmpty
-    val surfaceFilled by viewModel.surfaceIsNotEmpty
-    val enableSave by viewModel.enableSave
-
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
@@ -141,7 +127,7 @@ fun AddEstateScreen(
                             IconButton(
                                 onClick = {
                                     pCount.value--
-                                    viewModel.onRoomValueChange(pCount.value.toString())
+                                    viewModel.onRoomValueChange(pCount.value)
                                 },
                                 Modifier.size(32.dp)
                             ) {
@@ -151,13 +137,13 @@ fun AddEstateScreen(
                                 )
                             }
                             Text(
-                                text = pNbRoom,
+                                text = pNbRoom.toString(),
                                 modifier = Modifier.padding(8.dp)
                             )
                             IconButton(
                                 onClick = {
                                     pCount.value++
-                                    viewModel.onRoomValueChange(pCount.value.toString())
+                                    viewModel.onRoomValueChange(pCount.value)
                                 },
                                 Modifier.size(32.dp)
                             ) {
@@ -208,7 +194,6 @@ fun AddEstateScreen(
                         imeAction = ImeAction.Done
                     ),
                     singleLine = true,
-                    isError = addressFilled
                 )
             }
             item {
@@ -293,8 +278,6 @@ fun AddEstateScreen(
                                 Icon(iconDrop, "contentDescription")
                             },
                             enabled = false,
-                            isError = !typeFilled
-
                         )
                         val choices = listOf("House", "Apartment", "Garage", "Land")
                         // Create a drop-down menu with list of cities,
@@ -350,8 +333,7 @@ fun AddEstateScreen(
                             trailingIcon = {
                                 Icon(icon, "contentDescription")
                             },
-                            enabled = false
-
+                            enabled = false,
                         )
 
                         /**
@@ -516,20 +498,12 @@ fun AddEstateScreen(
             item {
                 Button(
                     onClick = {
-                        Log.i("AddEstateScreen", "button click saveEnable:$enableSave")
-                        if (enableSave==true){
-                            viewModel.onSaveButtonClick()
-                            navController.navigate(Screen.EstateList.route)
-                        }
                     }
                 ) {
                     Row(modifier = Modifier.clickable {
-                        Log.i("AddEstateScreen", "raw click saveEnable:$enableSave")
-                        if (enableSave==true){
-
+                        Log.i("AddEstateScreen", "safe button click")
                             viewModel.onSaveButtonClick()
                             navController.navigate(Screen.EstateList.route)
-                        }
                     }
                     ) {
                         Text(text = "Save")

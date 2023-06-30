@@ -28,11 +28,10 @@ class AddEstateUseCaseImpl @Inject constructor(
     ): Flow<Long> = flow {
         try {
             val estateId = estateRepository.addEstate(entry)
-            Log.i("AddEstateUseCase", "estateId: estateId")
+            Log.i("AddEstateUseCase", "estateId: $estateId")
             //Interest points
             try {
                 val listInterestPoints = emptyList<EstateInterestPoints>()
-
                 for (string in interestPoints) {
                     val estateInterestPoint =
                         EstateInterestPoints(estateId = estateId, interestPointsName = string)
