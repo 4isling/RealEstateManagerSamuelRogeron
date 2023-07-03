@@ -25,6 +25,15 @@ class EstateRepository @Inject constructor(
             estateDao.insertEstateInterestPoints(item)
         }
     }
+    fun updateEstate(estate: Estate, interestPoints: List<EstateInterestPoints>, pictures: List<EstatePictures>){
+        estateDao.updateEstate(estate)
+        for (item in interestPoints){
+            estateDao.updateInterestPoint(item)
+        }
+        for (item in pictures){
+            estateDao.updatePicture(item)
+        }
+    }
     fun getAllEstates(): Flow<List<Estate>> =
     estateDao.getAllEstates()
     fun getAllEstatesOrderedByGrowPrice():Flow<List<Estate>> =

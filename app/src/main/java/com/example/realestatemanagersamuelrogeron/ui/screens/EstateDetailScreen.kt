@@ -9,10 +9,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -46,7 +53,28 @@ fun EstateDetailScreen(navController: NavController,viewModel: EstateDetailViewM
 
                     },
                     actions = {
-
+                        IconButton(onClick = { /*TODO*/ }) {
+                            Icon(
+                                imageVector = Icons.Filled.Edit,
+                                contentDescription = "Modify estate",
+                                tint = Color.White
+                            )
+                        }
+                        IconButton(onClick = { /*TODO*/ }) {
+                            if (!it.value.isFav){
+                                Icon(
+                                    imageVector = Icons.Rounded.FavoriteBorder,
+                                    contentDescription = "not Fav",
+                                    tint = Color.White
+                                )
+                            }else{
+                                Icon(
+                                    imageVector = Icons.Rounded.Favorite,
+                                    contentDescription =  "Fav",
+                                    tint = Color.Yellow
+                                )
+                            }
+                        }
                     }
                 )
             },

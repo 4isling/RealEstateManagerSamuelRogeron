@@ -14,11 +14,20 @@ interface EstateDao {
     @Insert(onConflict = REPLACE)
     fun createEstate(estate: Estate): Long
 
+    @Update
+    fun updateEstate(estate: Estate)
+
     @Insert(onConflict = REPLACE)
     fun insertEstatePicture(estatePictures: EstatePictures)
 
+    @Update
+    fun updatePicture(estatePictures: EstatePictures)
+
     @Insert(onConflict = REPLACE)
     fun insertEstateInterestPoints(estateInterestPoints: EstateInterestPoints)
+
+    @Update
+    fun updateInterestPoint(estateInterestPoints: EstateInterestPoints)
 
     @Query("SELECT * FROM estates")
     fun getAllEstates(): Flow<List<Estate>>

@@ -1,5 +1,6 @@
 package com.example.realestatemanagersamuelrogeron.ui.composable.list_screen
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,15 +22,16 @@ import com.example.realestatemanagersamuelrogeron.ui.viewmodel.EstatesListViewMo
 @Composable
 fun EstateItem(
     entry: Estate,
+    pic: Uri,
     navController: NavController
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(3.dp)
             .clickable {
                 println("id : " + entry.id)
-                navController.navigate("estate_detail/${entry.id}")
+                navController.navigate("root/estate_detail/${entry.id}")
             },
         elevation = 4.dp,
         shape = RoundedCornerShape(8.dp)

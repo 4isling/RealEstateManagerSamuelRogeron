@@ -1,5 +1,6 @@
 package com.example.realestatemanagersamuelrogeron.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -43,6 +45,7 @@ fun EstateListScreen(
     navController: NavController,
     viewModel: EstatesListViewModel = hiltViewModel()
 ) {
+    val TAG = "EstateListScreen:"
     val viewState by viewModel.viewState.collectAsState()
     var sortMenuExpend by remember {
         mutableStateOf(false)
@@ -57,6 +60,7 @@ fun EstateListScreen(
     var selectedFilter by remember {
         mutableStateOf(sortOptions)
     }
+    
     Scaffold(
         topBar = {
             TopAppBar(
@@ -64,7 +68,10 @@ fun EstateListScreen(
                     Text(text = "RealEstateManager")
                 },
                 navigationIcon = {
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = {
+                        Log.i(TAG, "EstateListScreen: DrawerClick")
+                        //TODO
+                    }) {
                         Icon(imageVector = Icons.Default.Menu, contentDescription = "Drawer Icon")
                     }
                 },
@@ -82,7 +89,9 @@ fun EstateListScreen(
                         }
                     )
                     IconButton(onClick = {
+                        Log.i(TAG, "EstateListScreen: nav to addEstate")
                         navController.navigate(Screen.AddEstate.route)
+                        
                     }) {
                         Icon(imageVector = Icons.Filled.AddCircle, contentDescription = "addEstate")
                     }
@@ -93,17 +102,28 @@ fun EstateListScreen(
         content =  { innerPadding ->
             when (viewState) {
                 is ListViewState.Loading -> {
+                    Log.i(TAG, "EstateListScreen: loading")
                     Text(text = "loading")
                 }
 
-                is ListViewState.Success -> EstateList(
-                    innerPadding,
-                    (viewState as ListViewState.Success).estates,
-                    navController,
-                    viewModel
-                )
+                is ListViewState.Success -> {
+                    Log.i(TAG, "EstateListScreen: Success")
+                    val isLoading by viewModel.isLoading.collectAsState()
+                    val isRefreshing by viewModel.isRefreshing.collectAsState()
+                    EstateList(
+                        innerPadding,
+                        (viewState as ListViewState.Success).estates,
+                        navController,
+                        viewModel,
+                        isLoading,
+                        isRefreshing
+                    )
+                }
 
-                is ListViewState.Error -> Text(text = (viewState as ListViewState.Error).exception)
+                is ListViewState.Error -> {
+                    Log.i(TAG, "EstateListScreen: Error")
+                    Text(text = (viewState as ListViewState.Error).exception)
+                }
             }
         }
     )
@@ -114,11 +134,13 @@ fun EstateList(
     contentPadding: PaddingValues,
     estates: List<Estate>,
     navController: NavController,
-    viewModel: EstatesListViewModel
+    viewModel: EstatesListViewModel,
+    isLoading: Boolean,
+    isRefreshing: Boolean
 ) {
     val lazyListState = rememberLazyListState()
     val canLoadMoreItems by viewModel.canLoadMoreItems.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
+    //val pullRefreshState = rememberPullRefreshState(refreshing = isRefreshing, onRefresh = { /*TODO*/ })
 
     LazyColumn(
         state = lazyListState,
@@ -127,7 +149,7 @@ fun EstateList(
     ) {
         if (estates.isNotEmpty()) {
             items(estates) { estate ->
-                EstateItem(entry = estate, navController = navController)
+                EstateItem(entry = estate, navController = navController,)
             }
         } else {
             item {

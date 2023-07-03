@@ -11,6 +11,7 @@ import com.example.realestatemanagersamuelrogeron.domain.model.EstatePictures
 import com.example.realestatemanagersamuelrogeron.domain.usecases.GetEstateInterestPointsUseCaseImpl
 import com.example.realestatemanagersamuelrogeron.domain.usecases.GetEstatePicturesUseCaseImpl
 import com.example.realestatemanagersamuelrogeron.domain.usecases.GetEstateUseCaseImpl
+import com.example.realestatemanagersamuelrogeron.domain.usecases.UpdateEstateUseCaseImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -21,6 +22,7 @@ class EstateDetailViewModel @Inject constructor(
     private val getEstateUseCaseImpl: GetEstateUseCaseImpl,
     private val getEstatePicturesUseCaseImpl: GetEstatePicturesUseCaseImpl,
     private val getEstateInterestPointsUseCaseImpl: GetEstateInterestPointsUseCaseImpl,
+    private val updateEstateUseCaseImpl: UpdateEstateUseCaseImpl,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -94,5 +96,9 @@ class EstateDetailViewModel @Inject constructor(
 
             }
         }
+    }
+
+    fun onModifyButtonClick(){
+
     }
 }
