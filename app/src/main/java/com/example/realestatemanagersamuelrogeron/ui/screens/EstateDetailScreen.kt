@@ -21,6 +21,8 @@ import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,20 +36,21 @@ import coil.size.Dimension
 import com.example.realestatemanagersamuelrogeron.data.event.DetailScreenEvent
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.data.state.EstateState
+import com.example.realestatemanagersamuelrogeron.ui.composable.detail_screen.EstateDetail
 import com.example.realestatemanagersamuelrogeron.ui.viewmodel.EstateDetailViewModel
 
 
 @Composable
 fun EstateDetailScreen(navController: NavController,viewModel: EstateDetailViewModel = hiltViewModel()) {
+    val estate by viewModel.estate.collectAsState()
 
-    val estate = viewModel.state
     estate.let {
         val  context = LocalContext.current
         Scaffold(
             topBar = {
                 TopAppBar(
                     title = {
-                        Text(text = "${it.value.title}")
+                        Text(text = it.title)
                     },
                     navigationIcon = {
 
@@ -61,7 +64,7 @@ fun EstateDetailScreen(navController: NavController,viewModel: EstateDetailViewM
                             )
                         }
                         IconButton(onClick = { /*TODO*/ }) {
-                            if (!it.value.isFav){
+                            if (!it.isFav){
                                 Icon(
                                     imageVector = Icons.Rounded.FavoriteBorder,
                                     contentDescription = "not Fav",
@@ -80,16 +83,9 @@ fun EstateDetailScreen(navController: NavController,viewModel: EstateDetailViewM
             },
             content = { contentPadding ->
                 EstateDetail(
-                    estate= it.value,
+                    viewModel = viewModel,
                     modifier = Modifier.padding(contentPadding))
             })
-
-    }
-}
-
-@Composable
-fun EstateDetail(estate: Estate, modifier: Modifier){
-    Column(modifier = modifier.fillMaxSize()) {
 
     }
 }

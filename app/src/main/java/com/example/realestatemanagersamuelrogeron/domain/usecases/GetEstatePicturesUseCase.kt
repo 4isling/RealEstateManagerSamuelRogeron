@@ -16,10 +16,15 @@ interface GetEstatePicturesUseCase {
 class GetEstatePicturesUseCaseImpl @Inject constructor(
     private val estateRepository: EstateRepository,
 ) : GetEstatePicturesUseCase {
-    override suspend fun invoke(id: Long): Flow<List<EstatePictures>> = flow{
+    override suspend fun invoke(id: Long): Flow<List<EstatePictures>> {
+        var pics = flow<List<EstatePictures>> {
+            emptyList<EstatePictures>()
+        }
         try{
-            estateRepository.getEstatePictures(id).firstOrNull()
+            pics = estateRepository.getEstatePictures(id)
+            return pics
         }catch (e: Exception){
+            return pics
             Log.e("GetEstatePicturesUseCase", "Error getting pics of estate with id $id")
         }
     }

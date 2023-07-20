@@ -5,8 +5,10 @@ import com.example.realestatemanagersamuelrogeron.data.repository.EstateReposito
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
 import com.example.realestatemanagersamuelrogeron.domain.model.EstatePictures
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -16,10 +18,16 @@ interface GetEstateInterestPointsUseCase {
 class GetEstateInterestPointsUseCaseImpl @Inject constructor(
     private val estateRepository: EstateRepository,
 ) : GetEstateInterestPointsUseCase {
-    override suspend fun invoke(id: Long): Flow<List<EstateInterestPoints>> = flow{
+    override suspend fun invoke(id: Long): Flow<List<EstateInterestPoints>> {
+        var interestPoints = flow<List<EstateInterestPoints>> {
+            emptyList<EstateInterestPoints>()
+        }
+
         try{
-            estateRepository.getEstateInterestPoints(id).firstOrNull()
+            interestPoints = estateRepository.getEstateInterestPoints(id)
+            return interestPoints
         }catch (e: Exception){
+            return interestPoints
             Log.e("GetEstatePicturesUseCase", "Error getting pics of estate with id $id")
         }
     }

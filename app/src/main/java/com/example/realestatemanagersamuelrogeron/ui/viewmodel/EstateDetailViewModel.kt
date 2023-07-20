@@ -1,5 +1,7 @@
 package com.example.realestatemanagersamuelrogeron.ui.viewmodel
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -55,50 +57,38 @@ class EstateDetailViewModel @Inject constructor(
     val estatePictures: MutableStateFlow<List<EstatePictures>> get() = _estatePictures
     val estateInterestPoints: MutableStateFlow<List<EstateInterestPoints>> get() = _estateInterestPoints
 
-    var state = mutableStateOf(
-        Estate(
-        0L,
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        0,
-        0,
-        0,
-        0)
-
-    )
-
-
     init {
         val estateId = savedStateHandle.get<Long>("estateId")
         println("estateId: "+ estateId)
-        if (estateId != null){
+
+        if (estateId != null) {
             viewModelScope.launch{
                 getEstateUseCaseImpl.invoke(estateId).collect { estate ->
                     _estate.value = estate
                 }
                 getEstateInterestPointsUseCaseImpl.invoke(estateId).collect{
                     interestPoints ->
-                    _estateInterestPoints.value = interestPoints
+                    if(interestPoints.isNotEmpty()){
+                        _estateInterestPoints.value = interestPoints
+                    }else{
+                        Log.e(TAG, "interestPoint: null interestPoints", )
+                    }
+
                 }
                 getEstatePicturesUseCaseImpl.invoke(estateId).collect{
                     pics ->
-                    _estatePictures.value = pics
+                    if(pics.isNotEmpty()){
+                        _estatePictures.value = pics
+                        Log.i(TAG, "estatePicturesVal: ${_estatePictures.value} ")
+                    }else{
+                        Log.e(TAG,"pic: null")
+                    }
                 }
-
             }
         }
     }
 
-    fun onModifyButtonClick(){
+    fun onEditButtonClick(){
 
     }
 }

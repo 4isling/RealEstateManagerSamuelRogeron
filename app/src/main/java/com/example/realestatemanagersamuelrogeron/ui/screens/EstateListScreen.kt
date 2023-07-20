@@ -1,5 +1,6 @@
 package com.example.realestatemanagersamuelrogeron.ui.screens
 
+import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.realestatemanagersamuelrogeron.R
@@ -112,7 +114,6 @@ fun EstateListScreen(
                     val isRefreshing by viewModel.isRefreshing.collectAsState()
                     EstateList(
                         innerPadding,
-                        (viewState as ListViewState.Success).estates,
                         navController,
                         viewModel,
                         isLoading,
@@ -132,12 +133,12 @@ fun EstateListScreen(
 @Composable
 fun EstateList(
     contentPadding: PaddingValues,
-    estates: List<Estate>,
     navController: NavController,
     viewModel: EstatesListViewModel,
     isLoading: Boolean,
     isRefreshing: Boolean
 ) {
+    val estatesWithPictures by viewModel.estatesWithPictures.collectAsState(emptyList())
     val lazyListState = rememberLazyListState()
     val canLoadMoreItems by viewModel.canLoadMoreItems.collectAsState()
     //val pullRefreshState = rememberPullRefreshState(refreshing = isRefreshing, onRefresh = { /*TODO*/ })
@@ -147,9 +148,10 @@ fun EstateList(
         contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        if (estates.isNotEmpty()) {
-            items(estates) { estate ->
-                EstateItem(entry = estate, navController = navController,)
+        if (estatesWithPictures.isNotEmpty()) {
+            items(estatesWithPictures) { estateWithPic ->
+                Log.i(TAG, "EstateList: EstateWithPic = ${estateWithPic.estate}+ ${estateWithPic.pictures.size}")
+                EstateItem(entry = estateWithPic.estate, navController = navController,pic = estateWithPic.pictures)
             }
         } else {
             item {

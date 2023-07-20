@@ -4,7 +4,11 @@ import com.example.realestatemanagersamuelrogeron.data.dao.EstateDao
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
 import com.example.realestatemanagersamuelrogeron.domain.model.EstatePictures
+import com.example.realestatemanagersamuelrogeron.domain.model.EstateWithPictures
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -57,7 +61,7 @@ class EstateRepository @Inject constructor(
     }
 
     fun getEstateById(id: Long): Flow<Estate> {
-        return estateDao.getEstateById(id)
+        return estateDao.getEstateById(estateId = id)
     }
 
     fun addEstatePicture(estatePictures: EstatePictures) {
@@ -69,4 +73,68 @@ class EstateRepository @Inject constructor(
     fun getEstateInterestPoints(estateId: Long):Flow<List<EstateInterestPoints>>{
         return estateDao.getEstateInterestPoints(estateId = estateId)
     }
+
+    fun updateEstateLatLng(estateId: Long, lat: Double, lng: Double){
+        estateDao.updateEstateLatLng(estateId,lat,lng)
+    }
+
+    fun getAllEstatesWithPictures(): Flow<List<EstateWithPictures>> {
+        return estateDao.getAllEstatesWithPictures()
+            .map { list ->
+                list.map { picturesWithEstate ->
+                    EstateWithPictures(
+                        estate = picturesWithEstate.estate,
+                        pictures = picturesWithEstate.estatePictures
+                    )
+                }
+            }
+    }
+
+    fun getEstateWithPictureOrderedByGrowPrice(): Flow<List<EstateWithPictures>> {
+        return estateDao.getEstateWithPictureOrderedByGrowPrice()
+            .map { list ->
+                list.map { picturesWithEstate ->
+                    EstateWithPictures(
+                        estate = picturesWithEstate.estate,
+                        pictures = picturesWithEstate.estatePictures
+                    )
+                }
+            }
+    }
+
+    fun getAllEstatesWithPictureOrderedByDecendPrice(): Flow<List<EstateWithPictures>> {
+        return estateDao.getAllEstatesWithPictureOrderedByDecendPrice()
+            .map { list ->
+                list.map { picturesWithEstate ->
+                    EstateWithPictures(
+                        estate = picturesWithEstate.estate,
+                        pictures = picturesWithEstate.estatePictures
+                    )
+                }
+            }
+    }
+    fun getAllEstatesWithPictureOrderedByGrowRent(): Flow<List<EstateWithPictures>> {
+        return estateDao.getAllEstatesWithPictureOrderedByGrowRent()
+            .map { list ->
+                list.map { picturesWithEstate ->
+                    EstateWithPictures(
+                        estate = picturesWithEstate.estate,
+                        pictures = picturesWithEstate.estatePictures
+                    )
+                }
+            }
+    }
+    fun getAllEstatesWithPictureOrderedByDecendRent(): Flow<List<EstateWithPictures>> {
+        return estateDao.getAllEstatesWithPictureOrderedByDecendRent()
+            .map { list ->
+                list.map { picturesWithEstate ->
+                    EstateWithPictures(
+                        estate = picturesWithEstate.estate,
+                        pictures = picturesWithEstate.estatePictures
+                    )
+                }
+            }
+    }
+
+
 }

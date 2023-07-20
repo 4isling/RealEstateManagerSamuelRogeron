@@ -5,8 +5,10 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.realestatemanagersamuelrogeron.ui.screens.AddEstateScreen
 import com.example.realestatemanagersamuelrogeron.ui.screens.EstateDetailScreen
@@ -34,7 +36,8 @@ fun Navigation(navController: NavHostController) {
             }
 
             composable(
-                route = Screen.EstateDetail.route
+                route = "${Screen.EstateDetail.route}/{estateId}",
+                arguments = listOf(navArgument("estateId") { type = NavType.LongType })
             ) {
                 EstateDetailScreen(
                     navController = navController,

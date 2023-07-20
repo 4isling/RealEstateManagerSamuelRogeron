@@ -1,29 +1,34 @@
 package com.example.realestatemanagersamuelrogeron.ui.viewmodel
 
+import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.realestatemanagersamuelrogeron.SortType
+import com.example.realestatemanagersamuelrogeron.data.relations.PicturesWithEstate
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.data.state.ListViewState
+import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
+import com.example.realestatemanagersamuelrogeron.domain.model.EstatePictures
+import com.example.realestatemanagersamuelrogeron.domain.model.EstateWithPictures
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetAllEstatesWithPicturesUseCase
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetAllEstatesWithPicturesUseCaseImpl
 import com.example.realestatemanagersamuelrogeron.domain.usecases.GetEstateListUseCaseImpl
 import com.example.realestatemanagersamuelrogeron.domain.usecases.GetEstatePicturesUseCaseImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.log
 
 @HiltViewModel
 class EstatesListViewModel @Inject constructor(
     private val getEstateListUseCaseImpl: GetEstateListUseCaseImpl,
-    private val getEstatePicturesUseCaseImpl: GetEstatePicturesUseCaseImpl
+    private val getAllEstatesWithPicturesUseCaseImpl: GetAllEstatesWithPicturesUseCaseImpl
 ) : ViewModel() {
 
     private val TAG = "EstatesListViewModel:"
@@ -32,8 +37,9 @@ class EstatesListViewModel @Inject constructor(
         _viewState.asStateFlow()
 
     private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> get() =
-        _isLoading.asStateFlow()
+    val isLoading: StateFlow<Boolean>
+        get() =
+            _isLoading.asStateFlow()
 
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> get() = _isRefreshing.asStateFlow()
@@ -43,9 +49,18 @@ class EstatesListViewModel @Inject constructor(
     private val _sortType = MutableStateFlow(SortType.Default)
     val sortType: MutableStateFlow<SortType> get() = _sortType
 
+    private val _estateList = MutableStateFlow(emptyList<Estate>())
+    private val _estatePic =
+        MutableStateFlow(listOf(EstatePictures(pictureUri = "", name = "")))
+
+
+    private val _estatesWithPictures = MutableStateFlow<List<EstateWithPictures>>(emptyList())
+    val estatesWithPictures: StateFlow<List<EstateWithPictures>> = _estatesWithPictures.asStateFlow()
+
+
     init {
         Log.i(TAG, "init")
-        loadEstates()
+        loadEstatesWithPictures()
     }
 
 
@@ -53,49 +68,31 @@ class EstatesListViewModel @Inject constructor(
         _sortType.value = newValue
         viewModelScope.launch {
             try {
-                getEstateListUseCaseImpl.invoke(_sortType.value)
+                getAllEstatesWithPicturesUseCaseImpl.execute(_sortType.value)
                     .catch { exception ->
                         _viewState.emit(ListViewState.Error(exception.message ?: "UnknownError"))
                         _isLoading.emit(false)
                     }.collectLatest { result ->
-                        handleEstateResult(result)
+                        _estatesWithPictures.value = result
                         _canLoadMoreItems.emit(result.isNotEmpty())
+                        _viewState.emit(ListViewState.Success)
                     }
-            }catch (e: Error){
-                Log.e(TAG, "onSortTypeValueChange: error: $e", )
+            } catch (e: Error) {
+                Log.e(TAG, "onSortTypeValueChange: error: $e")
             }
         }
     }
 
-    private fun loadEstates() = viewModelScope.launch {
-        Log.i(TAG, "loadEstates: ")
-            getEstateListUseCaseImpl.invoke(sortType.value)
-            .catch { exception ->
-                Log.e(TAG, "loadEstates: catch exception: $exception" )
-                _viewState.emit(ListViewState.Error(exception.message ?: "UnknownError"))
-                _isLoading.emit(false)
-            }.collectLatest { result ->
-                Log.i(TAG, "loadEstates: collect: result: $result")
-                handleEstateResult(result)
-                _canLoadMoreItems.emit(result.isNotEmpty())
-            }
-    }
-
-    fun loadMoreItems() = viewModelScope.launch {
-        if (_isLoading.value || !_canLoadMoreItems.value) return@launch
-        _isLoading.emit(true)
-        loadEstates()
-    }
-
-
-    private suspend fun handleEstateResult(result: List<Estate>) {
-        Log.i(TAG, "handleEstateResult: ")
-        val currentViewState = _viewState.value
-        if (currentViewState is ListViewState.Success) {
-            _viewState.emit(currentViewState.copy(estates = currentViewState.estates + result))
-        } else {
-            _viewState.emit(ListViewState.Success(result))
+    private fun loadEstatesWithPictures() {
+        viewModelScope.launch {
+            getAllEstatesWithPicturesUseCaseImpl.execute(_sortType.value)
+                .catch { exception ->
+                    // Handle exceptions, if any
+                }
+                .collect { estatesWithPictures ->
+                    _estatesWithPictures.value = estatesWithPictures
+                    _viewState.emit(ListViewState.Success)
+                }
         }
-        _isLoading.emit(false)
     }
 }

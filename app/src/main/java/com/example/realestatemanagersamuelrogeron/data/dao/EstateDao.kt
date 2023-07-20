@@ -76,4 +76,24 @@ interface EstateDao {
 
     @Query("SELECT * FROM estate_interest_points WHERE estateId = :estateId")
     fun getEstateInterestPoints(estateId: Long): Flow<List<EstateInterestPoints>>
+
+    @Query("UPDATE estates SET lat = :lat, lng = :lng WHERE id = :estateId")
+    fun updateEstateLatLng(estateId: Long, lat: Double, lng: Double)
+
+    @Transaction
+    @Query("SELECT * FROM estates")
+    fun getAllEstatesWithPictures(): Flow<List<PicturesWithEstate>>
+
+    @Transaction
+    @Query("SELECT * FROM estates ORDER BY sellingPrice ASC")
+    fun getEstateWithPictureOrderedByGrowPrice(): Flow<List<PicturesWithEstate>>
+    @Transaction
+    @Query("SELECT * FROM estates ORDER BY sellingPrice DESC")
+    fun getAllEstatesWithPictureOrderedByDecendPrice(): Flow<List<PicturesWithEstate>>
+    @Transaction
+    @Query("SELECT * FROM estates ORDER BY rent ASC")
+    fun getAllEstatesWithPictureOrderedByGrowRent(): Flow<List<PicturesWithEstate>>
+    @Transaction
+    @Query("SELECT * FROM estates ORDER BY rent DESC")
+    fun getAllEstatesWithPictureOrderedByDecendRent(): Flow<List<PicturesWithEstate>>
 }

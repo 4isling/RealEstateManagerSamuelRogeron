@@ -2,51 +2,48 @@ package com.example.realestatemanagersamuelrogeron.domain.usecases
 
 import android.util.Log
 import com.example.realestatemanagersamuelrogeron.SortType
-import com.example.realestatemanagersamuelrogeron.domain.model.Estate
+import com.example.realestatemanagersamuelrogeron.data.relations.PicturesWithEstate
 import com.example.realestatemanagersamuelrogeron.data.repository.EstateRepository
+import com.example.realestatemanagersamuelrogeron.domain.model.Estate
+import com.example.realestatemanagersamuelrogeron.domain.model.EstateWithPictures
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import java.lang.Exception
 import javax.inject.Inject
-import kotlin.math.log
 
-interface GetEstateListUseCase {
-    suspend fun invoke(sortType: SortType): Flow<List<Estate>>
+interface GetAllEstatesWithPicturesUseCase {
+    suspend fun execute(sortType: SortType): Flow<List<EstateWithPictures>>
 }
 
-class GetEstateListUseCaseImpl @Inject constructor(
-    private val estateRepository: EstateRepository
-) : GetEstateListUseCase {
-    override suspend fun invoke(sortType: SortType): Flow<List<Estate>> {
-        val TAG = "getEstateUseCase"
-        var estateList: Flow<List<Estate>>
+class GetAllEstatesWithPicturesUseCaseImpl @Inject constructor(private val estateRepository: EstateRepository) :
+    GetAllEstatesWithPicturesUseCase {
+    override suspend fun execute(sortType: SortType): Flow<List<EstateWithPictures>> {
+        val TAG = "GetEstateWithPictures"
+        var estateList: Flow<List<EstateWithPictures>>
         try {
             when (sortType) {
                 SortType.Default -> {
-                    estateList = estateRepository.getAllEstates()
+                    estateList = estateRepository.getAllEstatesWithPictures()
                     Log.i(TAG, "invoke: SortTypeDefault: $estateList")
                 }
 
                 SortType.PriceGrow -> {
-                    estateList = estateRepository.getAllEstatesOrderedByGrowPrice()
+                    estateList = estateRepository.getEstateWithPictureOrderedByGrowPrice()
                     Log.i(TAG, "invoke: SortTypePriceGrow: $estateList")
                 }
 
                 SortType.PriceDescend -> {
-                    estateList = estateRepository.getAllEstatesOrderedByDecendPrice()
+                    estateList = estateRepository.getAllEstatesWithPictureOrderedByDecendPrice()
                     Log.i(TAG, "invoke: SortTypePriceDescend: $estateList")
                 }
 
                 SortType.RentGrow -> {
-                    estateList = estateRepository.getAllEstatesOrderedByGrowRent()
+                    estateList = estateRepository.getAllEstatesWithPictureOrderedByGrowRent()
                     Log.i(TAG, "invoke: SortTypeRentGrow:$estateList")
                 }
 
                 SortType.RentDescend -> {
-                    estateList = estateRepository.getAllEstatesOrderedByDecendRent()
+                    estateList = estateRepository.getAllEstatesWithPictureOrderedByDecendRent()
                     Log.i(TAG, "invoke: SortTypeRentDescend: $estateList")
                 }
             }
@@ -56,4 +53,3 @@ class GetEstateListUseCaseImpl @Inject constructor(
         }
     }
 }
-

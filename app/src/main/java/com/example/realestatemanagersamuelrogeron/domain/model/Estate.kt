@@ -27,6 +27,8 @@ data class Estate(
     val lat: Double? =null,
     val lng: Double? = null
 )
+
+
 /**
  * TODO get latlng with geocoder form the address in a fun
  */
