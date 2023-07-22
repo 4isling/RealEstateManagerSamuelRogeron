@@ -136,5 +136,8 @@ class EstateRepository @Inject constructor(
             }
     }
 
+    fun getEstateWithoutLatLng(): Flow<List<Estate>> {
+        return estateDao.getEstateWithoutLatLng()
+    }
 
 }

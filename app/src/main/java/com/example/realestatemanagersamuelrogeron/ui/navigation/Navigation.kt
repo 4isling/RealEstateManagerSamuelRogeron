@@ -13,6 +13,7 @@ import androidx.navigation.navigation
 import com.example.realestatemanagersamuelrogeron.ui.screens.AddEstateScreen
 import com.example.realestatemanagersamuelrogeron.ui.screens.EstateDetailScreen
 import com.example.realestatemanagersamuelrogeron.ui.screens.EstateListScreen
+import com.example.realestatemanagersamuelrogeron.ui.screens.MapScreen
 import com.example.realestatemanagersamuelrogeron.ui.viewmodel.AddEstateViewModel
 import com.example.realestatemanagersamuelrogeron.ui.viewmodel.EstateDetailViewModel
 import com.example.realestatemanagersamuelrogeron.ui.viewmodel.EstatesListViewModel
@@ -48,6 +49,12 @@ fun Navigation(navController: NavHostController) {
             {
                 AddEstateScreen(
                     navController = navController,
+                )
+            }
+
+            composable(route = Screen.Map.route){
+                MapScreen(
+                    navController
                 )
             }
         }

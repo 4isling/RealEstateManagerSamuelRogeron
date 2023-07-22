@@ -2,9 +2,11 @@ package com.example.realestatemanagersamuelrogeron.ui.viewmodel
 
 import android.net.Uri
 import android.util.Log
+import androidx.compose.material.DrawerValue
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.navOptions
 import com.example.realestatemanagersamuelrogeron.SortType
 import com.example.realestatemanagersamuelrogeron.data.relations.PicturesWithEstate
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
@@ -49,6 +51,7 @@ class EstatesListViewModel @Inject constructor(
     private val _sortType = MutableStateFlow(SortType.Default)
     val sortType: MutableStateFlow<SortType> get() = _sortType
 
+
     private val _estateList = MutableStateFlow(emptyList<Estate>())
     private val _estatePic =
         MutableStateFlow(listOf(EstatePictures(pictureUri = "", name = "")))
@@ -56,6 +59,7 @@ class EstatesListViewModel @Inject constructor(
 
     private val _estatesWithPictures = MutableStateFlow<List<EstateWithPictures>>(emptyList())
     val estatesWithPictures: StateFlow<List<EstateWithPictures>> = _estatesWithPictures.asStateFlow()
+
 
 
     init {
@@ -83,6 +87,15 @@ class EstatesListViewModel @Inject constructor(
         }
     }
 
+    fun onDrawerItemClicked(option: String){
+        when(option){
+            "Map"->{
+                navOptions {
+
+                }
+            }
+        }
+    }
     private fun loadEstatesWithPictures() {
         viewModelScope.launch {
             getAllEstatesWithPicturesUseCaseImpl.execute(_sortType.value)

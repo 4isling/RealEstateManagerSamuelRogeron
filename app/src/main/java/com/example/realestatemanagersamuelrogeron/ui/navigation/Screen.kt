@@ -10,6 +10,7 @@ sealed class Screen(val route: String){
     object EstateDetail: Screen(route = "root/detail_screen")
     object AddEstate: Screen(route = "root/add_screen")
 
+    object Map: Screen(route = "root/map_screen")
     fun  withArgs(vararg args: String): String{
         return buildString {
             append(route)

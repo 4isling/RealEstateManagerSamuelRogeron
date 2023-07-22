@@ -96,4 +96,8 @@ interface EstateDao {
     @Transaction
     @Query("SELECT * FROM estates ORDER BY rent DESC")
     fun getAllEstatesWithPictureOrderedByDecendRent(): Flow<List<PicturesWithEstate>>
+
+
+    @Query("SELECT * FROM estates WHERE lat IS NULL OR lng IS NULL")
+    fun getEstateWithoutLatLng(): Flow<List<Estate>>
 }
