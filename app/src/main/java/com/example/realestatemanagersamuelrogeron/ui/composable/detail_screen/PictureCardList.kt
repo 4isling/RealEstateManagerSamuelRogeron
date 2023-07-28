@@ -16,7 +16,10 @@ fun PictureCardList(
 ){
     LazyRow() {
         items(pics){pic->
-            PictureCard(uri = pic.pictureUri.toUri())
+            PictureCard(
+                uri = pic.pictureUri.toUri(),
+                modifier =  modifier
+            )
         }
     }
 }

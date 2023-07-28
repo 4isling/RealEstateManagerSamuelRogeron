@@ -33,11 +33,11 @@ class AddEstateUseCaseImpl @Inject constructor(
             try {
                 val listInterestPoints = emptyList<EstateInterestPoints>()
                 for (string in interestPoints) {
-                    val estateInterestPoint =
+                    var estateInterestPoint =
                         EstateInterestPoints(estateId = estateId, interestPointsName = string)
                     listInterestPoints.plus(estateInterestPoint)
+                    estateRepository.addEstateInterestPoint(estateInterestPoint)
                 }
-                estateRepository.addEstateInterestPoints(listInterestPoints)
                 Result.success(Unit)
             } catch (e: Exception) {
                 Log.e("AddEstateUseCase", "Error add estate interestPoints:$e")
@@ -47,18 +47,16 @@ class AddEstateUseCaseImpl @Inject constructor(
 
                 var uri = ""
                 var i = 0
-                val listEstatePictures = emptyList<EstatePictures>()
                 for (pic in pics) {
                     uri = pic.toString()
                     i++
-                    val estatePicture = EstatePictures(
+                    var estatePicture = EstatePictures(
                         estateId = estateId,
                         pictureUri = uri,
                         name = ("e" + estateId.toString() + "p" + i.toString())
                     )
-                    listEstatePictures.plus(estatePicture)
+                    estateRepository.addEstatePicture(estatePictures = estatePicture)
                 }
-                estateRepository.addEstatePictures(listEstatePictures)
                 Result.success(Unit)
             } catch (e: Exception) {
                 Log.e("AddEstateUseCase", "Error add estate pictures:$e")

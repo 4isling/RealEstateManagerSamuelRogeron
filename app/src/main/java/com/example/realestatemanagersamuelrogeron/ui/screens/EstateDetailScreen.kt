@@ -1,45 +1,29 @@
 package com.example.realestatemanagersamuelrogeron.ui.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
-import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.size.Dimension
-import com.example.realestatemanagersamuelrogeron.data.event.DetailScreenEvent
-import com.example.realestatemanagersamuelrogeron.domain.model.Estate
-import com.example.realestatemanagersamuelrogeron.data.state.EstateState
 import com.example.realestatemanagersamuelrogeron.ui.composable.detail_screen.EstateDetail
 import com.example.realestatemanagersamuelrogeron.ui.viewmodel.EstateDetailViewModel
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EstateDetailScreen(navController: NavController,viewModel: EstateDetailViewModel = hiltViewModel()) {
     val estate by viewModel.estate.collectAsState()

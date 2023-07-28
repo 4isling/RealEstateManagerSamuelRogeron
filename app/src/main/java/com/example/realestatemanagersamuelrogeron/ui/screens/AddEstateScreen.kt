@@ -1,6 +1,5 @@
 package com.example.realestatemanagersamuelrogeron.ui.screens
 
-import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -16,26 +15,24 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.outlined.AddCircle
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,29 +42,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.realestatemanagersamuelrogeron.R
-import com.example.realestatemanagersamuelrogeron.data.event.AddScreenEvent
-import com.example.realestatemanagersamuelrogeron.data.state.AddEstateState
 import com.example.realestatemanagersamuelrogeron.ui.composable.add_screen.AddListOfPictures
 import com.example.realestatemanagersamuelrogeron.ui.composable.add_screen.InterestPointsTextField
 import com.example.realestatemanagersamuelrogeron.ui.navigation.Screen
 import com.example.realestatemanagersamuelrogeron.ui.viewmodel.AddEstateViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 
 @Composable
@@ -91,7 +78,7 @@ fun AddEstateScreen(
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colors.background
+        color = MaterialTheme.colorScheme.background
     ) {
         LazyColumn(
             Modifier
@@ -291,12 +278,14 @@ fun AddEstateScreen(
                                 })
                         ) {
                             choices.forEach { uChoice ->
-                                DropdownMenuItem(onClick = {
-                                    viewModel.onTypeValueChange(uChoice)
-                                    mExpanded = false
-                                }) {
-                                    Text(text = uChoice)
-                                }
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(text = uChoice)
+                                    },
+                                    onClick = {
+                                        viewModel.onTypeValueChange(uChoice)
+                                        mExpanded = false
+                                    })
                             }
                         }
                     }
@@ -347,12 +336,12 @@ fun AddEstateScreen(
                         ) {
                             val choices = listOf("Rent", "Sell", "Rent or Sell")
                             choices.forEach { uChoice ->
-                                DropdownMenuItem(onClick = {
-                                    viewModel.onOfferValueChange(uChoice)
-                                    mExpanded2 = false
-                                }) {
-                                    Text(text = uChoice)
-                                }
+                                DropdownMenuItem(
+                                    text = { Text(text = uChoice) },
+                                    onClick = {
+                                        viewModel.onOfferValueChange(uChoice)
+                                        mExpanded2 = false
+                                    })
                             }
                         }
                         /**
@@ -502,8 +491,8 @@ fun AddEstateScreen(
                 ) {
                     Row(modifier = Modifier.clickable {
                         Log.i("AddEstateScreen", "safe button click")
-                            viewModel.onSaveButtonClick()
-                            navController.navigate(Screen.EstateList.route)
+                        viewModel.onSaveButtonClick()
+                        navController.navigate(Screen.EstateList.route)
                     }
                     ) {
                         Text(text = "Save")

@@ -1,23 +1,16 @@
 package com.example.realestatemanagersamuelrogeron.ui.viewmodel
 
-import android.net.Uri
 import android.util.Log
-import androidx.compose.material.DrawerValue
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.navOptions
 import com.example.realestatemanagersamuelrogeron.SortType
-import com.example.realestatemanagersamuelrogeron.data.relations.PicturesWithEstate
-import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.data.state.ListViewState
-import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
+import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.domain.model.EstatePictures
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateWithPictures
-import com.example.realestatemanagersamuelrogeron.domain.usecases.GetAllEstatesWithPicturesUseCase
 import com.example.realestatemanagersamuelrogeron.domain.usecases.GetAllEstatesWithPicturesUseCaseImpl
 import com.example.realestatemanagersamuelrogeron.domain.usecases.GetEstateListUseCaseImpl
-import com.example.realestatemanagersamuelrogeron.domain.usecases.GetEstatePicturesUseCaseImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

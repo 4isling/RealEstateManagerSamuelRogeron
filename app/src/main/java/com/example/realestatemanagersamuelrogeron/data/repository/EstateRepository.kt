@@ -29,6 +29,9 @@ class EstateRepository @Inject constructor(
             estateDao.insertEstateInterestPoints(item)
         }
     }
+    fun addEstateInterestPoint(estateInterestPoints: EstateInterestPoints){
+        estateDao.insertEstateInterestPoints(estateInterestPoints)
+    }
     fun updateEstate(estate: Estate, interestPoints: List<EstateInterestPoints>, pictures: List<EstatePictures>){
         estateDao.updateEstate(estate)
         for (item in interestPoints){

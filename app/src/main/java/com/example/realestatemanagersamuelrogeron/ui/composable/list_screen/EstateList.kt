@@ -7,8 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,23 +28,28 @@ fun EstateList(
     val canLoadMoreItems by viewModel.canLoadMoreItems.collectAsState()
     //val pullRefreshState = rememberPullRefreshState(refreshing = isRefreshing, onRefresh = { /*TODO*/ })
 
-    LazyColumn(
-        state = lazyListState,
-        contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        if (estatesWithPictures.isNotEmpty()) {
+    if (estatesWithPictures.isNotEmpty()) {
+        LazyColumn(
+            state = lazyListState,
+            contentPadding = contentPadding,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
             items(estatesWithPictures) { estateWithPic ->
-                Log.i(ContentValues.TAG, "EstateList: EstateWithPic = ${estateWithPic.estate}+ ${estateWithPic.pictures.size}")
-                EstateItem(entry = estateWithPic.estate, navController = navController,pic = estateWithPic.pictures)
-            }
-        } else {
-            item {
-                Text(
-                    text = "Nothing to show",
-                    fontSize = MaterialTheme.typography.h4.fontSize
+                Log.i(
+                    ContentValues.TAG,
+                    "EstateList: EstateWithPic = ${estateWithPic.estate}+ ${estateWithPic.pictures.size}"
+                )
+                EstateItem(
+                    entry = estateWithPic.estate,
+                    navController = navController,
+                    pic = estateWithPic.pictures
                 )
             }
         }
+    } else {
+        Text(
+            text = "Nothing to show",
+        )
     }
+
 }
