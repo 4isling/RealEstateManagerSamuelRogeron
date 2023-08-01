@@ -101,7 +101,6 @@ fun EstateListScreen(
                         Icon(imageVector = Icons.Filled.AddCircle, contentDescription = "addEstate")
                     }
                 }
-
             )
         },
         content =  { innerPadding ->

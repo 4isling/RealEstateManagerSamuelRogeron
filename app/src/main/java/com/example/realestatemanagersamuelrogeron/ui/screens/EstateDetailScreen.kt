@@ -25,11 +25,14 @@ import com.example.realestatemanagersamuelrogeron.ui.viewmodel.EstateDetailViewM
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EstateDetailScreen(navController: NavController,viewModel: EstateDetailViewModel = hiltViewModel()) {
+fun EstateDetailScreen(
+    navController: NavController,
+    viewModel: EstateDetailViewModel = hiltViewModel()
+) {
     val estate by viewModel.estate.collectAsState()
 
     estate.let {
-        val  context = LocalContext.current
+        val context = LocalContext.current
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -48,16 +51,16 @@ fun EstateDetailScreen(navController: NavController,viewModel: EstateDetailViewM
                             )
                         }
                         IconButton(onClick = { /*TODO*/ }) {
-                            if (!it.isFav){
+                            if (!it.isFav) {
                                 Icon(
                                     imageVector = Icons.Rounded.FavoriteBorder,
                                     contentDescription = "not Fav",
                                     tint = Color.White
                                 )
-                            }else{
+                            } else {
                                 Icon(
                                     imageVector = Icons.Rounded.Favorite,
-                                    contentDescription =  "Fav",
+                                    contentDescription = "Fav",
                                     tint = Color.Yellow
                                 )
                             }
@@ -65,11 +68,13 @@ fun EstateDetailScreen(navController: NavController,viewModel: EstateDetailViewM
                     }
                 )
             },
-            content = { contentPadding ->
-                EstateDetail(
-                    viewModel = viewModel,
-                    modifier = Modifier.padding(contentPadding))
-            })
-
+        ) { contentPadding ->
+            EstateDetail(
+                viewModel = viewModel,
+                modifier = Modifier.padding(contentPadding)
+            )
+        }
     }
+
 }
+
