@@ -1,11 +1,10 @@
 package com.example.realestatemanagersamuelrogeron.domain.usecases
 
 import android.util.Log
-import com.example.realestatemanagersamuelrogeron.SortType
-import com.example.realestatemanagersamuelrogeron.data.relations.PicturesWithEstate
+import com.example.realestatemanagersamuelrogeron.utils.SortType
 import com.example.realestatemanagersamuelrogeron.data.repository.EstateRepository
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
-import com.example.realestatemanagersamuelrogeron.domain.model.EstateWithPictures
+import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithPictures
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.lang.Exception

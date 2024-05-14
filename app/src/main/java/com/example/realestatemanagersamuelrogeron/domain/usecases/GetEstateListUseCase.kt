@@ -1,17 +1,13 @@
 package com.example.realestatemanagersamuelrogeron.domain.usecases
 
 import android.util.Log
-import com.example.realestatemanagersamuelrogeron.SortType
+import com.example.realestatemanagersamuelrogeron.utils.SortType
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.data.repository.EstateRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import java.lang.Exception
 import javax.inject.Inject
-import kotlin.math.log
 
 interface GetEstateListUseCase {
     suspend fun invoke(sortType: SortType): Flow<List<Estate>>

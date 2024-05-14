@@ -3,12 +3,8 @@ package com.example.realestatemanagersamuelrogeron.domain.usecases
 import android.util.Log
 import com.example.realestatemanagersamuelrogeron.data.repository.EstateRepository
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
-import com.example.realestatemanagersamuelrogeron.domain.model.EstatePictures
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import java.lang.Exception
 import javax.inject.Inject
 

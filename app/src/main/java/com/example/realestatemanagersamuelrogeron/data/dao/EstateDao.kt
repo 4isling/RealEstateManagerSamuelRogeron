@@ -4,7 +4,7 @@ import androidx.room.*
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
-import com.example.realestatemanagersamuelrogeron.domain.model.EstatePictures
+import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
 import com.example.realestatemanagersamuelrogeron.data.relations.InterestPointsWithEstate
 import com.example.realestatemanagersamuelrogeron.data.relations.PicturesWithEstate
 import kotlinx.coroutines.flow.Flow
@@ -18,10 +18,10 @@ interface EstateDao {
     fun updateEstate(estate: Estate)
 
     @Insert(onConflict = REPLACE)
-    fun insertEstatePicture(estatePictures: EstatePictures)
+    fun insertEstatePicture(estateMedia: EstateMedia)
 
     @Update
-    fun updatePicture(estatePictures: EstatePictures)
+    fun updatePicture(estateMedia: EstateMedia)
 
     @Insert(onConflict = REPLACE)
     fun insertEstateInterestPoints(estateInterestPoints: EstateInterestPoints)
@@ -47,7 +47,7 @@ interface EstateDao {
     fun delete(interestPoint: EstateInterestPoints)
 
     @Delete
-    fun delete(pictures: EstatePictures)
+    fun delete(pictures: EstateMedia)
 
     @Query("DELETE FROM estate_interest_points WHERE estateId = :estateId")
     fun deleteAllInterestPointWithEstate(estateId: Long)
@@ -72,7 +72,7 @@ interface EstateDao {
     @Query("SELECT * FROM estates WHERE id = :estateId")
     fun getEstateById(estateId: Long): Flow<Estate>
     @Query("SELECT * FROM estate_pictures WHERE estateId = :estateId")
-    fun getEstatePictures(estateId: Long): Flow<List<EstatePictures>>
+    fun getEstatePictures(estateId: Long): Flow<List<EstateMedia>>
 
     @Query("SELECT * FROM estate_interest_points WHERE estateId = :estateId")
     fun getEstateInterestPoints(estateId: Long): Flow<List<EstateInterestPoints>>

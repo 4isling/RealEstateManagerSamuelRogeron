@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">RealEstateManagerSamuelRogeron</string>
     <string name="empty_values">Some values shouldn\'t be empty</string>
+    <string name="location">Location</string>
+    <string name="address">Address: %1$s</string>
+    <string name="city">City: %1$s</string>
+    <string name="zip_code">Zip Code: %1$s</string>
 </resources>

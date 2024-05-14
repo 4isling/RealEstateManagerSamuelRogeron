@@ -3,7 +3,7 @@ package com.example.realestatemanagersamuelrogeron.domain.usecases
 import com.example.realestatemanagersamuelrogeron.data.repository.EstateRepository
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
-import com.example.realestatemanagersamuelrogeron.domain.model.EstatePictures
+import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -12,7 +12,7 @@ interface UpdateEstateUseCase {
     suspend fun invoke(
         estate: Estate,
         interestPoints: List<EstateInterestPoints>,
-        pictures: List<EstatePictures>
+        pictures: List<EstateMedia>
     )
 }
 class UpdateEstateUseCaseImpl @Inject constructor(
@@ -21,7 +21,7 @@ class UpdateEstateUseCaseImpl @Inject constructor(
     override suspend fun invoke(
         estate: Estate,
         interestPoints: List<EstateInterestPoints>,
-        pictures: List<EstatePictures>
+        pictures: List<EstateMedia>
     ){
         withContext(Dispatchers.IO){
 

@@ -1,25 +1,24 @@
 package com.example.realestatemanagersamuelrogeron.data.repository
 
 import com.example.realestatemanagersamuelrogeron.data.dao.EstateDao
+import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithPictures
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
-import com.example.realestatemanagersamuelrogeron.domain.model.EstatePictures
-import com.example.realestatemanagersamuelrogeron.domain.model.EstateWithPictures
+import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
+
 class EstateRepository @Inject constructor(
     private val estateDao: EstateDao
 ){
     fun addEstate(estate: Estate): Long{
         return estateDao.createEstate(estate = estate)
     }
-    fun addEstatePictures(estatePictures: List<EstatePictures>){
+    fun addEstatePictures(estatePictures: List<EstateMedia>){
         for (item in estatePictures) {
             estateDao.insertEstatePicture(item)
         }
@@ -32,7 +31,7 @@ class EstateRepository @Inject constructor(
     fun addEstateInterestPoint(estateInterestPoints: EstateInterestPoints){
         estateDao.insertEstateInterestPoints(estateInterestPoints)
     }
-    fun updateEstate(estate: Estate, interestPoints: List<EstateInterestPoints>, pictures: List<EstatePictures>){
+    fun updateEstate(estate: Estate, interestPoints: List<EstateInterestPoints>, pictures: List<EstateMedia>){
         estateDao.updateEstate(estate)
         for (item in interestPoints){
             estateDao.updateInterestPoint(item)
@@ -67,10 +66,10 @@ class EstateRepository @Inject constructor(
         return estateDao.getEstateById(estateId = id)
     }
 
-    fun addEstatePicture(estatePictures: EstatePictures) {
-        estateDao.insertEstatePicture(estatePictures = estatePictures)
+    fun addEstatePicture(estateMedia: EstateMedia) {
+        estateDao.insertEstatePicture(estateMedia = estateMedia)
     }
-    fun getEstatePictures(estateId: Long): Flow<List<EstatePictures>>{
+    fun getEstatePictures(estateId: Long): Flow<List<EstateMedia>>{
         return estateDao.getEstatePictures(estateId)
     }
     fun getEstateInterestPoints(estateId: Long):Flow<List<EstateInterestPoints>>{
@@ -142,5 +141,4 @@ class EstateRepository @Inject constructor(
     fun getEstateWithoutLatLng(): Flow<List<Estate>> {
         return estateDao.getEstateWithoutLatLng()
     }
-
 }

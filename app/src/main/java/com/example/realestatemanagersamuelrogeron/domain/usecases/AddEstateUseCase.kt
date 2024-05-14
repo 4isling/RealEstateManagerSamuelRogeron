@@ -5,7 +5,7 @@ import android.util.Log
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.data.repository.EstateRepository
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
-import com.example.realestatemanagersamuelrogeron.domain.model.EstatePictures
+import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -50,12 +50,12 @@ class AddEstateUseCaseImpl @Inject constructor(
                 for (pic in pics) {
                     uri = pic.toString()
                     i++
-                    var estatePicture = EstatePictures(
+                    var estatePicture = EstateMedia(
                         estateId = estateId,
-                        pictureUri = uri,
+                        uri = uri,
                         name = ("e" + estateId.toString() + "p" + i.toString())
                     )
-                    estateRepository.addEstatePicture(estatePictures = estatePicture)
+                    estateRepository.addEstatePicture(estateMedia = estatePicture)
                 }
                 Result.success(Unit)
             } catch (e: Exception) {

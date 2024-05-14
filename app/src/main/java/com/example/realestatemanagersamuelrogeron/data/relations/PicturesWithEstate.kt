@@ -3,7 +3,7 @@ package com.example.realestatemanagersamuelrogeron.data.relations
 import androidx.room.Embedded
 import androidx.room.Relation
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
-import com.example.realestatemanagersamuelrogeron.domain.model.EstatePictures
+import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
 
 
 data class PicturesWithEstate(
@@ -12,5 +12,5 @@ data class PicturesWithEstate(
         parentColumn = "id",
         entityColumn = "estateId"
     )
-    val estatePictures: List<EstatePictures>
+    val estatePictures: List<EstateMedia>
 )

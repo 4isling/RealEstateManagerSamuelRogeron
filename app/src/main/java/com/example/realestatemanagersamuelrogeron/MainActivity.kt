@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.compose.rememberNavController
 import com.example.realestatemanagersamuelrogeron.ui.navigation.Navigation
+import com.example.realestatemanagersamuelrogeron.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -15,12 +16,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
+            AppTheme {
                 Navigation(rememberNavController())
-
-
+            }
         }
-
     }
     private fun isInternetAvailable(): Boolean {
         val connectivityManager =

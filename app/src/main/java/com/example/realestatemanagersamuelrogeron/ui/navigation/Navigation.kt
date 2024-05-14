@@ -1,22 +1,16 @@
 package com.example.realestatemanagersamuelrogeron.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.example.realestatemanagersamuelrogeron.ui.screens.AddEstateScreen
-import com.example.realestatemanagersamuelrogeron.ui.screens.EstateDetailScreen
-import com.example.realestatemanagersamuelrogeron.ui.screens.EstateListScreen
-import com.example.realestatemanagersamuelrogeron.ui.screens.MapScreen
-import com.example.realestatemanagersamuelrogeron.ui.viewmodel.AddEstateViewModel
-import com.example.realestatemanagersamuelrogeron.ui.viewmodel.EstateDetailViewModel
-import com.example.realestatemanagersamuelrogeron.ui.viewmodel.EstatesListViewModel
+import com.example.realestatemanagersamuelrogeron.ui.add_screen.AddEstateScreen
+import com.example.realestatemanagersamuelrogeron.ui.detail_screen.EstateDetailScreen
+import com.example.realestatemanagersamuelrogeron.ui.list_screen.EstateListScreen
+import com.example.realestatemanagersamuelrogeron.ui.map_screen.MapScreen
 
 @Composable
 fun Navigation(navController: NavHostController) {
@@ -35,7 +29,6 @@ fun Navigation(navController: NavHostController) {
                     navController = navController,
                 )
             }
-
             composable(
                 route = "${Screen.EstateDetail.route}/{estateId}",
                 arguments = listOf(navArgument("estateId") { type = NavType.LongType })
@@ -44,14 +37,14 @@ fun Navigation(navController: NavHostController) {
                     navController = navController,
                 )
             }
-
-            composable(route = Screen.AddEstate.route)
+            composable(
+                route = Screen.AddEstate.route
+            )
             {
                 AddEstateScreen(
                     navController = navController,
                 )
             }
-
             composable(route = Screen.Map.route){
                 MapScreen(
                     navController

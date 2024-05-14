@@ -1,15 +1,10 @@
 package com.example.realestatemanagersamuelrogeron.domain.usecases
 
 import android.util.Log
-import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.data.repository.EstateRepository
+import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
-import java.lang.Exception
 import javax.inject.Inject
 
 interface GetEstateUseCase {
