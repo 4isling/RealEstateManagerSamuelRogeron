@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface EstateDao {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun createEstate(estate: Estate): Long
 
@@ -134,4 +133,6 @@ interface EstateDao {
 
     @Query("SELECT * FROM estates WHERE lat IS NULL OR lng IS NULL")
     fun getEstateWithoutLatLng(): Flow<List<Estate>>
+
+    /** todo create the query to get the estate with filter directly from room db */
 }

@@ -35,11 +35,12 @@ import com.example.realestatemanagersamuelrogeron.utils.predefinedInterestPoints
 @Composable
 fun InterestPointsPickerDialog(
     interestPoints: List<EstateInterestPoints>,
+    initiallySelectedPoints: List<EstateInterestPoints>,
     onDismiss: () -> Unit,
     onCreateInterestPoint: (String, Int) -> Unit,
     onPointsSelected: (List<EstateInterestPoints>) -> Unit
 ) {
-    val selectedPoints = remember { mutableStateListOf<EstateInterestPoints>() }
+    val selectedPoints = remember { mutableStateListOf<EstateInterestPoints>().apply { addAll(initiallySelectedPoints) } }
     val (newPointName, setNewPointName) = remember { mutableStateOf("") }
     val (selectedIconCode, setSelectedIconCode) = remember { mutableStateOf(0) }
     val allIconCodes = RemIcon.iconMapping.keys.toList()
@@ -70,7 +71,6 @@ fun InterestPointsPickerDialog(
                         }
                     }
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
                 TextField(
                     value = newPointName,
@@ -86,7 +86,9 @@ fun InterestPointsPickerDialog(
                             modifier = Modifier
                                 .padding(4.dp)
                                 .size(40.dp)
-                                .clickable { setSelectedIconCode(iconCode) }
+                                .clickable {
+                                    setSelectedIconCode(iconCode)
+                                }
                                 .background(if (iconCode == selectedIconCode) MaterialTheme.colorScheme.primary else Color.Transparent)
                         )
                     }
@@ -126,6 +128,7 @@ fun InterestPointsPickerDialogPreview(){
         interestPoints =  predefinedInterestPoints,
         onCreateInterestPoint = { _, _ -> },
         onDismiss = {},
-        onPointsSelected = {}
+        onPointsSelected = {},
+        initiallySelectedPoints = emptyList()
     )
 }

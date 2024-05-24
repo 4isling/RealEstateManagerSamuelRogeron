@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
@@ -15,12 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
-import com.example.realestatemanagersamuelrogeron.ui.composable.detail_screen.PictureCard
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.MediaCard
 import com.example.realestatemanagersamuelrogeron.ui.navigation.Screen
 
@@ -46,9 +46,18 @@ fun EstateItem(
             modifier = Modifier.padding(8.dp)
         ) {
             if (pic.isNotEmpty()) {
-                PictureCard(
-                    uri = pic[0].uri.toUri(),
-                    modifier = Modifier.padding(1.dp)
+                MediaCard(
+                    filePath = if (pic.isNotEmpty()) {
+                        pic[0].uri
+                    } else {
+                        ""
+                    },
+                    modifierImage = Modifier
+                        .height(156.dp)
+                        .width(156.dp),
+                    modifierVideo = Modifier
+                        .height(156.dp)
+                        .width(156.dp),
                 )
             }
             Column() {
@@ -98,9 +107,9 @@ fun EstateItem(
 
 @Preview
 @Composable
-fun EstateItemPreview(){
+fun EstateItemPreview() {
     EstateItem(
-        pic = listOf(EstateMedia(0, 0, "/storage/self/Pictures/IMG_20230906_164952.jpg","Facade")),
+        pic = listOf(EstateMedia(0, 0, "/storage/self/Pictures/IMG_20230906_164952.jpg", "Facade")),
         entry = Estate(
             estateId = 0,
             title = "La forge D'Entre Mont",
@@ -119,9 +128,9 @@ fun EstateItemPreview(){
             surface = 200,
             nbRooms = 4,
             status = true,
-            ),
+        ),
         navController = rememberNavController(),
-        )
+    )
 }
 
 fun NavController.safeNavigate(directions: String) {

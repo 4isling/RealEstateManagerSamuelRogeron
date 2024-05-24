@@ -92,7 +92,12 @@ class AddEstateViewModel @Inject constructor(
     fun onCreateNewInterestPoint(name: String, iconCode: Int) {
         viewModelScope.launch {
             try {
-                addInterestPointUseCase.invoke(EstateInterestPoints(interestPointsName = name, iconCode = iconCode))
+                addInterestPointUseCase.invoke(
+                    EstateInterestPoints(
+                        interestPointsName = name,
+                        iconCode = iconCode
+                    )
+                )
             } catch (e: Exception) {
                 Log.e("AddEstateViewModel", "Error creating new interest point: $e")
             }
@@ -103,10 +108,41 @@ class AddEstateViewModel @Inject constructor(
         _uiState.update { it.copy(selectedInterestPoints = selectedPoints) }
     }
 
-    fun enableSave() {
-        viewModelScope.launch {
+    fun removeSelectedInterestPoint(estateInterestPoints: EstateInterestPoints) {
+        _uiState.update { currentState ->
+            currentState.copy(selectedInterestPoints = currentState.selectedInterestPoints - estateInterestPoints)
+        }
+    }
+
+
+    fun onSaveButtonClick() {
+        _uiState.update {
             val currentState = uiState.value
-            // Your logic to enable save
+            val newState = currentState.copy(
+                titleError = currentState.title.isBlank(),
+                typeError = currentState.type.isBlank(),
+                offerError = currentState.offer.isBlank(),
+                sellingPriceError = if (currentState.offer == "Sell") currentState.sellingPrice.isBlank() else false,
+                rentError = if (currentState.offer == "Rent") currentState.rent.isBlank() else false,
+                surfaceError = currentState.surface.isBlank(),
+                nbRoomsError = currentState.nbRooms.isBlank(),
+                etagesError = currentState.etages.isBlank(),
+                addressError = currentState.address.isBlank(),
+                zipCodeError = currentState.zipCode.isBlank(),
+                cityError = currentState.city.isBlank(),
+                descriptionError = currentState.description.isBlank(),
+                mediaError = currentState.mediaSelected.isEmpty(),
+                interestPointError = currentState.selectedInterestPoints.isEmpty()
+            )
+            val isAllFieldsValid = !newState.titleError && !newState.typeError && !newState.offerError &&
+                    !newState.sellingPriceError && !newState.rentError && !newState.surfaceError &&
+                    !newState.nbRoomsError && !newState.etagesError && !newState.addressError &&
+                    !newState.zipCodeError && !newState.cityError && !newState.descriptionError &&
+                    !newState.mediaError && !newState.interestPointError
+            newState.copy(isSavedEnable = isAllFieldsValid)
+        }
+        if(uiState.value.isSavedEnable){
+            saveEstate()
         }
     }
 
@@ -137,6 +173,9 @@ class AddEstateViewModel @Inject constructor(
                     ).collect { estateId ->
                         if (estateId > 0) {
                             // Estate saved successfully
+                            _uiState.update {
+                                it.copy(isEstateSaved = true)
+                            }
                         } else {
                             // Handle error
                         }
@@ -151,6 +190,7 @@ class AddEstateViewModel @Inject constructor(
     private fun getIconForCode(iconCode: Int): ImageVector {
         return RemIcon.iconMapping[iconCode] ?: Icons.Rounded.Place
     }
+
     private fun getIconCodeForName(name: String): Int {
         return iconMapping.entries.firstOrNull { it.value.name == name }?.key ?: 0
     }
@@ -158,4 +198,6 @@ class AddEstateViewModel @Inject constructor(
     fun showBlankValue() {
         //TODO
     }
+
+
 }

@@ -44,6 +44,7 @@ public final data class AddEstateState(
     val mediaFromCamera: List<Uri> = emptyList(),
     val interestPoints: List<EstateInterestPoints> = emptyList(),
     val selectedInterestPoints: List<EstateInterestPoints> = emptyList(),
+    val isSavedEnable: Boolean = false,
+    val isEstateSaved: Boolean = false,
 
-    val isSaved: Boolean = false
 )

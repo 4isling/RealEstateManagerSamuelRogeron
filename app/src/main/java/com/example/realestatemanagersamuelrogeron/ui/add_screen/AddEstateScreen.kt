@@ -42,7 +42,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -71,7 +70,8 @@ fun AddEstateScreen(
 
     AddEstateScreen(
         onBackPress = { navController.navigateUp() },
-        onSavePress = { viewModel::saveEstate },
+        onSavePress =
+        viewModel::onSaveButtonClick ,
         uiState = uiState,
         onFieldChange = viewModel::onFieldChange,
         onMediaSelected = viewModel::onMediaPicked,
@@ -79,6 +79,8 @@ fun AddEstateScreen(
         onMediaRemoved = viewModel::onMediaRemoved,
         onInterestPointsSelected = viewModel::onInterestPointSelected,
         onInterestPointCreated = viewModel::onCreateNewInterestPoint,
+        onInterestPointItemRemove = viewModel::removeSelectedInterestPoint,
+
     )
 }
 
@@ -94,6 +96,7 @@ fun AddEstateScreen(
     onMediaRemoved: (Uri) -> Unit = {},
     onInterestPointsSelected: (List<EstateInterestPoints>) -> Unit = {},
     onInterestPointCreated: (String, Int) -> Unit,
+    onInterestPointItemRemove: (EstateInterestPoints) -> Unit = {}
 ) {
     val openMediaDialog = remember { mutableStateOf(false) }
     var openCameraHandler by remember { mutableStateOf(false) }
@@ -261,7 +264,7 @@ fun AddEstateScreen(
                     label = "Offer",
                     selectedOption = uiState.offer,
                     onOptionSelected = { newValue -> onFieldChange("offer", newValue) },
-                    options = listOf("Rent", "Sell")
+                    options = listOf("Rent", "Sell"),
                 )
 
                 // Price Box
@@ -276,7 +279,7 @@ fun AddEstateScreen(
                                 keyboardType = KeyboardType.Number
                             ),
                             singleLine = true,
-                            colors = remTextFieldColors()
+                            colors = remTextFieldColors(),
                         )
                     }
                     if (uiState.offer == "Rent") {
@@ -332,7 +335,6 @@ fun AddEstateScreen(
                         )
                     }
                 }
-
                 OutlinedTextField(
                     colors = remTextFieldColors(),
                     value = uiState.description,
@@ -342,33 +344,37 @@ fun AddEstateScreen(
                     keyboardActions = KeyboardActions.Default,
                     isError = uiState.descriptionError,
                 )
-
-                if (uiState.interestPointsStrings.isNotEmpty()) {
+                if (uiState.selectedInterestPoints.isNotEmpty()) {
                     Box(
                         modifier = Modifier
-                            .padding(36.dp)
                             .border(
-                                width = 1.dp,
-                                color = Color.Gray,
-                                shape = RoundedCornerShape(8.dp)
+                                width = 2.dp,
+                                color = MaterialTheme.colorScheme.onBackground,
+                                shape = RoundedCornerShape(8.dp),
                             )
+                            .padding(36.dp)
                     ) {
                         Column {
                             LazyRow(content = {
-                                items(uiState.interestPointsStrings) { point ->
+                                items(uiState.selectedInterestPoints) { point ->
                                     Row(
                                         modifier = Modifier
                                             .clip(RoundedCornerShape(5.dp))
-                                            .background(Color.Gray)
                                     ) {
-                                        Text(text = point)
-                                        IconButton(onClick = {
-                                            //remove interest point
+                                        Button(onClick = {
+                                            onInterestPointItemRemove(point)
                                         }) {
-                                            Icon(
-                                                imageVector = RemIcon.Remove,
-                                                contentDescription = null
-                                            )
+                                            Row {
+                                                Icon(
+                                                    imageVector = RemIcon.iconMapping[point.iconCode]!!,
+                                                    contentDescription = null)
+                                                Text(text = point.interestPointsName)
+                                                Icon(
+                                                    imageVector = RemIcon.Remove,
+                                                    contentDescription = null
+                                                )
+                                            }
+
                                         }
                                     }
                                 }
@@ -398,9 +404,6 @@ fun AddEstateScreen(
                 Button(
                     onClick = {
                         onSavePress()
-                        if (uiState.isSaved) {
-                            onBackPress()
-                        }
                     },
                     enabled = true
                 ) {
@@ -433,13 +436,13 @@ fun AddEstateScreen(
             if (openInterestPointDialog.value) {
                 InterestPointsPickerDialog(
                     interestPoints = uiState.interestPoints,
+                    initiallySelectedPoints = uiState.selectedInterestPoints,
                     onDismiss = { openInterestPointDialog.value = false },
                     onCreateInterestPoint = onInterestPointCreated,
                     onPointsSelected = onInterestPointsSelected,
                 )
             }
             if (openCameraHandler) {
-
                 CameraHandler(onImageCaptured = { uri ->
                     if (uri != null) {
                         onImageCaptured(uri)
@@ -448,6 +451,9 @@ fun AddEstateScreen(
             }
             if (openMediaPicker.value) {
                 MediaPicker(onMediaSelected = onMediaSelected)
+            }
+            if(uiState.isEstateSaved){
+                onBackPress()
             }
         }
     )
@@ -504,7 +510,6 @@ fun AddEstateScreenDarkPreview() {
         city = "Beverly Hills",
         description = "A beautiful spacious house."
     )
-
     AppTheme(useDarkTheme = true) {
         AddEstateScreen(
             uiState = mockUiState,

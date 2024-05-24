@@ -33,6 +33,7 @@ fun MediaCard(filePath: String,
               modifierVideo: Modifier = Modifier,
               isSuppressButtonEnable: Boolean = false,
               onSuppressClick: (Uri) -> Unit = {}) {
+
     val uri = Uri.parse(filePath)
     val context = LocalContext.current
     val mimeType = FileTypeHelper.getMimeType(context = context, uri = uri)
