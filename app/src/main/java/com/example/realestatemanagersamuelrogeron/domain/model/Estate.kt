@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "estates")
 data class Estate(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    val estateId: Long = 0,
     val title: String = "",//
     val typeOfEstate: String = "",//
     var typeOfOffer: String = "",//
@@ -15,8 +15,8 @@ data class Estate(
     val zipCode: String,
     val city: String,
     val description: String = "",//
-    val addDate: String,
-    val sellDate: String,
+    val addDate: Long,
+    val sellDate: Long? = null,
     val agent: String = "Stephane",
     val sellingPrice: Int? = null,//
     val rent: Int? = null,//
@@ -27,8 +27,6 @@ data class Estate(
     val lat: Double? =null,
     val lng: Double? = null
 )
-
-
 /**
  * TODO get latlng with geocoder form the address in a fun
  */

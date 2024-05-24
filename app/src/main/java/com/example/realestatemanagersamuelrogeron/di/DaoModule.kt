@@ -2,7 +2,6 @@ package com.example.realestatemanagersamuelrogeron.di
 
 import android.content.Context
 import android.location.Geocoder
-import androidx.room.Room
 import com.example.realestatemanagersamuelrogeron.data.AppDataBase
 import com.example.realestatemanagersamuelrogeron.data.dao.EstateDao
 import dagger.Module
@@ -11,20 +10,25 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import java.util.Locale
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 class DaoModule {
+
+    @Provides
+    @Singleton
+    fun provideDatabase(
+        @ApplicationContext context: Context
+    ): AppDataBase {
+        return AppDataBase.getDatabase(context)
+    }
+
     @Provides
     fun provideEstateDao(
-        @ApplicationContext context: Context
-    ) : EstateDao {
-        val db = Room.databaseBuilder(
-            context,
-            AppDataBase::class.java,
-            "database"
-        ).build()
-        return db.dao
+        database: AppDataBase
+    ): EstateDao {
+        return database.estateDao()
     }
 
     @Provides

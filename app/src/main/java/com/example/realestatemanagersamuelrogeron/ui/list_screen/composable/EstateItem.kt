@@ -35,8 +35,8 @@ fun EstateItem(
             .fillMaxWidth()
             .padding(3.dp)
             .clickable {
-                println("id : " + entry.id)
-                navController.safeNavigate("${Screen.EstateDetail.route}/${entry.id}")
+                println("id : " + entry.estateId)
+                navController.safeNavigate("${Screen.EstateDetail.route}/${entry.estateId}")
             },
         shape = RoundedCornerShape(8.dp)
     ) {
@@ -71,8 +71,8 @@ fun EstateItem(
             .fillMaxWidth()
             .padding(3.dp)
             .clickable {
-                println("id : " + entry.id)
-                onEstateItemClick(entry.id)
+                println("id : " + entry.estateId)
+                onEstateItemClick(entry.estateId)
             },
         shape = RoundedCornerShape(8.dp)
     ) {
@@ -101,7 +101,8 @@ fun EstateItem(
 fun EstateItemPreview(){
     EstateItem(
         pic = listOf(EstateMedia(0, 0, "/storage/self/Pictures/IMG_20230906_164952.jpg","Facade")),
-        entry = Estate(id = 0,
+        entry = Estate(
+            estateId = 0,
             title = "La forge D'Entre Mont",
             typeOfOffer = "",
             typeOfEstate = "House",
@@ -110,8 +111,8 @@ fun EstateItemPreview(){
             zipCode = "",
             city = "",
             description = "",
-            addDate = "",
-            sellDate = "",
+            addDate = 0,
+            sellDate = 0,
             agent = "",
             sellingPrice = 250000,
             rent = null,

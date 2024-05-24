@@ -6,7 +6,7 @@ import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
 
 public final data class DetailState(
     val estate: Estate = Estate(
-        id = 0,
+        estateId = 0,
         title = "",
         typeOfEstate = "",
         typeOfOffer = "",
@@ -15,8 +15,8 @@ public final data class DetailState(
         zipCode = "",
         city = "",
         description = "",
-        addDate = "",
-        sellDate = "",
+        addDate = 0,
+        sellDate = 0,
         agent = "",
         sellingPrice = null,
         rent = null,

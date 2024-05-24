@@ -2,8 +2,9 @@ package com.example.realestatemanagersamuelrogeron.domain.usecases
 
 import android.net.Uri
 import android.util.Log
-import com.example.realestatemanagersamuelrogeron.domain.model.Estate
+import com.example.realestatemanagersamuelrogeron.data.relations.EstateInterestPointCrossRef
 import com.example.realestatemanagersamuelrogeron.data.repository.EstateRepository
+import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +14,7 @@ import javax.inject.Inject
 interface AddEstateUseCase {
     suspend fun invoke(
         entry: Estate,
-        interestPoints: List<String>,
+        interestPoints: List<EstateInterestPoints>,
         pics: List<Uri>
     ): Flow<Long>
 }
@@ -23,49 +24,48 @@ class AddEstateUseCaseImpl @Inject constructor(
 ) : AddEstateUseCase {
     override suspend fun invoke(
         entry: Estate,
-        interestPoints: List<String>,
+        interestPoints: List<EstateInterestPoints>,
         pics: List<Uri>
     ): Flow<Long> = flow {
         try {
+            // Step 1: Add the estate and get its ID
             val estateId = estateRepository.addEstate(entry)
             Log.i("AddEstateUseCase", "estateId: $estateId")
-            //Interest points
-            try {
-                val listInterestPoints = emptyList<EstateInterestPoints>()
-                for (string in interestPoints) {
-                    var estateInterestPoint =
-                        EstateInterestPoints(estateId = estateId, interestPointsName = string)
-                    listInterestPoints.plus(estateInterestPoint)
-                    estateRepository.addEstateInterestPoint(estateInterestPoint)
-                }
-                Result.success(Unit)
-            } catch (e: Exception) {
-                Log.e("AddEstateUseCase", "Error add estate interestPoints:$e")
-            }
-            //pics
-            try {
 
-                var uri = ""
-                var i = 0
-                for (pic in pics) {
-                    uri = pic.toString()
-                    i++
-                    var estatePicture = EstateMedia(
-                        estateId = estateId,
-                        uri = uri,
-                        name = ("e" + estateId.toString() + "p" + i.toString())
+            // Step 2: Add Cross References
+            try {
+                interestPoints.forEach { point ->
+                    estateRepository.addEstateInterestPointCrossRef(
+                        EstateInterestPointCrossRef(
+                            estateId = estateId,
+                            estateInterestPointId = point.estateInterestPointId
+                        )
                     )
-                    estateRepository.addEstatePicture(estateMedia = estatePicture)
                 }
-                Result.success(Unit)
             } catch (e: Exception) {
-                Log.e("AddEstateUseCase", "Error add estate pictures:$e")
+                Log.e("AddEstateUseCase", "Error adding estate interest point cross-references: $e")
+                throw e // Re-throw to propagate error
             }
 
+            // Step 3: Process Estate Pictures
+            try {
+                pics.forEachIndexed { index, pic ->
+                    val estatePicture = EstateMedia(
+                        estateId = estateId,
+                        uri = pic.toString(),
+                        name = "e${estateId}p${index + 1}"
+                    )
+                    estateRepository.addEstatePicture(estatePicture)
+                }
+            } catch (e: Exception) {
+                Log.e("AddEstateUseCase", "Error adding estate pictures: $e")
+                throw e // Re-throw to propagate error
+            }
 
+            emit(estateId) // Emit the estate ID as the final result
         } catch (e: Exception) {
-            Log.e("AddEstateUseCase", "Error add estate:$e")
+            Log.e("AddEstateUseCase", "Error adding estate: $e")
+            emit(-1) // Emit an error indicator (could also use Result.failure)
         }
-
     }
 }

@@ -5,15 +5,14 @@ import com.example.realestatemanagersamuelrogeron.data.repository.EstateReposito
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.lang.Exception
 import javax.inject.Inject
 
-interface GetEstatePicturesUseCase {
+interface GetEstateMediasUseCase {
     suspend fun invoke(id : Long): Flow<List<EstateMedia>>
 }
-class GetEstatePicturesUseCaseImpl @Inject constructor(
+class GetEstateMediasUseCaseImpl @Inject constructor(
     private val estateRepository: EstateRepository,
-) : GetEstatePicturesUseCase {
+) : GetEstateMediasUseCase {
     override suspend fun invoke(id: Long): Flow<List<EstateMedia>> {
         var pics = flow<List<EstateMedia>> {
             emptyList<EstateMedia>()
@@ -23,7 +22,7 @@ class GetEstatePicturesUseCaseImpl @Inject constructor(
             return pics
         }catch (e: Exception){
             return pics
-            Log.e("GetEstatePicturesUseCase", "Error getting pics of estate with id $id")
+            Log.e("GetEstateMediasUseCase", "Error getting pics of estate with id $id")
         }
     }
 }

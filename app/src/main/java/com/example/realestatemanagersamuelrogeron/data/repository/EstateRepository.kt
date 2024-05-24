@@ -1,6 +1,7 @@
 package com.example.realestatemanagersamuelrogeron.data.repository
 
 import com.example.realestatemanagersamuelrogeron.data.dao.EstateDao
+import com.example.realestatemanagersamuelrogeron.data.relations.EstateInterestPointCrossRef
 import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithPictures
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
@@ -11,55 +12,63 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-
 class EstateRepository @Inject constructor(
     private val estateDao: EstateDao
-){
-    fun addEstate(estate: Estate): Long{
+) {
+    fun addEstate(estate: Estate): Long {
         return estateDao.createEstate(estate = estate)
     }
-    fun addEstatePictures(estatePictures: List<EstateMedia>){
+
+    fun addEstatePictures(estatePictures: List<EstateMedia>) {
         for (item in estatePictures) {
             estateDao.insertEstatePicture(item)
         }
     }
+
     fun addEstateInterestPoints(estateInterestPoints: List<EstateInterestPoints>) {
         for (item in estateInterestPoints) {
             estateDao.insertEstateInterestPoints(item)
         }
     }
-    fun addEstateInterestPoint(estateInterestPoints: EstateInterestPoints){
-        estateDao.insertEstateInterestPoints(estateInterestPoints)
+
+    fun addEstateInterestPoint(estateInterestPoints: EstateInterestPoints): Long {
+        return estateDao.insertEstateInterestPoints(estateInterestPoints)
     }
-    fun updateEstate(estate: Estate, interestPoints: List<EstateInterestPoints>, pictures: List<EstateMedia>){
+
+    fun addEstateInterestPointCrossRef(crossRef: EstateInterestPointCrossRef) {
+        estateDao.insertCrossRef(crossRef)
+    }
+
+    fun updateEstate(estate: Estate, interestPoints: List<EstateInterestPoints>, pictures: List<EstateMedia>) {
         estateDao.updateEstate(estate)
-        for (item in interestPoints){
+        for (item in interestPoints) {
             estateDao.updateInterestPoint(item)
         }
-        for (item in pictures){
+        for (item in pictures) {
             estateDao.updatePicture(item)
         }
     }
-    fun getAllEstates(): Flow<List<Estate>> =
-    estateDao.getAllEstates()
-    fun getAllEstatesOrderedByGrowPrice():Flow<List<Estate>> =
-        estateDao.getAllEstatesOrderedByGrowPrice()
-    fun getAllEstatesOrderedByDecendPrice():Flow<List<Estate>> =
-        estateDao.getAllEstatesOrderedByDecendPrice()
-    fun getAllEstatesOrderedByGrowRent():Flow<List<Estate>> =
-        estateDao.getAllEstatesOrderedByGrowRent()
-    fun getAllEstatesOrderedByDecendRent():Flow<List<Estate>> =
-        estateDao.getAllEstatesOrderedByDecendRent()
+
+    fun getAllEstates(): Flow<List<Estate>> = estateDao.getAllEstates()
+
+    fun getAllEstatesOrderedByGrowPrice(): Flow<List<Estate>> = estateDao.getAllEstatesOrderedByGrowPrice()
+
+    fun getAllEstatesOrderedByDecendPrice(): Flow<List<Estate>> = estateDao.getAllEstatesOrderedByDecendPrice()
+
+    fun getAllEstatesOrderedByGrowRent(): Flow<List<Estate>> = estateDao.getAllEstatesOrderedByGrowRent()
+
+    fun getAllEstatesOrderedByDecendRent(): Flow<List<Estate>> = estateDao.getAllEstatesOrderedByDecendRent()
 
     fun delete(estate: Estate) {
         estateDao.delete(estate)
-        estateDao.deleteAllPicturesWithEstate(estate.id)
-        estateDao.deleteAllInterestPointWithEstate(estate.id)
+        estateDao.deleteAllPicturesWithEstate(estate.estateId)
+        estateDao.deleteAllCrossRefsWithEstate(estate.estateId)
     }
-    fun deleteEstateById(estateId: Long){
+
+    fun deleteEstateById(estateId: Long) {
         estateDao.deleteEstateById(estateId = estateId)
         estateDao.deleteAllPicturesWithEstate(estateId)
-        estateDao.deleteAllInterestPointWithEstate(estateId = estateId)
+        estateDao.deleteAllCrossRefsWithEstate(estateId)
     }
 
     fun getEstateById(id: Long): Flow<Estate> {
@@ -69,15 +78,13 @@ class EstateRepository @Inject constructor(
     fun addEstatePicture(estateMedia: EstateMedia) {
         estateDao.insertEstatePicture(estateMedia = estateMedia)
     }
-    fun getEstatePictures(estateId: Long): Flow<List<EstateMedia>>{
+
+    fun getEstatePictures(estateId: Long): Flow<List<EstateMedia>> {
         return estateDao.getEstatePictures(estateId)
     }
-    fun getEstateInterestPoints(estateId: Long):Flow<List<EstateInterestPoints>>{
-        return estateDao.getEstateInterestPoints(estateId = estateId)
-    }
 
-    fun updateEstateLatLng(estateId: Long, lat: Double, lng: Double){
-        estateDao.updateEstateLatLng(estateId,lat,lng)
+    fun updateEstateLatLng(estateId: Long, lat: Double, lng: Double) {
+        estateDao.updateEstateLatLng(estateId, lat, lng)
     }
 
     fun getAllEstatesWithPictures(): Flow<List<EstateWithPictures>> {
@@ -115,6 +122,7 @@ class EstateRepository @Inject constructor(
                 }
             }
     }
+
     fun getAllEstatesWithPictureOrderedByGrowRent(): Flow<List<EstateWithPictures>> {
         return estateDao.getAllEstatesWithPictureOrderedByGrowRent()
             .map { list ->
@@ -126,6 +134,7 @@ class EstateRepository @Inject constructor(
                 }
             }
     }
+
     fun getAllEstatesWithPictureOrderedByDecendRent(): Flow<List<EstateWithPictures>> {
         return estateDao.getAllEstatesWithPictureOrderedByDecendRent()
             .map { list ->
@@ -141,4 +150,43 @@ class EstateRepository @Inject constructor(
     fun getEstateWithoutLatLng(): Flow<List<Estate>> {
         return estateDao.getEstateWithoutLatLng()
     }
+
+    fun getAllInterestPoints(): Flow<List<EstateInterestPoints>> {
+        return estateDao.getAllInterestPoints()
+    }
+
+
+    fun getInterestPointsByEstateId(estateId: Long): Flow<List<EstateInterestPoints>> {
+        val interestPointsWithEstateFlow = estateDao.getInterestPointsWithEstate(estateId)
+        return interestPointsWithEstateFlow.map { list ->
+            list.flatMap { it.estateInterestPoints }
+        }
+    }
+
+    // New functions added
+    fun updatePicture(estateMedia: EstateMedia) {
+        estateDao.updatePicture(estateMedia)
+    }
+
+    fun updateInterestPoint(estateInterestPoints: EstateInterestPoints) {
+        estateDao.updateInterestPoint(estateInterestPoints)
+    }
+
+    fun updateCrossRef(crossRef: EstateInterestPointCrossRef) {
+        estateDao.updateCrossRef(crossRef)
+    }
+
+    fun delete(interestPoint: EstateInterestPoints) {
+        estateDao.delete(interestPoint)
+    }
+
+    fun delete(pictures: EstateMedia) {
+        estateDao.delete(pictures)
+    }
+
+    fun deleteInterestPointById(interestPointId: Long) {
+        estateDao.deleteInterestPointById(interestPointId)
+    }
+
+
 }

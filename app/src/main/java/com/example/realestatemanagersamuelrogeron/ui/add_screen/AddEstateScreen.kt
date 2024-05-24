@@ -6,7 +6,6 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
 import com.example.realestatemanagersamuelrogeron.ui.add_screen.composable.CameraHandler
 import com.example.realestatemanagersamuelrogeron.ui.add_screen.composable.InterestPointsPickerDialog
 import com.example.realestatemanagersamuelrogeron.ui.add_screen.composable.MediaPicker
@@ -77,6 +78,7 @@ fun AddEstateScreen(
         onImageCaptured = viewModel::onImageCaptured,
         onMediaRemoved = viewModel::onMediaRemoved,
         onInterestPointsSelected = viewModel::onInterestPointSelected,
+        onInterestPointCreated = viewModel::onCreateNewInterestPoint,
     )
 }
 
@@ -90,10 +92,11 @@ fun AddEstateScreen(
     onMediaSelected: (List<Uri>) -> Unit = {},
     onImageCaptured: (Uri) -> Unit = {},
     onMediaRemoved: (Uri) -> Unit = {},
-    onInterestPointsSelected: (List<String>) -> Unit = {},
+    onInterestPointsSelected: (List<EstateInterestPoints>) -> Unit = {},
+    onInterestPointCreated: (String, Int) -> Unit,
 ) {
     val openMediaDialog = remember { mutableStateOf(false) }
-    val openCameraHandler = remember { mutableStateOf(false) }
+    var openCameraHandler by remember { mutableStateOf(false) }
     val openInterestPointDialog = remember { mutableStateOf(false) }
     val openMediaPicker = remember { mutableStateOf(false) }
 
@@ -108,7 +111,7 @@ fun AddEstateScreen(
                     scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer
                 ),
                 title = {
-                    if (openCameraHandler.value) {
+                    if (openCameraHandler) {
                         Text(text = "Camera")
                     } else {
                         Text(text = "Create Estate")
@@ -118,17 +121,17 @@ fun AddEstateScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            if (!openCameraHandler.value) {
+                            if (!openCameraHandler) {
                                 onBackPress()
                             } else {
-                                openCameraHandler.value = false
+                                openCameraHandler = false
                             }
                         },
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
                             contentDescription = "Back",
-                            modifier = Modifier.clickable { onBackPress() })
+                        )
                     }
                 }
             )
@@ -170,17 +173,17 @@ fun AddEstateScreen(
                             )
                     ) {
                         Column {
-                            LazyRow {
+                            LazyRow(Modifier.padding(4.dp)) {
                                 val pics = uiState.mediaSelected
                                 items(pics) { uri ->
                                     MediaCard(
                                         filePath = uri.toString(),
                                         modifierImage = Modifier
-                                            .height(124.dp)
-                                            .width(82.dp),
+                                            .height(156.dp)
+                                            .width(156.dp),
                                         modifierVideo = Modifier
-                                            .height(82.dp)
-                                            .width(124.dp),
+                                            .height(156.dp)
+                                            .width(156.dp),
                                         isSuppressButtonEnable = true,
                                         onSuppressClick = onMediaRemoved,
                                     )
@@ -393,7 +396,12 @@ fun AddEstateScreen(
 
                 // for each interest point a tag with interest point created
                 Button(
-                    onClick = { onSavePress },
+                    onClick = {
+                        onSavePress()
+                        if (uiState.isSaved) {
+                            onBackPress()
+                        }
+                    },
                     enabled = true
                 ) {
                     Text(text = "Create Estate")
@@ -410,7 +418,7 @@ fun AddEstateScreen(
             if (openMediaDialog.value) {
                 MediaPickerDialog(
                     onClickCamera = {
-                        openCameraHandler.value = true
+                        openCameraHandler = true
                         openMediaDialog.value = false
                     },
                     onClickAlbum = {
@@ -423,9 +431,14 @@ fun AddEstateScreen(
                 )
             }
             if (openInterestPointDialog.value) {
-                InterestPointsPickerDialog()
+                InterestPointsPickerDialog(
+                    interestPoints = uiState.interestPoints,
+                    onDismiss = { openInterestPointDialog.value = false },
+                    onCreateInterestPoint = onInterestPointCreated,
+                    onPointsSelected = onInterestPointsSelected,
+                )
             }
-            if (openCameraHandler.value) {
+            if (openCameraHandler) {
 
                 CameraHandler(onImageCaptured = { uri ->
                     if (uri != null) {
@@ -463,7 +476,12 @@ fun AddEstateScreenPreview() {
             uiState = mockUiState,
             onFieldChange = { _, _ -> /* Handle field changes */ },
             onSavePress = { /* Handle save */ },
-            onBackPress = { /* Handle back navigation */ }
+            onBackPress = { /* Handle back navigation */ },
+            onInterestPointCreated = { _, _ -> },
+            onMediaRemoved = {},
+            onImageCaptured = {},
+            onInterestPointsSelected = {},
+            onMediaSelected = {},
         )
     }
 
@@ -492,7 +510,12 @@ fun AddEstateScreenDarkPreview() {
             uiState = mockUiState,
             onFieldChange = { _, _ -> /* Handle field changes */ },
             onSavePress = { /* Handle save */ },
-            onBackPress = { /* Handle back navigation */ }
+            onBackPress = { /* Handle back navigation */ },
+            onInterestPointCreated = { _, _ -> },
+            onMediaRemoved = {},
+            onImageCaptured = {},
+            onInterestPointsSelected = {},
+            onMediaSelected = {},
         )
     }
 

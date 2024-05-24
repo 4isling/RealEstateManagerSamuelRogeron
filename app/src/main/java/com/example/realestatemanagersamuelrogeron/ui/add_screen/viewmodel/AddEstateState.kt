@@ -2,6 +2,7 @@ package com.example.realestatemanagersamuelrogeron.ui.add_screen.viewmodel
 
 import android.net.Uri
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
+import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
 
 public final data class AddEstateState(
     val estates: List<Estate> = emptyList(),
@@ -40,5 +41,9 @@ public final data class AddEstateState(
     val sellDate: String = "",
     val isFav: Boolean = false,
     val agent: String = "",
-    val mediaFromCamera: List<Uri> = emptyList()
+    val mediaFromCamera: List<Uri> = emptyList(),
+    val interestPoints: List<EstateInterestPoints> = emptyList(),
+    val selectedInterestPoints: List<EstateInterestPoints> = emptyList(),
+
+    val isSaved: Boolean = false
 )

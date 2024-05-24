@@ -4,14 +4,14 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
-import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
 
-data class InterestPointsWithEstate(
-    @Embedded val estate: Estate,
+
+data class EstatesWithInterestPoints(
+    @Embedded val estatesWithInterestPoints: EstatesWithInterestPoints,
     @Relation(
-        parentColumn = "estateId",
-        entityColumn = "estateInterestPointId",
+        parentColumn = "estateInterestPointId",
+        entityColumn = "id",
         associateBy = Junction(EstateInterestPointCrossRef::class)
     )
-    val estateInterestPoints: List<EstateInterestPoints>
+    val estates: List<Estate>
 )

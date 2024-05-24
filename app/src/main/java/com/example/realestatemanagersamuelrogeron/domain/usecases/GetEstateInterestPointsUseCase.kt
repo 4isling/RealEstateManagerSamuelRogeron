@@ -5,7 +5,6 @@ import com.example.realestatemanagersamuelrogeron.data.repository.EstateReposito
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.lang.Exception
 import javax.inject.Inject
 
 interface GetEstateInterestPointsUseCase {
@@ -20,11 +19,11 @@ class GetEstateInterestPointsUseCaseImpl @Inject constructor(
         }
 
         try{
-            interestPoints = estateRepository.getEstateInterestPoints(id)
+            interestPoints = estateRepository.getInterestPointsByEstateId(id)
             return interestPoints
         }catch (e: Exception){
             return interestPoints
-            Log.e("GetEstatePicturesUseCase", "Error getting pics of estate with id $id")
+            Log.e("GetEstateMediasUseCase", "Error getting pics of estate with id $id")
         }
     }
 }

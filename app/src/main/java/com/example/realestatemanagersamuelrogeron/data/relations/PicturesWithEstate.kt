@@ -9,7 +9,7 @@ import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
 data class PicturesWithEstate(
     @Embedded val estate: Estate,
     @Relation(
-        parentColumn = "id",
+        parentColumn = "estateId",
         entityColumn = "estateId"
     )
     val estatePictures: List<EstateMedia>

@@ -11,7 +11,7 @@ import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
 import com.example.realestatemanagersamuelrogeron.domain.usecases.GetEstateInterestPointsUseCaseImpl
-import com.example.realestatemanagersamuelrogeron.domain.usecases.GetEstatePicturesUseCaseImpl
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetEstateMediasUseCaseImpl
 import com.example.realestatemanagersamuelrogeron.domain.usecases.GetEstateUseCaseImpl
 import com.example.realestatemanagersamuelrogeron.domain.usecases.UpdateEstateUseCaseImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class EstateDetailViewModel @Inject constructor(
     private val getEstateUseCaseImpl: GetEstateUseCaseImpl,
-    private val getEstatePicturesUseCaseImpl: GetEstatePicturesUseCaseImpl,
+    private val getEstatePicturesUseCaseImpl: GetEstateMediasUseCaseImpl,
     private val getEstateInterestPointsUseCaseImpl: GetEstateInterestPointsUseCaseImpl,
     private val updateEstateUseCaseImpl: UpdateEstateUseCaseImpl,
     savedStateHandle: SavedStateHandle
@@ -42,8 +42,8 @@ class EstateDetailViewModel @Inject constructor(
         "",
         "",
         "",
-        "",
-        "",
+        0,
+        0,
         "",
         0,
         0,
