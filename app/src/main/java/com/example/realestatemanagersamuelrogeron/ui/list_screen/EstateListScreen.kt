@@ -19,140 +19,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithPictures
+import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.RemBottomAppBar
 import com.example.realestatemanagersamuelrogeron.ui.list_screen.composable.EstateList
 import com.example.realestatemanagersamuelrogeron.ui.list_screen.composable.SortMenu
-import com.example.realestatemanagersamuelrogeron.ui.list_screen.composable.safeNavigate
+import com.example.realestatemanagersamuelrogeron.ui.composable.utils.safeNavigate
 import com.example.realestatemanagersamuelrogeron.ui.list_screen.viewmodel.EstatesListViewModel
 import com.example.realestatemanagersamuelrogeron.ui.list_screen.viewmodel.ListViewState
 import com.example.realestatemanagersamuelrogeron.ui.navigation.Screen
+import com.example.realestatemanagersamuelrogeron.ui.theme.AppTheme
 import com.example.realestatemanagersamuelrogeron.utils.SortType
 
-
-/*@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun EstateListScreen(
-    navController: NavController,
-    viewModel: EstatesListViewModel = hiltViewModel()
-) {
-    val TAG = "EstateListScreen:"
-    val viewState by viewModel.viewState.collectAsState()
-    var sortMenuExpend by remember {
-        mutableStateOf(false)
-    }
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-
-    val scope = rememberCoroutineScope()
-
-    val drawerItems = listOf(
-        "Map",
-    )
-
-    val sortOptions = listOf(
-        SortType.Default,
-        SortType.PriceDescend,
-        SortType.PriceGrow,
-        SortType.RentDescend,
-        SortType.RentGrow
-    )
-    var selectedFilter by remember {
-        mutableStateOf(sortOptions)
-    }
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = "RealEstateManager")
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                        Log.i(TAG, "EstateListScreen: DrawerClick")
-                    }) {
-                        Icon(imageVector = Icons.Default.Menu, contentDescription = "Drawer Icon")
-
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(
-                            imageVector = Icons.Rounded.Search,
-                            contentDescription = "Search Estate"
-                        )
-                    }
-                    SortMenu(
-                        sortOptions,
-                        onSortOptionSelected = {
-                            viewModel.onSortTypeValueChange(it)
-                        }
-                    )
-                    IconButton(onClick = {
-                        Log.i(TAG, "EstateListScreen: nav to addEstate")
-                        navController.navigate(Screen.AddEstate.route)
-                    }) {
-                        Icon(imageVector = Icons.Filled.AddCircle, contentDescription = "addEstate")
-                    }
-                }
-            )
-        },
-        content = { innerPadding ->
-
-            SortMenu(
-                sortOptions,
-                onSortOptionSelected = {
-                    viewModel.onSortTypeValueChange(it)
-                }
-            )
-            Box(modifier = Modifier.fillMaxSize()) {
-                DrawerListContent(viewModel, navController, drawerState)
-                when (viewState) {
-                    is ListViewState.Loading -> {
-                        Log.i(TAG, "EstateListScreen: loading")
-                        Text(text = "loading")
-                    }
-
-                    is ListViewState.Success -> {
-                        Log.i(TAG, "EstateListScreen: Success")
-                        EstateList(
-                            innerPadding,
-                            navController,
-                            viewModel,
-                        )
-                    }
-
-                    is ListViewState.Error -> {
-                        Log.i(TAG, "EstateListScreen: Error")
-                        Text(text = (viewState as ListViewState.Error).exception)
-                    }
-
-                }
-            }
-        },
-        bottomBar = {
-                    RemBottomAppBar()
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {},
-
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                content = {
-                    SortMenu(
-                        sortOptions,
-                        onSortOptionSelected = {
-                            viewModel.onSortTypeValueChange(it)
-                        }
-                    )
-                }
-            )
-        },
-        floatingActionButtonPosition = FabPosition.End
-    )
-}
-*/
 @Composable
 fun EstateListScreen(
     viewModel: EstatesListViewModel = hiltViewModel(),
@@ -264,6 +142,64 @@ fun EstateListScreen(
 @Preview(showBackground = true)
 @Composable
 fun EstateListScreenPreview() {
+    val listEstateWithPictures = listOf(
+        EstateWithPictures(
+            estate = Estate(
+            estateId = 0,
+                title = "House 1",
+                typeOfEstate = "House",
+                typeOfOffer = "Sell",
+                etage = "1",
+                address = "superbe Address",
+                zipCode = "06000",
+                city = "Nice",
+                description = "Superbe maison avec une super description",
+                addDate = 1716815996,
+                nbRooms = 4,
+                price = 350000,
+                surface = 150,
+            ),
+            listOf()
+        ),
+        EstateWithPictures(estate = Estate(
+            estateId = 0,
+            title = "House 2",
+            typeOfEstate = "House",
+            typeOfOffer = "Sell",
+            etage = "1",
+            address = "superbe Address",
+            zipCode = "06000",
+            city = "Nice",
+            description = "Superbe maison avec une super description",
+            addDate = 1716715996,
+            sellDate = 1716725996,
+            nbRooms = 4,
+            price = 350000,
+            surface = 150,
+        ), pictures = listOf()),
+        EstateWithPictures(estate = Estate(
+            estateId = 0,
+            title = "House 3",
+            typeOfEstate = "House",
+            typeOfOffer = "Sell",
+            etage = "1",
+            address = "superbe Address",
+            zipCode = "06000",
+            city = "Nice",
+            description = "Superbe maison avec une super description",
+            addDate = 1716805996,
+            nbRooms = 4,
+            price = 350000,
+            surface = 150,
+        ), pictures = listOf())
+        )
+
+    AppTheme{
+        EstateListScreen(
+            estateListState = ListViewState.Success(listEstateWithPictures),
+            onEstateItemClick = {},
+        )
+    }
 }
 
 

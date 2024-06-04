@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,14 +21,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.realestatemanagersamuelrogeron.R
-import com.example.realestatemanagersamuelrogeron.data.state.DetailState
-import com.example.realestatemanagersamuelrogeron.ui.detail_screen.composable.PictureCardList
+import com.example.realestatemanagersamuelrogeron.domain.model.Estate
+import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
+import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
+import com.example.realestatemanagersamuelrogeron.ui.detail_screen.composable.MediaBox
 
 @Composable
-fun EstateDetail(
-    detailState: DetailState,
-    modifier: Modifier,
-) {
+fun DetailScreenContent(
+    estate: Estate,
+    medias: List<EstateMedia>,
+    interestPoints: List<EstateInterestPoints>,
+    ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -35,15 +39,15 @@ fun EstateDetail(
     ) {
         Column {
             // List of Pictures
-            PictureCardList(modifier = Modifier.fillMaxWidth(), pics = detailState.pictures)
+            MediaBox(mediaList = medias, modifier = Modifier.fillMaxWidth().height(156.dp))
 
             // Type of Estate
-            Text(text = detailState.estate.typeOfEstate)
+            Text(text = estate.typeOfEstate)
 
             // Type of Offer
             Text(text = "Price")
             HorizontalDivider()
-            if (detailState.estate.typeOfOffer == "Rent") {
+            if (estate.typeOfOffer == "Rent") {
                 Row() {
                     Text(
                         text = "Rent at:",
@@ -51,13 +55,13 @@ fun EstateDetail(
                         fontSize = 20.sp
                     )
                     Text(
-                        text = " ${detailState.estate.rent}€",
+                        text = " ${estate.price} ",
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
                     )
                 }
 
-            } else if (detailState.estate.typeOfOffer == "Sell") {
+            } else if (estate.typeOfOffer == "Sell") {
                 Row() {
                     Text(
                         text = "Selling Price: ",
@@ -65,28 +69,25 @@ fun EstateDetail(
                         fontSize = 20.sp
                     )
                     Text(
-                        text = " ${detailState.estate.sellingPrice}€",
+                        text = " ${estate.price}€",
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
                     )
                 }
-            } else if (detailState.estate.typeOfOffer == "Rent or Sell") {
-                Text(text = "Rent Price: ${detailState.estate.rent}")
-                Text(text = "Selling Price: ${detailState.estate.sellingPrice}")
             }
 
             // Surface
-            Text(text = "Surface: ${detailState.estate.surface} sqm")
+            Text(text = "Surface: ${estate.surface} sqm")
 
             // Number of Rooms
-            Text(text = "Rooms: ${detailState.estate.nbRooms}")
+            Text(text = "Rooms: ${estate.nbRooms}")
 
             // Description
-            Text(text = "Description: ${detailState.estate.description}")
+            Text(text = "Description: ${estate.description}")
 
             // List of String Items
             LazyColumn {
-                items(detailState.interestPoints) { item ->
+                items(interestPoints) { item ->
                     Card(modifier = Modifier.safeContentPadding()) {
                         Text(text = item.interestPointsName)
                     }
@@ -108,9 +109,9 @@ fun EstateDetail(
                 thickness = 2.dp,
                 color = Color.DarkGray
             )
-            Text(text = stringResource(R.string.address, detailState.estate.address))
-            Text(text = stringResource(R.string.city, detailState.estate.city))
-            Text(text = stringResource(R.string.zip_code, detailState.estate.zipCode))
+            Text(text = stringResource(R.string.address, estate.address))
+            Text(text = stringResource(R.string.city, estate.city))
+            Text(text = stringResource(R.string.zip_code, estate.zipCode))
 
             // Static Map
             /*

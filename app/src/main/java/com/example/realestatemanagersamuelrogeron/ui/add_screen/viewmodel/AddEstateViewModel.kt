@@ -60,10 +60,11 @@ class AddEstateViewModel @Inject constructor(
                 "description" -> currentState.copy(description = newValue)
                 "etage" -> currentState.copy(etages = newValue)
                 "address" -> currentState.copy(address = newValue)
-                "zipCode" -> currentState.copy(zipCode = newValue)
                 "city" -> currentState.copy(city = newValue)
-                "sellingPrice" -> currentState.copy(sellingPrice = newValue)
-                "rent" -> currentState.copy(rent = newValue)
+                "zipCode" -> currentState.copy(zipCode = newValue)
+                "region" -> currentState.copy(region = newValue)
+                "country" -> currentState.copy(country = newValue)
+                "price" -> currentState.copy(price = newValue)
                 "surface" -> currentState.copy(surface = newValue)
                 "nbRooms" -> currentState.copy(nbRooms = newValue)
                 else -> currentState
@@ -122,8 +123,7 @@ class AddEstateViewModel @Inject constructor(
                 titleError = currentState.title.isBlank(),
                 typeError = currentState.type.isBlank(),
                 offerError = currentState.offer.isBlank(),
-                sellingPriceError = if (currentState.offer == "Sell") currentState.sellingPrice.isBlank() else false,
-                rentError = if (currentState.offer == "Rent") currentState.rent.isBlank() else false,
+                priceError = currentState.price.isBlank(),
                 surfaceError = currentState.surface.isBlank(),
                 nbRoomsError = currentState.nbRooms.isBlank(),
                 etagesError = currentState.etages.isBlank(),
@@ -135,7 +135,7 @@ class AddEstateViewModel @Inject constructor(
                 interestPointError = currentState.selectedInterestPoints.isEmpty()
             )
             val isAllFieldsValid = !newState.titleError && !newState.typeError && !newState.offerError &&
-                    !newState.sellingPriceError && !newState.rentError && !newState.surfaceError &&
+                    !newState.priceError  && !newState.surfaceError &&
                     !newState.nbRoomsError && !newState.etagesError && !newState.addressError &&
                     !newState.zipCodeError && !newState.cityError && !newState.descriptionError &&
                     !newState.mediaError && !newState.interestPointError
@@ -158,8 +158,7 @@ class AddEstateViewModel @Inject constructor(
                 zipCode = currentState.zipCode,
                 city = currentState.city,
                 description = currentState.description,
-                sellingPrice = currentState.sellingPrice.toIntOrNull(),
-                rent = currentState.rent.toIntOrNull(),
+                price = currentState.price.toInt(),
                 surface = currentState.surface.toInt(),
                 nbRooms = currentState.nbRooms.toInt(),
                 addDate = System.currentTimeMillis(),

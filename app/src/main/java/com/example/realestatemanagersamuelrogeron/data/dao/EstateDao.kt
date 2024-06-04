@@ -76,16 +76,16 @@ interface EstateDao {
     @Query("DELETE FROM estate_interest_point_cross_ref WHERE estateId = :estateId")
     fun deleteAllCrossRefsWithEstate(estateId: Long)
 
-    @Query("SELECT * FROM estates ORDER BY sellingPrice ASC")
+    @Query("SELECT * FROM estates ORDER BY price ASC")
     fun getAllEstatesOrderedByGrowPrice(): Flow<List<Estate>>
 
-    @Query("SELECT * FROM estates ORDER BY sellingPrice DESC")
+    @Query("SELECT * FROM estates ORDER BY price DESC")
     fun getAllEstatesOrderedByDecendPrice(): Flow<List<Estate>>
 
-    @Query("SELECT * FROM estates ORDER BY rent ASC")
+    @Query("SELECT * FROM estates ORDER BY price ASC")
     fun getAllEstatesOrderedByGrowRent(): Flow<List<Estate>>
 
-    @Query("SELECT * FROM estates ORDER BY rent DESC")
+    @Query("SELECT * FROM estates ORDER BY price DESC")
     fun getAllEstatesOrderedByDecendRent(): Flow<List<Estate>>
 
     @Query("SELECT * FROM estates WHERE estateId = :estateId")
@@ -105,6 +105,7 @@ interface EstateDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertInterestPoints(interestPoints: List<EstateInterestPoints>)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllInterestPoints(interestPoints: List<EstateInterestPoints>)
 
@@ -116,19 +117,19 @@ interface EstateDao {
     fun getAllEstatesWithPictures(): Flow<List<PicturesWithEstate>>
 
     @Transaction
-    @Query("SELECT * FROM estates ORDER BY sellingPrice ASC")
+    @Query("SELECT * FROM estates ORDER BY price ASC")
     fun getEstateWithPictureOrderedByGrowPrice(): Flow<List<PicturesWithEstate>>
 
     @Transaction
-    @Query("SELECT * FROM estates ORDER BY sellingPrice DESC")
+    @Query("SELECT * FROM estates ORDER BY price DESC")
     fun getAllEstatesWithPictureOrderedByDecendPrice(): Flow<List<PicturesWithEstate>>
 
     @Transaction
-    @Query("SELECT * FROM estates ORDER BY rent ASC")
+    @Query("SELECT * FROM estates ORDER BY price ASC")
     fun getAllEstatesWithPictureOrderedByGrowRent(): Flow<List<PicturesWithEstate>>
 
     @Transaction
-    @Query("SELECT * FROM estates ORDER BY rent DESC")
+    @Query("SELECT * FROM estates ORDER BY price DESC")
     fun getAllEstatesWithPictureOrderedByDecendRent(): Flow<List<PicturesWithEstate>>
 
     @Query("SELECT * FROM estates WHERE lat IS NULL OR lng IS NULL")

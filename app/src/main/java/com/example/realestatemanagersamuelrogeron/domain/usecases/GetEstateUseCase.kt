@@ -8,13 +8,14 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 interface GetEstateUseCase {
-    suspend fun invoke(id : Long): Flow<Estate?>
+    suspend fun invoke(id: Long): Flow<Estate?>
 }
+
 class GetEstateUseCaseImpl @Inject constructor(
     private val estateRepository: EstateRepository,
 ) : GetEstateUseCase {
     override suspend fun invoke(id: Long): Flow<Estate> {
-        var estate = flow<Estate>{
+        var estate = flow<Estate> {
             (Estate(
                 0L,
                 "",
@@ -25,22 +26,24 @@ class GetEstateUseCaseImpl @Inject constructor(
                 "",
                 "",
                 "",
+                "",
+                "",
                 0,
-                0,
+                null,
                 "",
                 0,
                 0,
                 0,
-                0,
                 true,
-                false))
+                false
+            ))
         }
-        try{
+        try {
             estate = estateRepository.getEstateById(id)
             return estate
-        }catch (e: Exception){
-            return estate
+        } catch (e: Exception) {
             Log.e("GetEstateUseCase", "Error getting estate with id $id")
+            return estate
         }
 
     }

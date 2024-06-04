@@ -28,11 +28,9 @@ class AddEstateUseCaseImpl @Inject constructor(
         pics: List<Uri>
     ): Flow<Long> = flow {
         try {
-            // Step 1: Add the estate and get its ID
             val estateId = estateRepository.addEstate(entry)
             Log.i("AddEstateUseCase", "estateId: $estateId")
 
-            // Step 2: Add Cross References
             try {
                 interestPoints.forEach { point ->
                     estateRepository.addEstateInterestPointCrossRef(
@@ -44,10 +42,8 @@ class AddEstateUseCaseImpl @Inject constructor(
                 }
             } catch (e: Exception) {
                 Log.e("AddEstateUseCase", "Error adding estate interest point cross-references: $e")
-                throw e // Re-throw to propagate error
+                throw e
             }
-
-            // Step 3: Process Estate Pictures
             try {
                 pics.forEachIndexed { index, pic ->
                     val estatePicture = EstateMedia(

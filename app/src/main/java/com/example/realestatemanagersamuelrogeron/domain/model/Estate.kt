@@ -12,14 +12,15 @@ data class Estate(
     var typeOfOffer: String = "",//
     val etage: String = "",//
     val address: String = "",//
-    val zipCode: String,
-    val city: String,
+    val zipCode: String = "",
+    val city: String = "",
+    val region: String = "",
+    val country: String = "",
     val description: String = "",//
     val addDate: Long,
     val sellDate: Long? = null,
     val agent: String = "Stephane",
-    val sellingPrice: Int? = null,//
-    val rent: Int? = null,//
+    val price: Int = 0,//
     val surface: Int,//
     val nbRooms: Int,
     val status: Boolean = true,

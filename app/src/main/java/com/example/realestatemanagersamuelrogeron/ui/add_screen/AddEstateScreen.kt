@@ -9,7 +9,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -41,7 +40,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -56,10 +54,10 @@ import com.example.realestatemanagersamuelrogeron.ui.add_screen.composable.Media
 import com.example.realestatemanagersamuelrogeron.ui.add_screen.composable.SelectTextField
 import com.example.realestatemanagersamuelrogeron.ui.add_screen.viewmodel.AddEstateState
 import com.example.realestatemanagersamuelrogeron.ui.add_screen.viewmodel.AddEstateViewModel
+import com.example.realestatemanagersamuelrogeron.ui.composable.utils.InterestPointsBox
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.MediaCard
 import com.example.realestatemanagersamuelrogeron.ui.theme.AppTheme
 import com.example.realestatemanagersamuelrogeron.ui.theme.remTextFieldColors
-import com.example.realestatemanagersamuelrogeron.utils.RemIcon
 
 @Composable
 fun AddEstateScreen(
@@ -271,9 +269,9 @@ fun AddEstateScreen(
                 Box {
                     if (uiState.offer == "Sell") {
                         OutlinedTextField(
-                            value = uiState.sellingPrice.toString(),
-                            isError = uiState.sellingPriceError,
-                            onValueChange = { newValue -> onFieldChange("sellingPrice", newValue) },
+                            value = uiState.price.toString(),
+                            isError = uiState.priceError,
+                            onValueChange = { newValue -> onFieldChange("price", newValue) },
                             label = { Text(text = "Price") },
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Number
@@ -284,14 +282,14 @@ fun AddEstateScreen(
                     }
                     if (uiState.offer == "Rent") {
                         OutlinedTextField(
-                            value = uiState.rent.toString(),
-                            onValueChange = { newValue -> onFieldChange("rent", newValue) },
+                            value = uiState.price.toString(),
+                            onValueChange = { newValue -> onFieldChange("price", newValue) },
                             label = { Text(text = "Price") },
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Number
                             ),
                             singleLine = true,
-                            isError = uiState.rentError,
+                            isError = uiState.priceError,
                         )
                     }
                 }
@@ -345,40 +343,12 @@ fun AddEstateScreen(
                     isError = uiState.descriptionError,
                 )
                 if (uiState.selectedInterestPoints.isNotEmpty()) {
-                    Box(
-                        modifier = Modifier
-                            .border(
-                                width = 2.dp,
-                                color = MaterialTheme.colorScheme.onBackground,
-                                shape = RoundedCornerShape(8.dp),
+                            InterestPointsBox(
+                                modifier = Modifier,
+                                interestPointsList = uiState.selectedInterestPoints,
+                                editEnable = true,
+                                onClickRemove = onInterestPointItemRemove
                             )
-                            .padding(36.dp)
-                    ) {
-                        Column {
-                            LazyRow(content = {
-                                items(uiState.selectedInterestPoints) { point ->
-                                    Row(
-                                        modifier = Modifier
-                                            .clip(RoundedCornerShape(5.dp))
-                                    ) {
-                                        Button(onClick = {
-                                            onInterestPointItemRemove(point)
-                                        }) {
-                                            Row {
-                                                Icon(
-                                                    imageVector = RemIcon.iconMapping[point.iconCode]!!,
-                                                    contentDescription = null)
-                                                Text(text = point.interestPointsName)
-                                                Icon(
-                                                    imageVector = RemIcon.Remove,
-                                                    contentDescription = null
-                                                )
-                                            }
-
-                                        }
-                                    }
-                                }
-                            })
                             Button(
                                 onClick = {
                                     openInterestPointDialog.value = true
@@ -387,8 +357,7 @@ fun AddEstateScreen(
                             ) {
                                 Text(text = "Select Interest Points")
                             }
-                        }
-                    }
+
                 } else {
                     Button(
                         onClick = {
@@ -470,7 +439,7 @@ fun AddEstateScreenPreview() {
         nbRooms = "4",
         surface = "120",
         offer = "Sell",
-        sellingPrice = "300000",
+        price = "300000",
         address = "123 Main St",
         zipCode = "90210",
         city = "Beverly Hills",
@@ -504,7 +473,7 @@ fun AddEstateScreenDarkPreview() {
         nbRooms = "4",
         surface = "120",
         offer = "Sell",
-        sellingPrice = "300000",
+        price = "300000",
         address = "123 Main St",
         zipCode = "90210",
         city = "Beverly Hills",

@@ -102,6 +102,9 @@ dependencies {
     //Map
     implementation 'com.google.maps.android:maps-compose:2.12.0'
 
+    implementation "com.google.android.gms:play-services-location:21.3.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.0"
+
     // Make sure to also include the latest version of the Maps SDK for Android
     // See latest version at https://goo.gle/android-maps-sdk-version
 

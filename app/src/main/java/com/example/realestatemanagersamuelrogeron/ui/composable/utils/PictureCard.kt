@@ -10,6 +10,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -55,6 +56,24 @@ fun PictureCard(
         }
         AsyncImage(
             model = uri,
+            contentDescription = null,
+            contentScale = ContentScale.Crop
+        )
+    }
+}
+
+@Composable
+fun PictureCard(
+    imageVector: ImageVector,
+    modifier: Modifier
+) {
+    Card(
+        shape = RoundedCornerShape(14.dp),
+        elevation = CardDefaults.elevatedCardElevation(),
+        modifier = modifier,
+    ) {
+        AsyncImage(
+            model = imageVector,
             contentDescription = null,
             contentScale = ContentScale.Crop
         )

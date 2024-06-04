@@ -72,6 +72,7 @@ object RemIcon {
 
     val iconMapping = mapOf(
         0 to Rooms,
+        1 to Landscape,
         2 to Bathroom,
         3 to Bed,
         4 to Location,
