@@ -7,11 +7,11 @@ import androidx.room.PrimaryKey
 data class Estate(
     @PrimaryKey(autoGenerate = true)
     val estateId: Long = 0,
-    val title: String = "",//
-    val typeOfEstate: String = "",//
-    var typeOfOffer: String = "",//
-    val etage: String = "",//
-    val address: String = "",//
+    val title: String = "",     //
+    val typeOfEstate: String = "",  // can be "Apartment", "House", "Garage", "Land-field", "Warehouse"
+    var typeOfOffer: String = "",   // can be Rent or Sell
+    val etage: String = "",     //
+    val address: String = "",   //
     val zipCode: String = "",
     val city: String = "",
     val region: String = "",
@@ -20,14 +20,14 @@ data class Estate(
     val addDate: Long,
     val sellDate: Long? = null,
     val agent: String = "Stephane",
-    val price: Int = 0,//
-    val surface: Int,//
+    val price: Int = 0,     //
+    val surface: Int,       //
     val nbRooms: Int,
     val status: Boolean = true,
     val isFav: Boolean = false,
-    val lat: Double? =null,
+    val lat: Double? = null,
     val lng: Double? = null
 )
 /**
- * TODO get latlng with geocoder form the address in a fun
+ * TODO get lat-lng with geocoder form the address in a fun
  */

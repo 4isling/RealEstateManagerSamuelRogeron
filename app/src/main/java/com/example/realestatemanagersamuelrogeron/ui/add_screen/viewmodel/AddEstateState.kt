@@ -29,7 +29,9 @@ public final data class AddEstateState(
     val city: String = "",
     val cityError: Boolean = false,
     val region: String = "New York",
+    val regionError: Boolean = false,
     val country: String = "US",
+    val countryError: Boolean = false,
     val description: String = "",
     val descriptionError: Boolean = false,
     val status: Boolean = true,
@@ -46,5 +48,4 @@ public final data class AddEstateState(
     val selectedInterestPoints: List<EstateInterestPoints> = emptyList(),
     val isSavedEnable: Boolean = false,
     val isEstateSaved: Boolean = false,
-
 )

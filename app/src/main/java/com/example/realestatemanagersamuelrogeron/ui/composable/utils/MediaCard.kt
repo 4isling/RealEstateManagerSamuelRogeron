@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.example.realestatemanagersamuelrogeron.R
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
 import com.example.realestatemanagersamuelrogeron.ui.theme.AppTheme
@@ -58,12 +59,9 @@ fun MediaCard(estateMedia: EstateMedia,
               modifier: Modifier = Modifier,
               isSuppressButtonEnable: Boolean = false,
               onSuppressClick: (Uri) -> Unit = {}) {
-    val uri = Uri.parse(estateMedia.uri)
-    val context = LocalContext.current
-    val mimeType = FileTypeHelper.getMimeType(context = context, uri = uri)
     when {
-        mimeType?.startsWith("image") == true -> PictureCard(uri = uri, modifier = modifier, isSuppressButtonEnable = isSuppressButtonEnable, onSuppressClick = onSuppressClick)
-        mimeType?.startsWith("video") == true -> VideoCard(videoUri = uri, modifier = modifier, isSuppressButtonEnable = isSuppressButtonEnable,onSuppressClick = onSuppressClick)
+        estateMedia.mimeType?.startsWith("image") == true -> PictureCard(uri = estateMedia.uri.toUri(), modifier = modifier, isSuppressButtonEnable = isSuppressButtonEnable, onSuppressClick = onSuppressClick)
+        estateMedia.mimeType?.startsWith("video") == true -> VideoCard(videoUri = estateMedia.uri.toUri(), modifier = modifier, isSuppressButtonEnable = isSuppressButtonEnable,onSuppressClick = onSuppressClick)
         else -> Image(imageVector = ImageVector.vectorResource(id = R.drawable.no_media_ink), modifier = modifier, contentDescription = null)
 
     }
@@ -157,7 +155,7 @@ fun MediaCardList(
 fun MediaCardPreview(){
     AppTheme {
         Surface(modifier = Modifier.height(670.dp).width(360.dp)) {
-            MediaCard(filePath = "",
+            MediaCard(filePath = "modern_bathroom.webp",
                 modifier = Modifier
                     .height(200.dp)
                     .width(200.dp)

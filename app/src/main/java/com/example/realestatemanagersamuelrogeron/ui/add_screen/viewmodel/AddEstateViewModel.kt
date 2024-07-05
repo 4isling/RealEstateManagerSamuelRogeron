@@ -14,6 +14,7 @@ import com.example.realestatemanagersamuelrogeron.domain.usecases.AddEstateUseCa
 import com.example.realestatemanagersamuelrogeron.domain.usecases.AddInterestPointUseCase
 import com.example.realestatemanagersamuelrogeron.utils.RemIcon
 import com.example.realestatemanagersamuelrogeron.utils.RemIcon.iconMapping
+import com.example.realestatemanagersamuelrogeron.utils.UriPermissionHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +29,8 @@ import javax.inject.Inject
 class AddEstateViewModel @Inject constructor(
     private val addEstateUseCase: AddEstateUseCase,
     private val addInterestPointUseCase: AddInterestPointUseCase,
-    private val estateRepository: EstateRepository
+    private val estateRepository: EstateRepository,
+    private val uriPermissionHelper: UriPermissionHelper
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AddEstateState())
     val uiState: StateFlow<AddEstateState> = _uiState.asStateFlow()
@@ -73,6 +75,9 @@ class AddEstateViewModel @Inject constructor(
     }
 
     fun onMediaPicked(medias: List<Uri>) {
+        medias.forEach {uri ->
+            uriPermissionHelper.takePersistableUriPermission(uri)
+        }
         _uiState.update { currentState ->
             currentState.copy(mediaSelected = medias)
         }
@@ -130,6 +135,8 @@ class AddEstateViewModel @Inject constructor(
                 addressError = currentState.address.isBlank(),
                 zipCodeError = currentState.zipCode.isBlank(),
                 cityError = currentState.city.isBlank(),
+                regionError = currentState.region.isBlank(),
+                countryError = currentState.country.isBlank(),
                 descriptionError = currentState.description.isBlank(),
                 mediaError = currentState.mediaSelected.isEmpty(),
                 interestPointError = currentState.selectedInterestPoints.isEmpty()

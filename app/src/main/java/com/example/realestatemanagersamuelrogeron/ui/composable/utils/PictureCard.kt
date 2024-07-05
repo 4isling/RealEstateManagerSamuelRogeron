@@ -16,26 +16,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.realestatemanagersamuelrogeron.utils.RemIcon
-
-@Composable
-fun PictureCard(
-    uri: String,
-    modifier: Modifier,
-) {
-
-    Card(
-        shape = RoundedCornerShape(14.dp),
-        elevation = CardDefaults.elevatedCardElevation()
-
-    ) {
-        AsyncImage(
-            model = uri,
-            contentDescription = null,
-            contentScale = ContentScale.Crop
-        )
-    }
-}
 
 @Composable
 fun PictureCard(
@@ -55,7 +37,9 @@ fun PictureCard(
             }, imageVector = RemIcon.Remove, contentDescription = null)
         }
         AsyncImage(
-            model = uri,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(uri)
+                .build(),
             contentDescription = null,
             contentScale = ContentScale.Crop
         )

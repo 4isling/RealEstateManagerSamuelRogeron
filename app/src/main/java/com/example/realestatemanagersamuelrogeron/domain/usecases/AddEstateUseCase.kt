@@ -1,5 +1,6 @@
 package com.example.realestatemanagersamuelrogeron.domain.usecases
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.example.realestatemanagersamuelrogeron.data.relations.EstateInterestPointCrossRef
@@ -7,6 +8,7 @@ import com.example.realestatemanagersamuelrogeron.data.repository.EstateReposito
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
+import com.example.realestatemanagersamuelrogeron.utils.FileTypeHelper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -20,7 +22,8 @@ interface AddEstateUseCase {
 }
 
 class AddEstateUseCaseImpl @Inject constructor(
-    private val estateRepository: EstateRepository
+    private val estateRepository: EstateRepository,
+    private val context: Context // Pass context as a dependency
 ) : AddEstateUseCase {
     override suspend fun invoke(
         entry: Estate,
@@ -30,7 +33,6 @@ class AddEstateUseCaseImpl @Inject constructor(
         try {
             val estateId = estateRepository.addEstate(entry)
             Log.i("AddEstateUseCase", "estateId: $estateId")
-
             try {
                 interestPoints.forEach { point ->
                     estateRepository.addEstateInterestPointCrossRef(
@@ -46,9 +48,11 @@ class AddEstateUseCaseImpl @Inject constructor(
             }
             try {
                 pics.forEachIndexed { index, pic ->
+                    val mimeType = FileTypeHelper.getMimeType(context = context, uri = pic)
                     val estatePicture = EstateMedia(
                         estateId = estateId,
                         uri = pic.toString(),
+                        mimeType = mimeType,
                         name = "e${estateId}p${index + 1}"
                     )
                     estateRepository.addEstatePicture(estatePicture)

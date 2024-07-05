@@ -17,7 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithPictures
+import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithDetails
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.EstateItem
 import com.example.realestatemanagersamuelrogeron.ui.theme.AppTheme
@@ -26,26 +26,26 @@ import com.example.realestatemanagersamuelrogeron.ui.theme.AppTheme
 @Composable
 fun EstateList(
     contentPadding: PaddingValues,
-    estateWithPictureList: List<EstateWithPictures>,
+    estateWithDetails: List<EstateWithDetails>,
     onEstateItemClick: (Long) -> Unit,
 ){
     val lazyListState = rememberLazyListState()
 
-    if (estateWithPictureList.isNotEmpty()) {
+    if (estateWithDetails.isNotEmpty()) {
         LazyColumn(
             state = lazyListState,
-            contentPadding = contentPadding,
+            contentPadding = PaddingValues(8.dp, 4.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            items(estateWithPictureList) { estateWithPic ->
+            items(estateWithDetails) { estatesWithDetails ->
                 Log.i(
                     ContentValues.TAG,
-                    "EstateList: EstateWithPic = ${estateWithPic.estate}+ ${estateWithPic.pictures.size}"
+                    "EstateList: EstateWithPic = ${estatesWithDetails.estate}+ ${estatesWithDetails.estatePictures.size}"
                 )
                 EstateItem(
-                    entry = estateWithPic.estate,
+                    entry = estatesWithDetails.estate,
                     onEstateItemClick = onEstateItemClick,
-                    media = estateWithPic.pictures,
+                    media = estatesWithDetails.estatePictures,
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
@@ -69,8 +69,8 @@ fun EstateListPreview(){
             .height(640.dp)) {
             EstateList(
                 contentPadding = PaddingValues(4.dp),
-                estateWithPictureList = listOf(
-                    EstateWithPictures(estate = Estate(
+                estateWithDetails = listOf(
+                    EstateWithDetails(estate = Estate(
                         estateId = 0,
                         title = "La forge D'Entre Mont",
                         typeOfOffer = "Price",
@@ -89,8 +89,10 @@ fun EstateListPreview(){
                         surface = 200,
                         nbRooms = 4,
                         status = true,
-                    ), pictures = listOf()),
-                    EstateWithPictures(estate = Estate(
+                    ), estatePictures = listOf(),
+                        estateInterestPoints = listOf()),
+                    EstateWithDetails(
+                            estate = Estate(
                         estateId = 0,
                         title = "La forge D'Entre Mont",
                         typeOfOffer = "Price",
@@ -109,8 +111,10 @@ fun EstateListPreview(){
                         surface = 200,
                         nbRooms = 4,
                         status = true,
-                    ), pictures = listOf()),
-                    EstateWithPictures(estate = Estate(
+                    ),  estatePictures = listOf(),
+                        estateInterestPoints = listOf()
+                    ),
+                    EstateWithDetails(estate = Estate(
                         estateId = 0,
                         title = "La forge D'Entre Mont",
                         typeOfOffer = "Price",
@@ -129,7 +133,10 @@ fun EstateListPreview(){
                         surface = 200,
                         nbRooms = 4,
                         status = true,
-                    ), pictures = listOf()),
+                    ), estatePictures = listOf(),
+                        estateInterestPoints = listOf()
+
+                    ),
                 )
             ) {
 

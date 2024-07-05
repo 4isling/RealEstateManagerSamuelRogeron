@@ -3,11 +3,8 @@ package com.example.realestatemanagersamuelrogeron.ui.list_screen.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithPictures
-import com.example.realestatemanagersamuelrogeron.domain.model.Estate
-import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
+import com.example.realestatemanagersamuelrogeron.domain.usecases.EstateFilter
 import com.example.realestatemanagersamuelrogeron.domain.usecases.GetAllEstatesWithPicturesUseCaseImpl
-import com.example.realestatemanagersamuelrogeron.utils.SortType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,69 +21,42 @@ class EstatesListViewModel @Inject constructor(
 
     private val TAG = "EstatesListViewModel:"
     private val _viewState = MutableStateFlow<ListViewState>(ListViewState.Loading)
-    val viewState: StateFlow<ListViewState> =
-        _viewState.asStateFlow()
+    val viewState: StateFlow<ListViewState> = _viewState.asStateFlow()
 
     private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean>
-        get() =
-            _isLoading.asStateFlow()
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     private val _isRefreshing = MutableStateFlow(false)
-    val isRefreshing: StateFlow<Boolean> get() = _isRefreshing.asStateFlow()
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
     private val _canLoadMoreItems = MutableStateFlow(true)
     val canLoadMoreItems: StateFlow<Boolean> = _canLoadMoreItems.asStateFlow()
-    private val _sortType = MutableStateFlow(SortType.Default)
-    val sortType: MutableStateFlow<SortType> get() = _sortType
 
-
-    private val _estateList = MutableStateFlow(emptyList<Estate>())
-    private val _estatePic =
-        MutableStateFlow(listOf(EstateMedia(uri = "", name = "")))
-
-
-    private val _estatesWithPictures = MutableStateFlow<List<EstateWithPictures>>(emptyList())
-    val estatesWithPictures: StateFlow<List<EstateWithPictures>> = _estatesWithPictures.asStateFlow()
-
-
+    private val _filter = MutableStateFlow(EstateFilter())
+    val filter: StateFlow<EstateFilter> = _filter.asStateFlow()
 
     init {
         Log.i(TAG, "init")
-        loadEstatesWithPictures()
+        loadEstatesWithDetail()
     }
 
-
-    fun onSortTypeValueChange(newValue: SortType) {
-        _sortType.value = newValue
+    private fun loadEstatesWithDetail() {
         viewModelScope.launch {
-            try {
-                getAllEstatesWithPicturesUseCaseImpl.execute(_sortType.value)
-                    .catch { exception ->
-                        _viewState.emit(ListViewState.Error(exception.message ?: "UnknownError"))
-                        _isLoading.emit(false)
-                    }.collectLatest { result ->
-                        _estatesWithPictures.value = result
-                        _canLoadMoreItems.emit(result.isNotEmpty())
-                        _viewState.emit(ListViewState.Success(result))
-                    }
-            } catch (e: Error) {
-                Log.e(TAG, "onSortTypeValueChange: error: $e")
-            }
-        }
-    }
-
-    private fun loadEstatesWithPictures() {
-        viewModelScope.launch {
-            getAllEstatesWithPicturesUseCaseImpl.execute(_sortType.value)
+            _isLoading.emit(true)
+            getAllEstatesWithPicturesUseCaseImpl.execute(_filter.value)
                 .catch { exception ->
-                    // Handle exceptions, if any
-                    Log.w(TAG, "loadEstatesWithPictures: ", exception)
+                    _viewState.emit(ListViewState.Error(exception.message ?: "UnknownError"))
+                    _isLoading.emit(false)
                 }
-                .collect { estatesWithPictures ->
-                    _estatesWithPictures.value = estatesWithPictures
-                    _viewState.emit(ListViewState.Success(estatesWithPictures))
+                .collectLatest { estatesWithDetail ->
+                    _viewState.emit(ListViewState.Success(estatesWithDetail, _filter.value))
+                    _isLoading.emit(false)
                 }
         }
+    }
+
+    fun updateFilter(newFilter: EstateFilter) {
+        _filter.value = newFilter
+        loadEstatesWithDetail()
     }
 }

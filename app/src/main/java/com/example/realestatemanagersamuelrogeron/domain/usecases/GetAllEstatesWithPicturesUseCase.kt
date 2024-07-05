@@ -1,54 +1,47 @@
 package com.example.realestatemanagersamuelrogeron.domain.usecases
 
-import android.util.Log
-import com.example.realestatemanagersamuelrogeron.utils.SortType
+import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithDetails
 import com.example.realestatemanagersamuelrogeron.data.repository.EstateRepository
-import com.example.realestatemanagersamuelrogeron.domain.model.Estate
-import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithPictures
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.lang.Exception
 import javax.inject.Inject
 
+enum class SortOrder {
+    ASCENDING,
+    DESCENDING
+}
+
+data class EstateFilter(
+    val typeOfEstate: String? = null,
+    val typeOfOffer: String? = null,
+    val minPrice: Int = 0,
+    val maxPrice: Int = Int.MAX_VALUE,
+    val etage: String? = null,
+    val city: String? = null,
+    val region: String? = null,
+    val country: String? = null,
+    val minSurface: Int = 0,
+    val maxSurface: Int = Int.MAX_VALUE,
+    val interestPoints: List<String> = emptyList(),
+    val minMediaCount: Int = 0,
+    val requireLatLng: Int = 0
+)
+
 interface GetAllEstatesWithPicturesUseCase {
-    suspend fun execute(sortType: SortType): Flow<List<EstateWithPictures>>
+    suspend fun execute(filter: EstateFilter): Flow<List<EstateWithDetails>>
 }
 
 class GetAllEstatesWithPicturesUseCaseImpl @Inject constructor(private val estateRepository: EstateRepository) :
     GetAllEstatesWithPicturesUseCase {
-    override suspend fun execute(sortType: SortType): Flow<List<EstateWithPictures>> {
+    override suspend fun execute(filter: EstateFilter): Flow<List<EstateWithDetails>> {
         val TAG = "GetEstateWithPictures"
-        var estateList: Flow<List<EstateWithPictures>>
-        try {
-            when (sortType) {
-                SortType.Default -> {
-                    estateList = estateRepository.getAllEstatesWithPictures()
-                    Log.i(TAG, "invoke: SortTypeDefault: $estateList")
-                }
+        return try {
+                estateRepository.getFilteredEstates(
+                    filter
+                )
 
-                SortType.PriceGrow -> {
-                    estateList = estateRepository.getEstateWithPictureOrderedByGrowPrice()
-                    Log.i(TAG, "invoke: SortTypePriceGrow: $estateList")
-                }
-
-                SortType.PriceDescend -> {
-                    estateList = estateRepository.getAllEstatesWithPictureOrderedByDecendPrice()
-                    Log.i(TAG, "invoke: SortTypePriceDescend: $estateList")
-                }
-
-                SortType.RentGrow -> {
-                    estateList = estateRepository.getAllEstatesWithPictureOrderedByGrowRent()
-                    Log.i(TAG, "invoke: SortTypeRentGrow:$estateList")
-                }
-
-                SortType.RentDescend -> {
-                    estateList = estateRepository.getAllEstatesWithPictureOrderedByDecendRent()
-                    Log.i(TAG, "invoke: SortTypeRentDescend: $estateList")
-                }
-            }
-            return estateList
-        } catch(e: Exception){
-            return flow { emptyList<Estate>() }
+        } catch(e: Exception) {
+            flow { emit(emptyList<EstateWithDetails>()) }
         }
     }
 }

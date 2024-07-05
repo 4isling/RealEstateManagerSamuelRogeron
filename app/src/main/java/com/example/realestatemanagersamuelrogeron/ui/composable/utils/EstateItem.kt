@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.realestatemanagersamuelrogeron.R
+import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithDetails
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
 import com.example.realestatemanagersamuelrogeron.ui.theme.AppTheme
@@ -214,6 +215,177 @@ fun EstateItem(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun EstateItem(
+    entry: EstateWithDetails,
+    onEstateItemClick: (Long) -> Unit = {},
+    modifier: Modifier
+) {
+    val padding = 4.dp
+    Card(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
+            .padding(padding)
+            .clickable(enabled = true, onClick = {
+                onEstateItemClick(entry.estate.estateId)
+            }),
+        elevation = CardDefaults.cardElevation(), // Set the desired elevation value here
+        shape = RoundedCornerShape(8.dp)
+    ){
+        Column(
+            modifier = modifier
+                .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
+                .padding(padding)
+                .clickable(enabled = true, onClick = {
+                    onEstateItemClick(entry.estate.estateId)
+                })
+        ) {
+            Row(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .padding(padding)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.33f)
+                        .wrapContentHeight()
+                        .background(MaterialTheme.colorScheme.secondary, RoundedCornerShape(8.dp))
+                ) {
+                    if (entry.estatePictures.isNotEmpty()){
+                        MediaCardList(
+                            mediaList = entry.estatePictures, // Replace with your image resource
+                            modifier = Modifier
+                                .padding(padding)
+                                .height(130.dp)
+                                .align(Alignment.Center)
+                        )
+                    }else{
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.no_media_ink),
+                            contentDescription = "list media is empty",
+                            tint = MaterialTheme.colorScheme.onSecondary,
+                            modifier = Modifier.size(125.dp).fillMaxWidth().fillMaxHeight()
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.width(padding))
+                Column(  //
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .fillMaxWidth()
+                        .padding(padding)
+                ) {
+                    Text(
+                        text = entry.estate.title,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(8.dp))
+                            .padding(horizontal = padding)
+                            .fillMaxWidth()
+                            .align(Alignment.CenterHorizontally)
+                    )
+                    Spacer(modifier = Modifier.height(padding))
+                    Box(
+                        modifier = Modifier
+                            .wrapContentHeight()
+                            .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(8.dp))
+                            .padding(padding)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .wrapContentHeight()
+                                .fillMaxWidth()
+                                .padding(padding)
+                        ) {
+                            FlowRow(
+                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = entry.estate.address + ", ",
+                                    fontSize = 12.sp,
+                                    fontStyle = FontStyle.Italic,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Text(
+                                    text = entry.estate.zipCode,
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Text(
+                                    text = entry.estate.city + ", ",
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Text(
+                                    text = entry.estate.region + ", ",
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Text(
+                                    text = entry.estate.country,
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(padding))
+                            Row(
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentHeight()
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .wrapContentSize()
+                                        .background(
+                                            MaterialTheme.colorScheme.secondary,
+                                            RoundedCornerShape(8.dp),
+                                        ),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = " " + entry.estate.surface.toString() + " m² ",
+                                        fontSize = 10.sp,
+                                        color = MaterialTheme.colorScheme.onSecondary,
+                                        modifier = Modifier.align(Alignment.Center)
+                                    )
+                                }
+                                Box(
+                                    modifier = Modifier
+                                        .wrapContentWidth()
+                                        .wrapContentSize()
+                                        .background(
+                                            MaterialTheme.colorScheme.secondary,
+                                            RoundedCornerShape(8.dp)
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = " " +entry.estate.price.toString() + " $ ",
+                                        fontSize = 12.sp,
+                                        color = MaterialTheme.colorScheme.onSecondary,
+                                        modifier = Modifier.align(Alignment.Center)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 @Preview
 @Composable
 fun EstateItemPreview() {
@@ -227,6 +399,7 @@ fun EstateItemPreview() {
                         0,
                         0,
                         "/storage/self/Pictures/IMG_20230906_164952.jpg",
+                         "image/",
                         "Facade"
                     )
                 ),

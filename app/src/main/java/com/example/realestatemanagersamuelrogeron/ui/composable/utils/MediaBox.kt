@@ -90,9 +90,9 @@ fun MediaBox(
 @Composable
 fun MediaPagerPreview() {
     val sampleMedias = listOf(
-        EstateMedia(1, 1, "url1", "Description 1"),
-        EstateMedia(2, 1, "url2", "Description 2"),
-        EstateMedia(3, 1, "url3", "Description 3")
+        EstateMedia(1, 1, "url1", "","Description 1"),
+        EstateMedia(2, 1, "url2", "","Description 2"),
+        EstateMedia(3, 1, "url3", "","Description 3")
     )
     MediaBox(medias = sampleMedias,
         Modifier.fillMaxSize())

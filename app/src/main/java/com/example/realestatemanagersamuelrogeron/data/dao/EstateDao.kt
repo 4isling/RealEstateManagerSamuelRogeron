@@ -8,11 +8,13 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.example.realestatemanagersamuelrogeron.data.relations.EstateInterestPointCrossRef
+import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithDetails
 import com.example.realestatemanagersamuelrogeron.data.relations.InterestPointsWithEstate
 import com.example.realestatemanagersamuelrogeron.data.relations.PicturesWithEstate
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
+import com.example.realestatemanagersamuelrogeron.domain.usecases.EstateFilter
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -135,5 +137,90 @@ interface EstateDao {
     @Query("SELECT * FROM estates WHERE lat IS NULL OR lng IS NULL")
     fun getEstateWithoutLatLng(): Flow<List<Estate>>
 
-    /** todo create the query to get the estate with filter directly from room db */
+    @Query("""
+    SELECT estates.*
+    FROM estates
+    LEFT JOIN estate_pictures ON estates.estateId = estate_pictures.estateId
+    WHERE (:typeOfEstate IS NULL OR typeOfEstate = :typeOfEstate)
+      AND (:typeOfOffer IS NULL OR typeOfOffer = :typeOfOffer)
+      AND (:minPrice IS NULL OR price >= :minPrice)
+      AND (:maxPrice IS NULL OR price <= :maxPrice)
+      AND (:etage IS NULL OR etage = :etage)
+      AND (:city IS NULL OR city = :city)
+      AND (:region IS NULL OR region = :region)
+      AND (:country IS NULL OR country = :country)
+      AND (:minSurface IS NULL OR surface >= :minSurface)
+      AND (:maxSurface IS NULL OR surface <= :maxSurface)
+      AND estates.estateId IN (
+          SELECT estateId
+          FROM estate_interest_point_cross_ref
+          WHERE estateInterestPointId IN (
+              SELECT estateInterestPointId
+              FROM estate_interest_points
+              WHERE (:interestPointsSize = 0 OR interestPointsName IN (:interestPoints))
+          )
+          GROUP BY estateId
+          HAVING COUNT(DISTINCT estateInterestPointId) >= :interestPointsSize
+      )
+      AND (:requireLatLng = 0 OR (lat IS NOT NULL AND lat != '' AND lng IS NOT NULL AND lng != ''))
+    GROUP BY estates.estateId
+    HAVING COUNT(DISTINCT estate_pictures.id) >= :minMediaCount
+    ORDER BY price ASC
+""")
+    fun getFilteredEstates(
+        typeOfEstate: String? = null,
+        typeOfOffer: String? = null,
+        minPrice: Int = 0,
+        maxPrice: Int = Int.MAX_VALUE,
+        etage: String? = null,
+        city: String? = null,
+        region: String? = null,
+        country: String? = null,
+        minSurface: Int = 0,
+        maxSurface: Int = Int.MAX_VALUE,
+        interestPoints: List<String> = emptyList(),
+        interestPointsSize: Int = 0,
+        minMediaCount: Int = 0,
+        requireLatLng: Int = 0
+    ): Flow<List<EstateWithDetails>>
+
+
+    fun getFilteredEstates(filter: EstateFilter): Flow<List<EstateWithDetails>> {
+        return getFilteredEstates(
+            typeOfEstate = filter.typeOfEstate,
+            typeOfOffer = filter.typeOfOffer,
+            minPrice = filter.minPrice,
+            maxPrice = filter.maxPrice,
+            etage = filter.etage,
+            city = filter.city,
+            region = filter.region,
+            country = filter.country,
+            minSurface = filter.minSurface,
+            maxSurface = filter.maxSurface,
+            interestPoints = filter.interestPoints,
+            interestPointsSize = filter.interestPoints.size,
+            minMediaCount = filter.minMediaCount,
+            requireLatLng = filter.requireLatLng
+        )
+    }
+
+    @Transaction
+    @Query("""
+        SELECT * FROM estates
+        WHERE estateId = :estateId
+    """)
+    fun getEstateWithDetailById(estateId: Long): Flow<EstateWithDetails>
+
+    @Query("""
+        SELECT e.*, 
+        (6371 * acos(cos(radians(:userLat)) * cos(radians(e.lat)) * cos(radians(e.lng) - radians(:userLng)) + sin(radians(:userLat)) * sin(radians(e.lat)))) AS distance
+        FROM estates e
+        WHERE e.status = :status
+        ORDER BY distance ASC
+    """)
+    fun getEstatesByProximity(
+        status: Boolean,
+        userLat: Double,
+        userLng: Double
+    ): Flow<List<PicturesWithEstate>>
 }

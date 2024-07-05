@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -19,16 +20,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithPictures
+import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithDetails
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
+import com.example.realestatemanagersamuelrogeron.domain.usecases.EstateFilter
+import com.example.realestatemanagersamuelrogeron.ui.composable.utils.FilterDialog
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.RemBottomAppBar
-import com.example.realestatemanagersamuelrogeron.ui.list_screen.composable.EstateList
-import com.example.realestatemanagersamuelrogeron.ui.list_screen.composable.SortMenu
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.safeNavigate
+import com.example.realestatemanagersamuelrogeron.ui.list_screen.composable.EstateList
 import com.example.realestatemanagersamuelrogeron.ui.list_screen.viewmodel.EstatesListViewModel
 import com.example.realestatemanagersamuelrogeron.ui.list_screen.viewmodel.ListViewState
 import com.example.realestatemanagersamuelrogeron.ui.navigation.Screen
 import com.example.realestatemanagersamuelrogeron.ui.theme.AppTheme
+import com.example.realestatemanagersamuelrogeron.utils.RemIcon
 import com.example.realestatemanagersamuelrogeron.utils.SortType
 
 @Composable
@@ -57,8 +60,8 @@ fun EstateListScreen(
         onAddEstateClick = {
             navController.navigate(Screen.AddEstate.route)
         },
-        onSortChange = {
-            viewModel.onSortTypeValueChange(it)
+        onFilterChange = {
+            viewModel.updateFilter(newFilter = it)
         },
         onClickMap = {
             navController.navigate(Screen.Map.route)
@@ -74,7 +77,7 @@ fun EstateListScreen(
     estateListState: ListViewState,
     onEstateItemClick: (Long) -> Unit,
     onAddEstateClick: () -> Unit = {},
-    onSortChange: (SortType) -> Unit = {},
+    onFilterChange: (EstateFilter) -> Unit = {},
     onClickMap: (String) -> Unit = {},
     onClickSetting: () -> Unit = {},
 ) {
@@ -85,8 +88,8 @@ fun EstateListScreen(
         SortType.RentDescend,
         SortType.RentGrow
     )
-    var selectedFilter by remember {
-        mutableStateOf(sortOptions)
+    var showFilterDialog by remember {
+        mutableStateOf(false)
     }
     Scaffold(
         bottomBar = {
@@ -108,9 +111,18 @@ fun EstateListScreen(
                     Log.d("EstateListScreen", "EstateListScreen: Success")
                     EstateList(
                         onEstateItemClick = onEstateItemClick,
-                        estateWithPictureList = estateListState.estates,
+                        estateWithDetails = estateListState.estates,
                         contentPadding = innerPadding
                     )
+                    if (showFilterDialog){
+                        FilterDialog(
+                            onFilterChange = { newFilter -> onFilterChange(newFilter) },
+                            initialFilter = estateListState.estateFilter,
+                            onDismiss = {
+                                showFilterDialog = false
+                            }
+                        )
+                    }
                 }
 
                 is ListViewState.Error -> {
@@ -119,19 +131,17 @@ fun EstateListScreen(
                 }
             }
         },
+
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {},
+                onClick = {
+                    showFilterDialog = true
+                },
 
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 content = {
-                    SortMenu(
-                        sortOptions,
-                        onSortOptionSelected = {
-                            onSortChange(it)
-                        }
-                    )
+                    Icon(imageVector = RemIcon.Filter, contentDescription = "FilterFab")
                 }
             )
         },
@@ -142,8 +152,8 @@ fun EstateListScreen(
 @Preview(showBackground = true)
 @Composable
 fun EstateListScreenPreview() {
-    val listEstateWithPictures = listOf(
-        EstateWithPictures(
+    val estateWithDetails = listOf(
+        EstateWithDetails(
             estate = Estate(
             estateId = 0,
                 title = "House 1",
@@ -159,9 +169,10 @@ fun EstateListScreenPreview() {
                 price = 350000,
                 surface = 150,
             ),
-            listOf()
+            estatePictures = listOf(),
+            estateInterestPoints = listOf()
         ),
-        EstateWithPictures(estate = Estate(
+        EstateWithDetails(estate = Estate(
             estateId = 0,
             title = "House 2",
             typeOfEstate = "House",
@@ -176,8 +187,9 @@ fun EstateListScreenPreview() {
             nbRooms = 4,
             price = 350000,
             surface = 150,
-        ), pictures = listOf()),
-        EstateWithPictures(estate = Estate(
+        ),  estatePictures = listOf(),
+            estateInterestPoints = listOf()),
+        EstateWithDetails(estate = Estate(
             estateId = 0,
             title = "House 3",
             typeOfEstate = "House",
@@ -191,12 +203,14 @@ fun EstateListScreenPreview() {
             nbRooms = 4,
             price = 350000,
             surface = 150,
-        ), pictures = listOf())
+        ),  estatePictures = listOf(),
+            estateInterestPoints = listOf())
         )
 
     AppTheme{
         EstateListScreen(
-            estateListState = ListViewState.Success(listEstateWithPictures),
+            estateListState = ListViewState.Success(estateWithDetails,
+                EstateFilter()),
             onEstateItemClick = {},
         )
     }

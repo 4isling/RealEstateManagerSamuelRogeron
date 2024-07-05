@@ -2,10 +2,12 @@ package com.example.realestatemanagersamuelrogeron.data.repository
 
 import com.example.realestatemanagersamuelrogeron.data.dao.EstateDao
 import com.example.realestatemanagersamuelrogeron.data.relations.EstateInterestPointCrossRef
+import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithDetails
 import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithPictures
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
+import com.example.realestatemanagersamuelrogeron.domain.usecases.EstateFilter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -39,7 +41,11 @@ class EstateRepository @Inject constructor(
         estateDao.insertCrossRef(crossRef)
     }
 
-    fun updateEstate(estate: Estate, interestPoints: List<EstateInterestPoints>, pictures: List<EstateMedia>) {
+    fun updateEstate(
+        estate: Estate,
+        interestPoints: List<EstateInterestPoints>,
+        pictures: List<EstateMedia>
+    ) {
         estateDao.updateEstate(estate)
         for (item in interestPoints) {
             estateDao.updateInterestPoint(item)
@@ -51,13 +57,17 @@ class EstateRepository @Inject constructor(
 
     fun getAllEstates(): Flow<List<Estate>> = estateDao.getAllEstates()
 
-    fun getAllEstatesOrderedByGrowPrice(): Flow<List<Estate>> = estateDao.getAllEstatesOrderedByGrowPrice()
+    fun getAllEstatesOrderedByGrowPrice(): Flow<List<Estate>> =
+        estateDao.getAllEstatesOrderedByGrowPrice()
 
-    fun getAllEstatesOrderedByDecendPrice(): Flow<List<Estate>> = estateDao.getAllEstatesOrderedByDecendPrice()
+    fun getAllEstatesOrderedByDecendPrice(): Flow<List<Estate>> =
+        estateDao.getAllEstatesOrderedByDecendPrice()
 
-    fun getAllEstatesOrderedByGrowRent(): Flow<List<Estate>> = estateDao.getAllEstatesOrderedByGrowRent()
+    fun getAllEstatesOrderedByGrowRent(): Flow<List<Estate>> =
+        estateDao.getAllEstatesOrderedByGrowRent()
 
-    fun getAllEstatesOrderedByDecendRent(): Flow<List<Estate>> = estateDao.getAllEstatesOrderedByDecendRent()
+    fun getAllEstatesOrderedByDecendRent(): Flow<List<Estate>> =
+        estateDao.getAllEstatesOrderedByDecendRent()
 
     fun delete(estate: Estate) {
         estateDao.delete(estate)
@@ -74,6 +84,7 @@ class EstateRepository @Inject constructor(
     fun getEstateById(id: Long): Flow<Estate> {
         return estateDao.getEstateById(estateId = id)
     }
+
 
     fun addEstatePicture(estateMedia: EstateMedia) {
         estateDao.insertEstatePicture(estateMedia = estateMedia)
@@ -188,5 +199,64 @@ class EstateRepository @Inject constructor(
         estateDao.deleteInterestPointById(interestPointId)
     }
 
+
+    fun getFilteredEstates(
+        typeOfEstate: String?,
+        typeOfOffer: String?,
+        minPrice: Int,
+        maxPrice: Int,
+        etage: String?,
+        city: String?,
+        region: String?,
+        country: String?,
+        minSurface: Int,
+        maxSurface: Int,
+        interestPoints: List<String>,
+        interestPointsSize: Int,
+        minMediaCount: Int
+    ): Flow<List<EstateWithDetails>> {
+        return estateDao.getFilteredEstates(
+            typeOfEstate,
+            typeOfOffer,
+            minPrice,
+            maxPrice,
+            etage,
+            city,
+            region,
+            country,
+            minSurface,
+            maxSurface,
+            interestPoints,
+            interestPointsSize,
+            minMediaCount
+        )
+    }
+
+    fun getFilteredEstates(filter: EstateFilter): Flow<List<EstateWithDetails>>{
+        return estateDao.getFilteredEstates(filter)
+    }
+
+    fun getEstateWithDetailById(estateId: Long): Flow<EstateWithDetails> {
+        return estateDao.getEstateWithDetailById(estateId)
+    }
+
+    fun getEstatesByProximity(
+        status: Boolean,
+        userLat: Double,
+        userLng: Double
+    ): Flow<List<EstateWithPictures>> {
+        return estateDao.getEstatesByProximity(
+            status = status,
+            userLat = userLat,
+            userLng = userLng
+        ).map { list ->
+            list.map { picturesWithEstate ->
+                EstateWithPictures(
+                    estate = picturesWithEstate.estate,
+                    pictures = picturesWithEstate.estatePictures
+                )
+            }
+        }
+    }
 
 }

@@ -19,5 +19,6 @@ data class EstateMedia(
     val id: Long = 0,
     val estateId: Long = 0,
     val uri: String,
+    val mimeType: String?,
     val name: String,
 )

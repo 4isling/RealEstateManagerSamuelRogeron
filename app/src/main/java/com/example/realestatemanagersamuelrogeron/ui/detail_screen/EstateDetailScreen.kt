@@ -250,7 +250,7 @@ fun DetailScreenPreview() {
                     nbRooms = 4,
                     status = true,
                 ),
-                medias = listOf(EstateMedia(0, 0, "HURI", "")),
+                medias = listOf(EstateMedia(0, 0, "HURI", "","")),
                 interestPoints = predefinedInterestPoints
             ),
             onBackPress = {},
