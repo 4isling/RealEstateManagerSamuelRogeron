@@ -1,6 +1,11 @@
 package com.example.realestatemanagersamuelrogeron.ui.composable.utils
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.BottomAppBar
@@ -18,8 +23,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.realestatemanagersamuelrogeron.ui.theme.AppTheme
 import com.example.realestatemanagersamuelrogeron.utils.RemIcon
 
@@ -86,7 +93,7 @@ fun RemDetailTopAppBar(
     modifier: Modifier,
     onBackPress: () -> Unit,
     onEditIconClick: () -> Unit,
-    ) {
+) {
     TopAppBar(
         colors = TopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -96,7 +103,7 @@ fun RemDetailTopAppBar(
             scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer
         ),
         title = {
-                Text(text = title)
+            Text(text = title)
         },
         navigationIcon = {
             IconButton(
@@ -136,12 +143,38 @@ fun RemTopAppBarPreview() {
 }
 
 @Composable
-fun RemLeftBar(){
+fun RemLeftBar(
+    onClickSetting: () -> Unit = {},
+    onClickMap: () -> Unit = {},
+    onClickAdd: () -> Unit = {}
+    ) {
+    Column(
+        modifier = Modifier
+            .width(240.dp)
+            .fillMaxHeight()
+            .background(MaterialTheme.colorScheme.primaryContainer),
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        IconButton(onClick = {
+            onClickMap()
+        }) {
 
+            Icon(imageVector = RemIcon.Map, contentDescription = "Map")
+        }
+        // Settings button
+        IconButton(onClick = onClickSetting) {
+            Icon(imageVector = RemIcon.Setting, contentDescription = "Setting")
+        }
+        IconButton(onClick = onClickAdd) {
+            Icon(imageVector = RemIcon.Add, contentDescription = "Add")
+        }
+    }
 }
+
 @Preview
 @Composable
-fun RemLeftBarPreview(){
+fun RemLeftBarPreview() {
     AppTheme {
 
     }

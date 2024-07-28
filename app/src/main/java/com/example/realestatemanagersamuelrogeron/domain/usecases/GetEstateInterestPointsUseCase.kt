@@ -17,13 +17,12 @@ class GetEstateInterestPointsUseCaseImpl @Inject constructor(
         var interestPoints = flow<List<EstateInterestPoints>> {
             emptyList<EstateInterestPoints>()
         }
-
         try{
             interestPoints = estateRepository.getInterestPointsByEstateId(id)
             return interestPoints
         }catch (e: Exception){
-            return interestPoints
             Log.e("GetEstateMediasUseCase", "Error getting pics of estate with id $id")
+            return interestPoints
         }
     }
 }

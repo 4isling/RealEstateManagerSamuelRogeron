@@ -28,8 +28,10 @@ android {
         if (localPropertiesFile.exists()) {
             localProperties.load(new FileInputStream(localPropertiesFile))
         }
+
         String mapApiKey = localProperties['MAPS_API_KEY'] ?: ""
-        resValue 'string', 'MAPS_API_KEY', mapApiKey
+        buildConfigField "String", "MAPS_API_KEY", "\"${mapApiKey}\""
+        manifestPlaceholders = [mapsApiKey: mapApiKey]
     }
 
     buildTypes {

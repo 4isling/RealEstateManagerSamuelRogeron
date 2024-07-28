@@ -5,7 +5,9 @@ import android.location.Geocoder
 import android.os.Build
 import android.util.Log
 import com.example.realestatemanagersamuelrogeron.data.repository.EstateRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -22,9 +24,9 @@ class AddLatLngToEstatesUseCaseImpl @Inject constructor(
         private const val TAG = "AddLatLngToEstates"
     }
 
-    override suspend fun invoke(): Boolean {
+    override suspend fun invoke(): Boolean = withContext(Dispatchers.IO) {
         val estates = estateRepository.getEstateWithoutLatLng()
-        return try {
+        return@withContext try {
             estates.collect { estateList ->
                 estateList.forEach { estate ->
                     val address = estate.address + " ," + estate.zipCode + " " + estate.city + " ," + estate.region + " "+ estate.country// Replace with the appropriate property in your Estate class
@@ -57,6 +59,18 @@ class AddLatLngToEstatesUseCaseImpl @Inject constructor(
                         continuation.resumeWithException(Exception("Geocoder error: $errorMessage"))
                     }
                 })
+            }else {
+                // Fallback for SDK versions before 33
+                val addresses = geocoder.getFromLocationName(address, 1)
+                if (addresses != null) {
+                    if (addresses.isNotEmpty()) {
+                        val latitude = addresses[0].latitude
+                        val longitude = addresses[0].longitude
+                        continuation.resume(Pair(latitude, longitude))
+                    } else {
+                        continuation.resumeWithException(Exception("Geocoder failed to get latitude and longitude for the address: $address"))
+                    }
+                }
             }
         }
     }

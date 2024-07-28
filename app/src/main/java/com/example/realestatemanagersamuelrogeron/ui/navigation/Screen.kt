@@ -6,10 +6,15 @@ const val DETAIL_GRAPH_ROUTE = "detail"
 const val ADD_GRAPH_ROUTE = "add"
 
 sealed class Screen(val route: String){
-    object EstateList: Screen(route = "root/list_screen")
-    object EstateDetail: Screen(route = "root/detail_screen")
-    object AddEstate: Screen(route = "root/add_screen")
-    object Map: Screen(route = "root/map_screen")
+
+
+    object Main : Screen(route = "main_screen")
+    object EstateList : Screen(route = "main_screen/list_screen")
+    object EstateDetail : Screen(route = "main_screen/estate_detail_screen")
+    object AddEstate : Screen(route = "main_screen/add_screen")
+    object Map : Screen(route = "main_screen/map_screen")
+    object Settings : Screen(route = "main_screen/settings_screen")
+
     fun  withArgs(vararg args: String): String{
         return buildString {
             append(route)

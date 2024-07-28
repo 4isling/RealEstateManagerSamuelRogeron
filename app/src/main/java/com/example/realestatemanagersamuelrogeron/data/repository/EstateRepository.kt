@@ -43,16 +43,8 @@ class EstateRepository @Inject constructor(
 
     fun updateEstate(
         estate: Estate,
-        interestPoints: List<EstateInterestPoints>,
-        pictures: List<EstateMedia>
     ) {
         estateDao.updateEstate(estate)
-        for (item in interestPoints) {
-            estateDao.updateInterestPoint(item)
-        }
-        for (item in pictures) {
-            estateDao.updatePicture(item)
-        }
     }
 
     fun getAllEstates(): Flow<List<Estate>> = estateDao.getAllEstates()
@@ -187,16 +179,16 @@ class EstateRepository @Inject constructor(
         estateDao.updateCrossRef(crossRef)
     }
 
-    fun delete(interestPoint: EstateInterestPoints) {
-        estateDao.delete(interestPoint)
+    fun delete(interestPoint: EstateInterestPoints):Int {
+        return estateDao.delete(interestPoint)
     }
 
     fun delete(pictures: EstateMedia) {
         estateDao.delete(pictures)
     }
 
-    fun deleteInterestPointById(interestPointId: Long) {
-        estateDao.deleteInterestPointById(interestPointId)
+    fun deleteInterestPointById(interestPointId: Long): Int {
+        return estateDao.deleteInterestPointById(interestPointId)
     }
 
 

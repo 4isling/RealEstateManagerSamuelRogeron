@@ -6,6 +6,20 @@ import com.example.realestatemanagersamuelrogeron.domain.usecases.AddEstateUseCa
 import com.example.realestatemanagersamuelrogeron.domain.usecases.AddEstateUseCaseImpl
 import com.example.realestatemanagersamuelrogeron.domain.usecases.AddInterestPointUseCase
 import com.example.realestatemanagersamuelrogeron.domain.usecases.AddInterestPointUseCaseImpl
+import com.example.realestatemanagersamuelrogeron.domain.usecases.DeleteInterestPointUseCase
+import com.example.realestatemanagersamuelrogeron.domain.usecases.DeleteInterestPointUseCaseImpl
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetAllInterestPointUseCase
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetAllInterestPointUseCaseImpl
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetCurrencyPreferenceUseCase
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetCurrencyPreferenceUseCaseImpl
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetEstateInterestPointsUseCase
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetEstateInterestPointsUseCaseImpl
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetNetworkStatusUseCase
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetNetworkStatusUseCaseImpl
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetStaticMapUseCase
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetStaticMapUseCaseImpl
+import com.example.realestatemanagersamuelrogeron.domain.usecases.SaveCurrencyPreferenceUseCase
+import com.example.realestatemanagersamuelrogeron.domain.usecases.SaveCurrencyPreferenceUseCaseImpl
 import com.example.realestatemanagersamuelrogeron.utils.DataStorePreference
 import dagger.Module
 import dagger.Provides
@@ -38,5 +52,61 @@ object UseCaseModule {
         @ApplicationContext context: Context
     ): DataStorePreference {
         return DataStorePreference(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeleteInterestPointUseCase(
+        estateRepository: EstateRepository
+    ):DeleteInterestPointUseCase {
+        return DeleteInterestPointUseCaseImpl(estateRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetEstateInterestPointsUseCase(
+        estateRepository: EstateRepository
+    ): GetEstateInterestPointsUseCase {
+        return GetEstateInterestPointsUseCaseImpl(estateRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetAllInterestPointUseCase(
+        estateRepository: EstateRepository
+    ): GetAllInterestPointUseCase {
+        return GetAllInterestPointUseCaseImpl(estateRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetNetworkStatusUseCase(
+        @ApplicationContext context: Context
+    ): GetNetworkStatusUseCase {
+        return GetNetworkStatusUseCaseImpl(context = context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSaveCurrencyPreferenceUseCase(
+        dataStorePreference: DataStorePreference
+    ): SaveCurrencyPreferenceUseCase {
+        return SaveCurrencyPreferenceUseCaseImpl(dataStorePreference = dataStorePreference)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetCurrencyPreferenceUseCase(
+        dataStorePreference: DataStorePreference
+    ): GetCurrencyPreferenceUseCase {
+        return GetCurrencyPreferenceUseCaseImpl(dataStorePreference)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetStaticMapUseCase(
+        getNetworkStatusUseCase: GetNetworkStatusUseCase
+    ): GetStaticMapUseCase {
+        return GetStaticMapUseCaseImpl(getNetworkStatusUseCase)
     }
 }

@@ -26,7 +26,8 @@ data class Estate(
     val status: Boolean = true,
     val isFav: Boolean = false,
     val lat: Double? = null,
-    val lng: Double? = null
+    val lng: Double? = null,
+    val staticMapUrl: String? = null
 )
 /**
  * TODO get lat-lng with geocoder form the address in a fun

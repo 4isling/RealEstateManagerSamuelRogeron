@@ -153,7 +153,7 @@ class AddEstateViewModel @Inject constructor(
         }
     }
 
-    fun saveEstate() {
+    private fun saveEstate() {
         viewModelScope.launch {
             val currentState = uiState.value
             val estate = Estate(
@@ -164,6 +164,8 @@ class AddEstateViewModel @Inject constructor(
                 address = currentState.address,
                 zipCode = currentState.zipCode,
                 city = currentState.city,
+                region = currentState.region,
+                country = currentState.country,
                 description = currentState.description,
                 price = currentState.price.toInt(),
                 surface = currentState.surface.toInt(),

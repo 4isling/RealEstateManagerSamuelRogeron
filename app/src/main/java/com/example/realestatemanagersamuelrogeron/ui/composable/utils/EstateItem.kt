@@ -61,7 +61,7 @@ fun EstateItem(
             }),
         elevation = CardDefaults.cardElevation(), // Set the desired elevation value here
         shape = RoundedCornerShape(8.dp)
-    ){
+    ) {
         Column(
             modifier = modifier
                 .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
@@ -81,7 +81,7 @@ fun EstateItem(
                         .wrapContentHeight()
                         .background(MaterialTheme.colorScheme.secondary, RoundedCornerShape(8.dp))
                 ) {
-                    if (media.isNotEmpty()){
+                    if (media.isNotEmpty()) {
                         MediaCard(
                             filePath = media[0].uri, // Replace with your image resource
                             modifier = Modifier
@@ -89,12 +89,15 @@ fun EstateItem(
                                 .height(130.dp)
                                 .align(Alignment.Center)
                         )
-                    }else{
+                    } else {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.no_media_ink),
                             contentDescription = "list media is empty",
                             tint = MaterialTheme.colorScheme.onSecondary,
-                            modifier = Modifier.size(125.dp).fillMaxWidth().fillMaxHeight()
+                            modifier = Modifier
+                                .size(125.dp)
+                                .fillMaxWidth()
+                                .fillMaxHeight()
                         )
                     }
                 }
@@ -111,7 +114,10 @@ fun EstateItem(
                         fontWeight = FontWeight.Normal,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier
-                            .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(8.dp))
+                            .background(
+                                MaterialTheme.colorScheme.onPrimary,
+                                RoundedCornerShape(8.dp)
+                            )
                             .padding(horizontal = padding)
                             .fillMaxWidth()
                             .align(Alignment.CenterHorizontally)
@@ -120,7 +126,10 @@ fun EstateItem(
                     Box(
                         modifier = Modifier
                             .wrapContentHeight()
-                            .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(8.dp))
+                            .background(
+                                MaterialTheme.colorScheme.onPrimary,
+                                RoundedCornerShape(8.dp)
+                            )
                             .padding(padding)
                     ) {
                         Column(
@@ -200,7 +209,11 @@ fun EstateItem(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
-                                        text = " " +entry.price.toString() + " $ ",
+                                        text = " " + entry.price.toString() +  if (entry.typeOfOffer == "Rent") {
+                                            " $/m"
+                                        } else {
+                                            " $"
+                                        },
                                         fontSize = 12.sp,
                                         color = MaterialTheme.colorScheme.onSecondary,
                                         modifier = Modifier.align(Alignment.Center)
@@ -232,7 +245,7 @@ fun EstateItem(
             }),
         elevation = CardDefaults.cardElevation(), // Set the desired elevation value here
         shape = RoundedCornerShape(8.dp)
-    ){
+    ) {
         Column(
             modifier = modifier
                 .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
@@ -252,7 +265,7 @@ fun EstateItem(
                         .wrapContentHeight()
                         .background(MaterialTheme.colorScheme.secondary, RoundedCornerShape(8.dp))
                 ) {
-                    if (entry.estatePictures.isNotEmpty()){
+                    if (entry.estatePictures.isNotEmpty()) {
                         MediaCardList(
                             mediaList = entry.estatePictures, // Replace with your image resource
                             modifier = Modifier
@@ -260,12 +273,15 @@ fun EstateItem(
                                 .height(130.dp)
                                 .align(Alignment.Center)
                         )
-                    }else{
+                    } else {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.no_media_ink),
                             contentDescription = "list media is empty",
                             tint = MaterialTheme.colorScheme.onSecondary,
-                            modifier = Modifier.size(125.dp).fillMaxWidth().fillMaxHeight()
+                            modifier = Modifier
+                                .size(125.dp)
+                                .fillMaxWidth()
+                                .fillMaxHeight()
                         )
                     }
                 }
@@ -282,7 +298,10 @@ fun EstateItem(
                         fontWeight = FontWeight.Normal,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier
-                            .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(8.dp))
+                            .background(
+                                MaterialTheme.colorScheme.onPrimary,
+                                RoundedCornerShape(8.dp)
+                            )
                             .padding(horizontal = padding)
                             .fillMaxWidth()
                             .align(Alignment.CenterHorizontally)
@@ -291,7 +310,10 @@ fun EstateItem(
                     Box(
                         modifier = Modifier
                             .wrapContentHeight()
-                            .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(8.dp))
+                            .background(
+                                MaterialTheme.colorScheme.onPrimary,
+                                RoundedCornerShape(8.dp)
+                            )
                             .padding(padding)
                     ) {
                         Column(
@@ -371,7 +393,11 @@ fun EstateItem(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
-                                        text = " " +entry.estate.price.toString() + " $ ",
+                                        text = " " + entry.estate.price.toString() + if (entry.estate.typeOfOffer == "Rent") {
+                                            " $/m"
+                                        } else {
+                                             " $"
+                                        },
                                         fontSize = 12.sp,
                                         color = MaterialTheme.colorScheme.onSecondary,
                                         modifier = Modifier.align(Alignment.Center)
@@ -390,16 +416,18 @@ fun EstateItem(
 @Composable
 fun EstateItemPreview() {
     AppTheme {
-        Surface(modifier = Modifier
-            .height(670.dp)
-            .width(360.dp)) {
+        Surface(
+            modifier = Modifier
+                .height(670.dp)
+                .width(360.dp)
+        ) {
             EstateItem(
                 media = listOf(
                     EstateMedia(
                         0,
                         0,
                         "/storage/self/Pictures/IMG_20230906_164952.jpg",
-                         "image/",
+                        "image/",
                         "Facade"
                     )
                 ),

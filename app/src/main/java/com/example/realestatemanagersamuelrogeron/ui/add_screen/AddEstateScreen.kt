@@ -33,6 +33,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +47,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -59,19 +62,21 @@ import com.example.realestatemanagersamuelrogeron.ui.add_screen.viewmodel.AddEst
 import com.example.realestatemanagersamuelrogeron.ui.add_screen.viewmodel.AddEstateViewModel
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.InterestPointsBox
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.MediaCard
+import com.example.realestatemanagersamuelrogeron.ui.composable.utils.calculateWindowSizeClass
 import com.example.realestatemanagersamuelrogeron.ui.theme.AppTheme
 import com.example.realestatemanagersamuelrogeron.ui.theme.remTextFieldColors
 
 @Composable
 fun AddEstateScreen(
     viewModel: AddEstateViewModel = hiltViewModel(),
-    navController: NavController
-) {
+    navController: NavController,
+    windowSizeClass: WindowSizeClass,
+    ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val focusRequesters = List(10) { FocusRequester() }
     AddEstateScreen(
         onBackPress = { navController.navigateUp() },
-        onSavePress = viewModel::onSaveButtonClick ,
+        onSavePress = viewModel::onSaveButtonClick,
         uiState = uiState,
         onFieldChange = viewModel::onFieldChange,
         onMediaSelected = viewModel::onMediaPicked,
@@ -80,6 +85,8 @@ fun AddEstateScreen(
         onInterestPointsSelected = viewModel::onInterestPointSelected,
         onInterestPointCreated = viewModel::onCreateNewInterestPoint,
         onInterestPointItemRemove = viewModel::removeSelectedInterestPoint,
+        windowSizeClass = windowSizeClass,
+
     )
 }
 
@@ -89,6 +96,7 @@ fun AddEstateScreen(
     onBackPress: () -> Unit = {},
     onSavePress: () -> Unit = {},
     uiState: AddEstateState,
+    windowSizeClass: WindowSizeClass,
     onFieldChange: (String, String) -> Unit,
     onMediaSelected: (List<Uri>) -> Unit = {},
     onImageCaptured: (Uri) -> Unit = {},
@@ -101,7 +109,8 @@ fun AddEstateScreen(
     var openCameraHandler by remember { mutableStateOf(false) }
     val openInterestPointDialog = remember { mutableStateOf(false) }
     val openMediaPicker = remember { mutableStateOf(false) }
-    val focusRequesters = List(10) { FocusRequester() }
+    val focusRequesters = remember { List(11) { FocusRequester() } }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -238,10 +247,10 @@ fun AddEstateScreen(
                             ),
                             keyboardActions = KeyboardActions(
                                 onNext = {
-                                    focusRequesters[0].requestFocus()
+                                    focusRequesters[1].requestFocus()
                                 }
                             ),
-                            modifier = Modifier.focusRequester(focusRequesters[1])
+                            modifier = Modifier.focusRequester(focusRequesters[0])
 
                         )
                         OutlinedTextField(
@@ -253,14 +262,16 @@ fun AddEstateScreen(
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Next),
+                                imeAction = ImeAction.Next
+                            ),
                             keyboardActions = KeyboardActions(
                                 onNext = {
-                                    focusRequesters[1].requestFocus()
+                                    focusRequesters[2].requestFocus()
                                 }
                             ),
-                            modifier = Modifier.focusRequester(focusRequesters[2])
+                            modifier = Modifier.focusRequester(focusRequesters[1])
                         )
+
                         OutlinedTextField(
                             colors = remTextFieldColors(),
                             isError = uiState.surfaceError,
@@ -269,15 +280,10 @@ fun AddEstateScreen(
                             label = { Text(text = "Surface") },
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Next),
-                            keyboardActions = KeyboardActions(
-                                onNext = {
-                                    focusRequesters[2].requestFocus()
-                                }
+                                imeAction = ImeAction.Next
                             ),
                             singleLine = true,
-                            modifier = Modifier.focusRequester(focusRequesters[3])
-
+                            modifier = Modifier.focusRequester(focusRequesters[2])
                         )
                     }
                 }
@@ -300,15 +306,16 @@ fun AddEstateScreen(
                             label = { Text(text = "Price") },
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Next),
+                                imeAction = ImeAction.Next
+                            ),
                             keyboardActions = KeyboardActions(
                                 onNext = {
-                                    focusRequesters[3].requestFocus()
+                                    focusRequesters[4].requestFocus()
                                 }
                             ),
                             singleLine = true,
                             colors = remTextFieldColors(),
-                            modifier = Modifier.focusRequester(focusRequesters[4])
+                            modifier = Modifier.focusRequester(focusRequesters[3])
 
                         )
                     }
@@ -319,15 +326,16 @@ fun AddEstateScreen(
                             label = { Text(text = "Price") },
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Next),
+                                imeAction = ImeAction.Next
+                            ),
                             keyboardActions = KeyboardActions(
                                 onNext = {
-                                    focusRequesters[4].requestFocus()
+                                    focusRequesters[5].requestFocus()
                                 }
                             ),
                             singleLine = true,
                             isError = uiState.priceError,
-                            modifier = Modifier.focusRequester(focusRequesters[5])
+                            modifier = Modifier.focusRequester(focusRequesters[4])
 
                         )
                     }
@@ -343,14 +351,15 @@ fun AddEstateScreen(
                             label = { Text(text = "Address") },
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(
-                                imeAction = ImeAction.Next),
+                                imeAction = ImeAction.Next
+                            ),
                             keyboardActions = KeyboardActions(
                                 onNext = {
-                                    focusRequesters[5].requestFocus()
+                                    focusRequesters[6].requestFocus()
                                 }
                             ),
                             isError = uiState.addressError,
-                            modifier = Modifier.focusRequester(focusRequesters[7])
+                            modifier = Modifier.focusRequester(focusRequesters[5])
                         )
 
                         OutlinedTextField(
@@ -362,14 +371,15 @@ fun AddEstateScreen(
                             },
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(
-                                imeAction = ImeAction.Next),
+                                imeAction = ImeAction.Next
+                            ),
                             keyboardActions = KeyboardActions(
                                 onNext = {
-                                    focusRequesters[6].requestFocus()
+                                    focusRequesters[7].requestFocus()
                                 }
                             ),
                             isError = uiState.zipCodeError,
-                            modifier = Modifier.focusRequester(focusRequesters[7])
+                            modifier = Modifier.focusRequester(focusRequesters[6])
 
                         )
 
@@ -382,11 +392,11 @@ fun AddEstateScreen(
                             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
                             keyboardActions = KeyboardActions(
                                 onNext = {
-                                    focusRequesters[7].requestFocus()
+                                    focusRequesters[8].requestFocus()
                                 }
                             ),
                             isError = uiState.cityError,
-                            modifier = Modifier.focusRequester(focusRequesters[1])
+                            modifier = Modifier.focusRequester(focusRequesters[7])
                         )
 
                         OutlinedTextField(
@@ -398,11 +408,11 @@ fun AddEstateScreen(
                             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
                             keyboardActions = KeyboardActions(
                                 onNext = {
-                                    focusRequesters[8].requestFocus()
+                                    focusRequesters[9].requestFocus()
                                 }
                             ),
                             isError = uiState.regionError,
-                            modifier = Modifier.focusRequester(focusRequesters[7])
+                            modifier = Modifier.focusRequester(focusRequesters[8])
                         )
 
                         OutlinedTextField(
@@ -414,12 +424,12 @@ fun AddEstateScreen(
                             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
                             keyboardActions = KeyboardActions(
                                 onNext = {
-                                    focusRequesters[8].requestFocus()
+                                    focusRequesters[10].requestFocus()
 
                                 }
                             ),
                             isError = uiState.countryError,
-                            modifier = Modifier.focusRequester(focusRequesters[7])
+                            modifier = Modifier.focusRequester(focusRequesters[9])
                         )
 
                     }
@@ -432,27 +442,27 @@ fun AddEstateScreen(
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
                         onNext = {
-                            focusRequesters[8].requestFocus()
+                            focusRequesters[11].requestFocus()
                         }
                     ),
-                    modifier = Modifier.focusRequester(focusRequesters[7]),
+                    modifier = Modifier.focusRequester(focusRequesters[10]),
                     isError = uiState.descriptionError,
                 )
                 if (uiState.selectedInterestPoints.isNotEmpty()) {
-                            InterestPointsBox(
-                                modifier = Modifier,
-                                interestPointsList = uiState.selectedInterestPoints,
-                                editEnable = true,
-                                onClickRemove = onInterestPointItemRemove
-                            )
-                            Button(
-                                onClick = {
-                                    openInterestPointDialog.value = true
-                                },
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Text(text = "Select Interest Points")
-                            }
+                    InterestPointsBox(
+                        modifier = Modifier,
+                        interestPointsList = uiState.selectedInterestPoints,
+                        editEnable = true,
+                        onClickRemove = onInterestPointItemRemove
+                    )
+                    Button(
+                        onClick = {
+                            openInterestPointDialog.value = true
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Select Interest Points")
+                    }
 
                 } else {
                     Button(
@@ -517,13 +527,14 @@ fun AddEstateScreen(
             if (openMediaPicker.value) {
                 MediaPicker(onMediaSelected = onMediaSelected)
             }
-            if(uiState.isEstateSaved){
+            if (uiState.isEstateSaved) {
                 onBackPress()
             }
         }
     )
 }
 
+@ExperimentalMaterial3WindowSizeClassApi
 @Preview
 @Composable
 fun AddEstateScreenPreview() {
@@ -545,6 +556,7 @@ fun AddEstateScreenPreview() {
     AppTheme {
         AddEstateScreen(
             uiState = mockUiState,
+            windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(360.dp,640.dp)),
             onFieldChange = { _, _ -> /* Handle field changes */ },
             onSavePress = { /* Handle save */ },
             onBackPress = { /* Handle back navigation */ },
@@ -559,10 +571,11 @@ fun AddEstateScreenPreview() {
 }
 
 @Composable
-fun AddScreenContent(){
+fun AddScreenContent() {
 
 
 }
+
 @Preview
 @Composable
 fun AddEstateScreenDarkPreview() {
@@ -583,6 +596,7 @@ fun AddEstateScreenDarkPreview() {
     AppTheme(useDarkTheme = true) {
         AddEstateScreen(
             uiState = mockUiState,
+            windowSizeClass = calculateWindowSizeClass(),
             onFieldChange = { _, _ -> /* Handle field changes */ },
             onSavePress = { /* Handle save */ },
             onBackPress = { /* Handle back navigation */ },

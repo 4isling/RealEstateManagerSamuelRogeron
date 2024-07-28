@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
@@ -16,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
@@ -75,6 +77,7 @@ fun FilterDialog(
                             value = minMediaCount.toFloat(),
                             onValueChange = { minMediaCount = it.toInt() },
                             steps = 30,
+                            valueRange = 0f..30f
                         )
                     }
                     item {
@@ -113,11 +116,12 @@ fun FilterDialog(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
+                            horizontalArrangement = Arrangement.Absolute.SpaceAround
                         ) {
                             var minPriceError = false
 
-                            TextField(
+                            OutlinedTextField(
+                                modifier = Modifier.fillParentMaxWidth(0.5f),
                                 value = minPrice.toString(),
                                 onValueChange = {
                                     minPrice = if (it != "") {
@@ -129,6 +133,15 @@ fun FilterDialog(
                                         minPriceError = false
                                         0
                                     }
+                                },
+                                suffix = {
+                                    Text(
+                                        text = if (typeOfOffer == "Rent") {
+                                            " $/m"
+                                        } else {
+                                            " $"
+                                        }
+                                    )
                                 },
                                 isError = minPriceError,
                                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
@@ -158,7 +171,8 @@ fun FilterDialog(
                             )
                             Text(text = maxPrice.toString())*/
                             var maxPriceError = false
-                            TextField(
+                            OutlinedTextField(
+                                modifier = Modifier.wrapContentWidth(),
                                 value = maxPrice.toString(),
                                 onValueChange = {
                                     maxPrice = if (it != "") {
@@ -172,6 +186,15 @@ fun FilterDialog(
                                     }
                                 },
                                 isError = maxPriceError,
+                                suffix = {
+                                    Text(
+                                        text = if (typeOfOffer == "Rent") {
+                                            " $/m"
+                                        } else {
+                                            " $"
+                                        }
+                                    )
+                                },
                                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
                             )
                         }
@@ -218,7 +241,8 @@ fun FilterDialog(
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             var minSurfaceError = false
-                            TextField(
+                            OutlinedTextField(
+                                modifier = Modifier.fillMaxWidth(0.5f),
                                 value = minSurface.toString(),
                                 onValueChange = {
                                     minSurface = if (it != "") {
@@ -232,10 +256,12 @@ fun FilterDialog(
                                     }
                                 },
                                 isError = minSurfaceError,
+                                suffix = { Text(text = " m²") },
                                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
                             )
                             var maxSurfaceError = false
-                            TextField(
+                            OutlinedTextField(
+                                modifier = Modifier.fillMaxWidth(),
                                 value = maxSurface.toString(),
                                 onValueChange = {
                                     minSurface = if (it != "") {
@@ -249,6 +275,7 @@ fun FilterDialog(
                                     }
                                 },
                                 isError = maxSurfaceError,
+                                suffix = { Text(text = " m²") },
                                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
                             )
                             /*

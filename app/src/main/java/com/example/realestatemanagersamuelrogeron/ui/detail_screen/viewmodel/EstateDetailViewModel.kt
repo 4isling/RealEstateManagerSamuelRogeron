@@ -1,14 +1,15 @@
 package com.example.realestatemanagersamuelrogeron.ui.detail_screen.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithDetails
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
-import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
-import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
-import com.example.realestatemanagersamuelrogeron.domain.usecases.GetEstateInterestPointsUseCaseImpl
-import com.example.realestatemanagersamuelrogeron.domain.usecases.GetEstateMediasUseCaseImpl
-import com.example.realestatemanagersamuelrogeron.domain.usecases.GetEstateUseCaseImpl
+import com.example.realestatemanagersamuelrogeron.domain.usecases.AddLatLngToEstatesUseCaseImpl
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetCurrencyPreferenceUseCaseImpl
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetEstateWithDetailUseCaseImpl
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetStaticMapUseCaseImpl
 import com.example.realestatemanagersamuelrogeron.domain.usecases.UpdateEstateUseCaseImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,73 +21,120 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EstateDetailViewModel @Inject constructor(
-    private val getEstateUseCaseImpl: GetEstateUseCaseImpl,
-    private val getEstatePicturesUseCaseImpl: GetEstateMediasUseCaseImpl,
-    private val getEstateInterestPointsUseCaseImpl: GetEstateInterestPointsUseCaseImpl,
+    private val getEstateWithDetailUseCaseImpl: GetEstateWithDetailUseCaseImpl,
+    private val getStaticMapUseCaseImpl: GetStaticMapUseCaseImpl,
     private val updateEstateUseCaseImpl: UpdateEstateUseCaseImpl,
+    private val addLatLngToEstatesUseCaseImpl: AddLatLngToEstatesUseCaseImpl,
+    private val getCurrencyPreferenceUseCaseImpl: GetCurrencyPreferenceUseCaseImpl,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<DetailViewState>(DetailViewState.Loading)
     val uiState: StateFlow<DetailViewState> = _uiState.asStateFlow()
 
-    private val _estate = MutableStateFlow<Estate>(
-        Estate(
-            0L,
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            0,
-            0,
-            "",
-            0,
-            0,
-            0,
-            true,
-            false
+    private val _estate = MutableStateFlow<EstateWithDetails>(
+        EstateWithDetails(
+            estate = Estate(
+                0L,
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                0,
+                0,
+                "",
+                0,
+                0,
+                0,
+                true,
+                false
+            ),
+            estatePictures = emptyList(),
+            estateInterestPoints = emptyList()
         )
     )
-    private val _estateMedia = MutableStateFlow<List<EstateMedia>>(emptyList())
-    private val _estateInterestPoints = MutableStateFlow<List<EstateInterestPoints>>(emptyList())
 
     init {
         val estateId = savedStateHandle.get<Long>("estateId")
         println("estateId: " + estateId)
-
         if (estateId != null) {
             viewModelScope.launch {
                 try {
                     _uiState.value = DetailViewState.Loading
-
+                    val isEuro = getCurrencyPreferenceUseCaseImpl.invoke().first()
                     // Fetch estate details
-                    val estate = getEstateUseCaseImpl.invoke(estateId).first()
+                    val estate = getEstateWithDetailUseCaseImpl.invoke(estateId).first()
                     _estate.value = estate
-
-                    // Fetch interest points
-                    val interestPoints = getEstateInterestPointsUseCaseImpl.invoke(estateId).first()
-                    _estateInterestPoints.value = interestPoints
-
-                    // Fetch pictures
-                    val pics = getEstatePicturesUseCaseImpl.invoke(estateId).first()
-                    _estateMedia.value = pics
-
                     _uiState.value = DetailViewState.Success(
                         estate = estate,
-                        medias = pics,
-                        interestPoints = interestPoints
+                        isEuro = isEuro
                     )
 
                 } catch (e: Exception) {
                     _uiState.value = DetailViewState.Error(e.message ?: "Unknown error")
                 }
             }
+            if (_estate.value.estate.lat != null && _estate.value.estate.lng != null) {
+                viewModelScope.launch {
+                    try {
+                        getStaticMapUrl()
+                    } catch (e: Exception) {
+                        Log.e("DetailViewModel.init", "getDetailStaticMapError: ")
+                    }
+                }
+            }else {
+                addLatLngToEstate()
+            }
+        }
+    }
+
+    fun addLatLngToEstate() {
+        viewModelScope.launch {
+            addLatLngToEstatesUseCaseImpl.invoke()
+        }
+    }
+
+    private fun getStaticMapUrl() {
+        viewModelScope.launch {
+            if (_estate.value.estate.lng != null && _estate.value.estate.lat != null) {
+                try {
+                    val url = getStaticMapUseCaseImpl.invoke(_estate.value.estate)
+                    val estateUpdate = Estate(
+                        estateId = _estate.value.estate.estateId,
+                        title = _estate.value.estate.title,
+                        typeOfEstate = _estate.value.estate.typeOfEstate,
+                        typeOfOffer = _estate.value.estate.typeOfOffer,
+                        etage = _estate.value.estate.etage,
+                        address = _estate.value.estate.address,
+                        zipCode = _estate.value.estate.zipCode,
+                        city = _estate.value.estate.city,
+                        region = _estate.value.estate.region,
+                        country = _estate.value.estate.country,
+                        description = _estate.value.estate.description,
+                        addDate = _estate.value.estate.addDate,
+                        sellDate = _estate.value.estate.sellDate,
+                        agent = _estate.value.estate.agent,
+                        price = _estate.value.estate.price,
+                        surface = _estate.value.estate.surface,
+                        nbRooms = _estate.value.estate.nbRooms,
+                        status = _estate.value.estate.status,
+                        isFav = _estate.value.estate.isFav,
+                        lat = _estate.value.estate.lat,
+                        lng = _estate.value.estate.lng,
+                        staticMapUrl = url
+                    )
+                    updateEstateUseCaseImpl.invoke(estateUpdate)
+                } catch (e: Exception) {
+                    Log.e("DetailViewModel.init", "getStaticMapUrl: $e")
+                }
+            }
+
         }
     }
 

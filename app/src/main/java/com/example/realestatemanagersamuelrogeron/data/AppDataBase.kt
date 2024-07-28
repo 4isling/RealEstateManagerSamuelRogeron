@@ -17,7 +17,7 @@ import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
         EstateMedia::class,
         EstateInterestPointCrossRef::class,
     ],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 abstract class AppDataBase : RoomDatabase() {

@@ -61,13 +61,13 @@ interface EstateDao {
     fun delete(estate: Estate)
 
     @Delete
-    fun delete(interestPoint: EstateInterestPoints)
+    fun delete(interestPoint: EstateInterestPoints): Int
 
     @Delete
     fun delete(pictures: EstateMedia)
 
     @Query("DELETE FROM estate_interest_points WHERE estateInterestPointId = :interestPointId")
-    fun deleteInterestPointById(interestPointId: Long)
+    fun deleteInterestPointById(interestPointId: Long): Int
 
     @Query("DELETE FROM estate_pictures WHERE estateId = :estateId")
     fun deleteAllPicturesWithEstate(estateId: Long)
@@ -204,7 +204,6 @@ interface EstateDao {
         )
     }
 
-    @Transaction
     @Query("""
         SELECT * FROM estates
         WHERE estateId = :estateId

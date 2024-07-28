@@ -35,6 +35,7 @@ fun LocationBox(
     region: String,
     country: String,
     modifier: Modifier,
+    staticMap: String,
 ) {
     Card(
         modifier = modifier
@@ -104,7 +105,7 @@ fun LocationBox(
                 .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
         ) {
             MediaCard(
-                filePath = " static map",
+                filePath = staticMap,
                 modifier = Modifier //size
             )
         }
@@ -126,7 +127,8 @@ fun LocationBoxPreview() {
                 city = "Nice",
                 region = "Provence Alpes Cote D'Azur",
                 country = "France",
-                modifier = Modifier.fillMaxWidth().height(150.dp)
+                modifier = Modifier.fillMaxWidth().height(150.dp),
+                ""
             )
         }
     }

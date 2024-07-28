@@ -1,22 +1,32 @@
 package com.example.realestatemanagersamuelrogeron.ui.list_screen
 
 import android.util.Log
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -32,12 +42,12 @@ import com.example.realestatemanagersamuelrogeron.ui.list_screen.viewmodel.ListV
 import com.example.realestatemanagersamuelrogeron.ui.navigation.Screen
 import com.example.realestatemanagersamuelrogeron.ui.theme.AppTheme
 import com.example.realestatemanagersamuelrogeron.utils.RemIcon
-import com.example.realestatemanagersamuelrogeron.utils.SortType
 
 @Composable
 fun EstateListScreen(
     viewModel: EstatesListViewModel = hiltViewModel(),
     navController: NavController,
+    windowSizeClass: WindowSizeClass,
 ) {
     val TAG = "EstateListScreen:"
     var sortMenuExpend by remember {
@@ -67,8 +77,9 @@ fun EstateListScreen(
             navController.navigate(Screen.Map.route)
         },
         onClickSetting = {
-
+            navController.navigate(Screen.Settings.route)
         },
+        windowSizeClass = windowSizeClass,
     )
 }
 
@@ -80,14 +91,44 @@ fun EstateListScreen(
     onFilterChange: (EstateFilter) -> Unit = {},
     onClickMap: (String) -> Unit = {},
     onClickSetting: () -> Unit = {},
+    windowSizeClass: WindowSizeClass,
 ) {
-    val sortOptions = listOf(
-        SortType.Default,
-        SortType.PriceDescend,
-        SortType.PriceGrow,
-        SortType.RentDescend,
-        SortType.RentGrow
-    )
+    when (windowSizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> { //phone in portrait
+            EstateListPhoneScreen(
+                estateListState,
+                onEstateItemClick,
+                onAddEstateClick,
+                onFilterChange,
+                onClickMap,
+                onClickSetting
+            )
+        }
+
+        WindowWidthSizeClass.Medium -> { //largePhone or tablet in portrait
+
+        }
+
+        WindowWidthSizeClass.Expanded -> {  //tablet landscape
+            EstateListTabletScreen(
+                estateListState,
+                onEstateItemClick,
+                onFilterChange,
+            )
+        }
+    }
+
+}
+
+@Composable
+fun EstateListPhoneScreen(
+    estateListState: ListViewState,
+    onEstateItemClick: (Long) -> Unit,
+    onAddEstateClick: () -> Unit = {},
+    onFilterChange: (EstateFilter) -> Unit = {},
+    onClickMap: (String) -> Unit = {},
+    onClickSetting: () -> Unit = {},
+) {
     var showFilterDialog by remember {
         mutableStateOf(false)
     }
@@ -114,7 +155,7 @@ fun EstateListScreen(
                         estateWithDetails = estateListState.estates,
                         contentPadding = innerPadding
                     )
-                    if (showFilterDialog){
+                    if (showFilterDialog) {
                         FilterDialog(
                             onFilterChange = { newFilter -> onFilterChange(newFilter) },
                             initialFilter = estateListState.estateFilter,
@@ -149,76 +190,134 @@ fun EstateListScreen(
     )
 }
 
-@Preview(showBackground = true)
 @Composable
-fun EstateListScreenPreview() {
-    val estateWithDetails = listOf(
-        EstateWithDetails(
-            estate = Estate(
-            estateId = 0,
-                title = "House 1",
-                typeOfEstate = "House",
-                typeOfOffer = "Sell",
-                etage = "1",
-                address = "superbe Address",
-                zipCode = "06000",
-                city = "Nice",
-                description = "Superbe maison avec une super description",
-                addDate = 1716815996,
-                nbRooms = 4,
-                price = 350000,
-                surface = 150,
-            ),
-            estatePictures = listOf(),
-            estateInterestPoints = listOf()
-        ),
-        EstateWithDetails(estate = Estate(
-            estateId = 0,
-            title = "House 2",
-            typeOfEstate = "House",
-            typeOfOffer = "Sell",
-            etage = "1",
-            address = "superbe Address",
-            zipCode = "06000",
-            city = "Nice",
-            description = "Superbe maison avec une super description",
-            addDate = 1716715996,
-            sellDate = 1716725996,
-            nbRooms = 4,
-            price = 350000,
-            surface = 150,
-        ),  estatePictures = listOf(),
-            estateInterestPoints = listOf()),
-        EstateWithDetails(estate = Estate(
-            estateId = 0,
-            title = "House 3",
-            typeOfEstate = "House",
-            typeOfOffer = "Sell",
-            etage = "1",
-            address = "superbe Address",
-            zipCode = "06000",
-            city = "Nice",
-            description = "Superbe maison avec une super description",
-            addDate = 1716805996,
-            nbRooms = 4,
-            price = 350000,
-            surface = 150,
-        ),  estatePictures = listOf(),
-            estateInterestPoints = listOf())
-        )
+fun EstateListTabletScreen(
+    estateListState: ListViewState,
+    onEstateItemClick: (Long) -> Unit,
+    onFilterChange: (EstateFilter) -> Unit = {},
+) {
+    var showFilterDialog by remember {
+        mutableStateOf(false)
+    }
+    Surface(modifier = Modifier.fillMaxSize()) {
+        Column {
+            when (estateListState) {
+                is ListViewState.Loading -> {
+                    Log.d("EstateListScreen", "EstateListScreen: loading")
+                    Text(text = "loading")
+                }
 
-    AppTheme{
-        EstateListScreen(
-            estateListState = ListViewState.Success(estateWithDetails,
-                EstateFilter()),
-            onEstateItemClick = {},
-        )
+                is ListViewState.Success -> {
+                    Log.d("EstateListScreen", "EstateListScreen: Success")
+                    EstateList(
+                        onEstateItemClick = onEstateItemClick,
+                        estateWithDetails = estateListState.estates,
+                        contentPadding = PaddingValues(16.dp)
+                    )
+                    if (showFilterDialog) {
+                        FilterDialog(
+                            onFilterChange = { newFilter -> onFilterChange(newFilter) },
+                            initialFilter = estateListState.estateFilter,
+                            onDismiss = {
+                                showFilterDialog = false
+                            }
+                        )
+                    }
+                }
+
+                is ListViewState.Error -> {
+                    Log.i("EstateListScreen", "EstateListScreen: Error")
+                    Text(text = (estateListState.exception))
+                }
+            }
+        }
     }
 }
+    @ExperimentalMaterial3WindowSizeClassApi
+    @Preview(showBackground = true)
+    @Composable
+    fun EstateListPhoneScreenPreview() {
+        val estateWithDetails = listOf(
+            EstateWithDetails(
+                estate = Estate(
+                    estateId = 0,
+                    title = "House 1",
+                    typeOfEstate = "House",
+                    typeOfOffer = "Sell",
+                    etage = "1",
+                    address = "superbe Address",
+                    zipCode = "06000",
+                    city = "Nice",
+                    description = "Superbe maison avec une super description",
+                    addDate = 1716815996,
+                    nbRooms = 4,
+                    price = 350000,
+                    surface = 150,
+                ),
+                estatePictures = listOf(),
+                estateInterestPoints = listOf()
+            ),
+            EstateWithDetails(
+                estate = Estate(
+                    estateId = 0,
+                    title = "House 2",
+                    typeOfEstate = "House",
+                    typeOfOffer = "Sell",
+                    etage = "1",
+                    address = "superbe Address",
+                    zipCode = "06000",
+                    city = "Nice",
+                    description = "Superbe maison avec une super description",
+                    addDate = 1716715996,
+                    sellDate = 1716725996,
+                    nbRooms = 4,
+                    price = 350000,
+                    surface = 150,
+                ), estatePictures = listOf(),
+                estateInterestPoints = listOf()
+            ),
+            EstateWithDetails(
+                estate = Estate(
+                    estateId = 0,
+                    title = "House 3",
+                    typeOfEstate = "House",
+                    typeOfOffer = "Sell",
+                    etage = "1",
+                    address = "superbe Address",
+                    zipCode = "06000",
+                    city = "Nice",
+                    description = "Superbe maison avec une super description",
+                    addDate = 1716805996,
+                    nbRooms = 4,
+                    price = 350000,
+                    surface = 150,
+                ), estatePictures = listOf(),
+                estateInterestPoints = listOf()
+            )
+        )
+
+        AppTheme {
+            EstateListScreen(
+                estateListState = ListViewState.Success(
+                    estateWithDetails,
+                    EstateFilter()
+                ),
+                onEstateItemClick = {},
+                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(360.dp, 640.dp)),
+
+                )
+        }
+    }
+
+    @Composable
+    @Preview
+    fun EstateListTabletScreenPreview() {
+
+    }
 
 
-@Composable
-fun TopAppBarCompose() {
-    val context = LocalContext.current
+    @Composable
+    fun TopAppBarCompose() {
+        val context = LocalContext.current
 
-}
+    }

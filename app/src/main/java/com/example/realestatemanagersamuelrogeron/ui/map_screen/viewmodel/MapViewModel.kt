@@ -28,23 +28,16 @@ class MapViewModel @Inject constructor(
     private val _viewState = MutableStateFlow<MapState>(MapState.Loading)
     val viewState: StateFlow<MapState> = _viewState.asStateFlow()
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
-
-    private val _isRefreshing = MutableStateFlow(false)
-    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
-
-    private val _canLoadMoreItems = MutableStateFlow(true)
-    val canLoadMoreItems: StateFlow<Boolean> = _canLoadMoreItems.asStateFlow()
-
     private val _filter = MutableStateFlow(EstateFilter())
     val filter: StateFlow<EstateFilter> = _filter.asStateFlow()
+
     init {
         addLatLngToEstates()
         loadEstatesWithDetail()
     }
 
-    private fun addLatLngToEstates(){
+
+    private fun addLatLngToEstates() {
         viewModelScope.launch {
             addLatLngToEstatesUseCaseImpl.invoke()
         }
@@ -55,7 +48,6 @@ class MapViewModel @Inject constructor(
             getAllEstatesWithPicturesUseCaseImpl.execute(filter = EstateFilter(requireLatLng = 1))
                 .catch { exception ->
                     _viewState.emit(MapState.Error(exception.message ?: "Can't get the estate"))
-                    _isLoading.emit(false)
                     Log.w(ContentValues.TAG, "loadEstatesWithPictures: ", exception)
                     // Handle exceptions, if any
                 }
@@ -65,11 +57,15 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    fun updateSelectedEstate(estateId: Long){
+    fun updateSelectedEstate(estateId: Long) {
         viewModelScope.launch {
             getEstateWithDetailUseCaseImpl.invoke(estateId)
                 .catch { exception ->
-                    Log.e(TAG, "updateSelectedEstate: error while getting estate: $estateId", exception)
+                    Log.e(
+                        TAG,
+                        "updateSelectedEstate: error while getting estate: $estateId",
+                        exception
+                    )
                 }
                 .collect { estateWithDetails ->
                     val currentState = _viewState.value
@@ -85,7 +81,21 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    fun updateFilter(newFilter: EstateFilter){
+    fun unselectEstate() {
+        viewModelScope.launch {
+            val currentState = _viewState.value
+            if (currentState is MapState.Success) {
+                _viewState.emit(
+                    MapState.Success(
+                        estates = currentState.estates,
+                        estateSelected = null
+                    )
+                )
+            }
+        }
+    }
+
+    fun updateFilter(newFilter: EstateFilter) {
         _filter.value = newFilter
         loadEstatesWithDetail()
     }

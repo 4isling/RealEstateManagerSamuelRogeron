@@ -21,14 +21,14 @@ class DataStorePreference @Inject constructor(@ApplicationContext context: Conte
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "display_euro")
     private val dataStore = context.dataStore
 
-    private suspend fun save(key: String, value:Boolean){
+    suspend fun save(key: String, value: Boolean) {
         val dataStoreKey = booleanPreferencesKey(key)
         dataStore.edit { settings ->
             settings[dataStoreKey] = value
         }
     }
 
-    private suspend fun read(key: String): Boolean? {
+    suspend fun read(key: String): Boolean? {
         val dataStoreKey = booleanPreferencesKey(key)
         val preferences = dataStore.data.first()
         return preferences[dataStoreKey]
@@ -49,5 +49,4 @@ class DataStorePreference @Inject constructor(@ApplicationContext context: Conte
     object PreferencesKeys {
         val display_euro = booleanPreferencesKey("display_euro")
     }
-
 }
