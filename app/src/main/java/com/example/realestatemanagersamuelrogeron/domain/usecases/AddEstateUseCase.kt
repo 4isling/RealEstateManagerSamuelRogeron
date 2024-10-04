@@ -9,8 +9,10 @@ import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
 import com.example.realestatemanagersamuelrogeron.utils.FileTypeHelper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 interface AddEstateUseCase {
@@ -23,7 +25,7 @@ interface AddEstateUseCase {
 
 class AddEstateUseCaseImpl @Inject constructor(
     private val estateRepository: EstateRepository,
-    private val context: Context // Pass context as a dependency
+    private val context: Context
 ) : AddEstateUseCase {
     override suspend fun invoke(
         entry: Estate,
@@ -33,39 +35,31 @@ class AddEstateUseCaseImpl @Inject constructor(
         try {
             val estateId = estateRepository.addEstate(entry)
             Log.i("AddEstateUseCase", "estateId: $estateId")
-            try {
-                interestPoints.forEach { point ->
-                    estateRepository.addEstateInterestPointCrossRef(
-                        EstateInterestPointCrossRef(
-                            estateId = estateId,
-                            estateInterestPointId = point.estateInterestPointId
-                        )
-                    )
-                }
-            } catch (e: Exception) {
-                Log.e("AddEstateUseCase", "Error adding estate interest point cross-references: $e")
-                throw e
-            }
-            try {
-                pics.forEachIndexed { index, pic ->
-                    val mimeType = FileTypeHelper.getMimeType(context = context, uri = pic)
-                    val estatePicture = EstateMedia(
+
+            interestPoints.forEach { point ->
+                estateRepository.addEstateInterestPointCrossRef(
+                    EstateInterestPointCrossRef(
                         estateId = estateId,
-                        uri = pic.toString(),
-                        mimeType = mimeType,
-                        name = "e${estateId}p${index + 1}"
+                        estateInterestPointId = point.estateInterestPointId
                     )
-                    estateRepository.addEstatePicture(estatePicture)
-                }
-            } catch (e: Exception) {
-                Log.e("AddEstateUseCase", "Error adding estate pictures: $e")
-                throw e // Re-throw to propagate error
+                )
+            }
+
+            pics.forEachIndexed { index, pic ->
+                val mimeType = FileTypeHelper.getMimeType(context = context, uri = pic)
+                val estatePicture = EstateMedia(
+                    estateId = estateId,
+                    uri = pic.toString(),
+                    mimeType = mimeType,
+                    name = "e${estateId}p${index + 1}"
+                )
+                estateRepository.addEstatePicture(estatePicture)
             }
 
             emit(estateId) // Emit the estate ID as the final result
         } catch (e: Exception) {
             Log.e("AddEstateUseCase", "Error adding estate: $e")
-            emit(-1) // Emit an error indicator (could also use Result.failure)
+            emit(-1L) // Emit an error indicator
         }
-    }
+    }.flowOn(Dispatchers.IO)
 }

@@ -22,7 +22,6 @@ import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.example.realestatemanagersamuelrogeron.domain.usecases.EstateFilter
 import com.example.realestatemanagersamuelrogeron.ui.add_screen.composable.SelectTextField
 import com.example.realestatemanagersamuelrogeron.ui.theme.AppTheme
+import com.example.realestatemanagersamuelrogeron.ui.theme.remTextFieldColors
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -72,12 +72,12 @@ fun FilterDialog(
             Surface(modifier = Modifier.wrapContentSize()) {
                 LazyColumn {
                     item {
-                        Text(text = "Min picture")
+                        Text(text = "Min picture: $minMediaCount")
                         Slider(
                             value = minMediaCount.toFloat(),
                             onValueChange = { minMediaCount = it.toInt() },
                             steps = 30,
-                            valueRange = 0f..30f
+                            valueRange = 0f..15f
                         )
                     }
                     item {
@@ -121,6 +121,7 @@ fun FilterDialog(
                             var minPriceError = false
 
                             OutlinedTextField(
+                                colors = remTextFieldColors(),
                                 modifier = Modifier.fillParentMaxWidth(0.5f),
                                 value = minPrice.toString(),
                                 onValueChange = {
@@ -146,32 +147,9 @@ fun FilterDialog(
                                 isError = minPriceError,
                                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
                             )
-                            /*
-                            Text(text = minPrice.toString())
-                            RangeSlider(
-                                value = priceRange.value,
-                                onValueChange = { newRange ->
-                                    priceRange.value = newRange
-                                    minPrice = newRange.start.toInt()
-                                    maxPrice = newRange.endInclusive.toInt()
-                                },
-                                valueRange = 0f..10000000f,
-                                steps = 500,
-                                colors = SliderDefaults.colors(
-                                    activeTrackColor = MaterialTheme.colorScheme.primary,
-                                    inactiveTrackColor = MaterialTheme.colorScheme.onSurface.copy(
-                                        alpha = 0.24f
-                                    ),
-                                    activeTickColor = MaterialTheme.colorScheme.primary,
-                                    inactiveTickColor = MaterialTheme.colorScheme.onSurface.copy(
-                                        alpha = 0.24f
-                                    ),
-                                    thumbColor = MaterialTheme.colorScheme.primary
-                                )
-                            )
-                            Text(text = maxPrice.toString())*/
                             var maxPriceError = false
                             OutlinedTextField(
+                                colors = remTextFieldColors(),
                                 modifier = Modifier.wrapContentWidth(),
                                 value = maxPrice.toString(),
                                 onValueChange = {
@@ -201,39 +179,33 @@ fun FilterDialog(
 
                     }
                     item {
-                        TextField(
+                        OutlinedTextField(
+                            colors = remTextFieldColors(),
                             value = etage,
                             onValueChange = { etage = it },
                             label = { Text("Etage") }
                         )
                     }
                     item {
-                        TextField(
+                        OutlinedTextField(
+                            colors = remTextFieldColors(),
                             value = city,
                             onValueChange = { city = it },
                             label = { Text("City") }
                         )
-                        TextField(
+                        OutlinedTextField(
+                            colors = remTextFieldColors(),
                             value = region,
                             onValueChange = { region = it },
                             label = { Text("Region") }
                         )
-                        TextField(
+                        OutlinedTextField(
                             value = country,
                             onValueChange = { country = it },
-                            label = { Text("Country") }
+                            label = { Text("Country") },
+                            colors = remTextFieldColors(),
                         )
-                    }/*
-                    item {
-                        TextField(
-                            modifier = Modifier.clickable {
-                                showDatePicker = true
-                            },
-                            value = addDate,
-                            onValueChange = { addDate = it },
-                            label = { Text("Add Date") },
-                        )
-                    }*/
+                    }
                     item {
                         Text(text = "Surface")
                         Row(
@@ -242,6 +214,7 @@ fun FilterDialog(
                         ) {
                             var minSurfaceError = false
                             OutlinedTextField(
+                                colors = remTextFieldColors(),
                                 modifier = Modifier.fillMaxWidth(0.5f),
                                 value = minSurface.toString(),
                                 onValueChange = {
@@ -261,6 +234,7 @@ fun FilterDialog(
                             )
                             var maxSurfaceError = false
                             OutlinedTextField(
+                                colors = remTextFieldColors(),
                                 modifier = Modifier.fillMaxWidth(),
                                 value = maxSurface.toString(),
                                 onValueChange = {

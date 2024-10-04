@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.BottomAppBar
@@ -14,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
@@ -28,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.realestatemanagersamuelrogeron.ui.theme.AppTheme
+import com.example.realestatemanagersamuelrogeron.ui.theme.remTextFieldColors
 import com.example.realestatemanagersamuelrogeron.utils.RemIcon
 
 @Composable
@@ -130,6 +134,59 @@ fun RemDetailTopAppBar(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RemEditTopAppBar(
+    title: String,
+    modifier: Modifier,
+    onFieldChange: (String, String) -> Unit,
+    onBackPress: () -> Unit,
+    onSaveIconClick: () -> Unit,
+) {
+    TopAppBar(
+        colors = TopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        title = {
+            OutlinedTextField(
+                colors = remTextFieldColors(),
+                value = title,
+                onValueChange = { newValue -> onFieldChange("title", newValue) },
+                label = { Text(text = "Title") },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions.Default,
+                keyboardActions = KeyboardActions.Default,
+            )
+        },
+        navigationIcon = {
+            IconButton(
+                onClick = {
+                    onBackPress()
+                },
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                    contentDescription = "Back",
+                )
+            }
+        },
+        actions = {
+            IconButton(
+                onClick = { onSaveIconClick() }
+            ) {
+                Icon(
+                    imageVector = RemIcon.Save,
+                    contentDescription = null
+                )
+            }
+        }
+    )
+}
+
 
 @Preview
 @Composable
@@ -150,12 +207,13 @@ fun RemLeftBar(
     ) {
     Column(
         modifier = Modifier
-            .width(240.dp)
+            .width(60.dp)
             .fillMaxHeight()
             .background(MaterialTheme.colorScheme.primaryContainer),
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         IconButton(onClick = {
             onClickMap()
         }) {

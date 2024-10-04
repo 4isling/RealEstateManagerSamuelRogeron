@@ -4,58 +4,68 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 
 @Composable
-fun remTextFieldColors(
-): TextFieldColors {
+fun remTextFieldColors(): TextFieldColors {
     val isLightTheme = !isSystemInDarkTheme()
-    val focusedTextColor = if (isLightTheme) Color(0xFF321900) else Color(0xFFFFDBCC)
-    val unfocusedTextColor = if (isLightTheme) Color(0xFF52443D) else Color(0xFFD8C2BA)
-    val disabledTextColor = if (isLightTheme) Color(0xFF85736C) else Color(0xFFA08D85)
-    val errorTextColor = if (isLightTheme) Color(0xFFBA1A1A) else Color(0xFFFFB4AB)
-    val focusedContainerColor = if (isLightTheme) Color(0xFFFFDDBB) else Color(0xFF7B2F00)
-    val unfocusedContainerColor = if (isLightTheme) Color(0xFFEAD9D0) else Color(0xFF5D4034)
-    val disabledContainerColor = if (isLightTheme) Color(0xFFF4DED5) else Color(0xFF52443D)
-    val errorContainerColor = if (isLightTheme) Color(0xFFFFDAD6) else Color(0xFF93000A)
-    val cursorColor = if (isLightTheme) Color(0xFF995D00) else Color(0xFFFFB184)
-    val errorCursorColor = if (isLightTheme) Color(0xFFBA1A1A) else Color(0xFFFFB4AB)
-    val focusedIndicatorColor = if (isLightTheme) Color(0xFF995D00) else Color(0xFFFFB184)
-    val unfocusedIndicatorColor = if (isLightTheme) Color(0xFF85736C) else Color(0xFFA08D85)
-    val disabledIndicatorColor = if (isLightTheme) Color(0xFFD8C2BA) else Color(0xFF52443D)
-    val errorIndicatorColor = if (isLightTheme) Color(0xFFBA1A1A) else Color(0xFFFFB4AB)
-    val focusedLeadingIconColor = if (isLightTheme) Color(0xFF995D00) else Color(0xFFFFB184)
-    val unfocusedLeadingIconColor = if (isLightTheme) Color(0xFF52443D) else Color(0xFFD8C2BA)
-    val disabledLeadingIconColor = if (isLightTheme) Color(0xFF85736C) else Color(0xFFA08D85)
-    val errorLeadingIconColor = if (isLightTheme) Color(0xFFBA1A1A) else Color(0xFFFFB4AB)
-    val focusedTrailingIconColor = if (isLightTheme) Color(0xFF995D00) else Color(0xFFFFB184)
-    val unfocusedTrailingIconColor = if (isLightTheme) Color(0xFF52443D) else Color(0xFFD8C2BA)
-    val disabledTrailingIconColor = if (isLightTheme) Color(0xFF85736C) else Color(0xFFA08D85)
-    val errorTrailingIconColor = if (isLightTheme) Color(0xFFBA1A1A) else Color(0xFFFFB4AB)
-    val focusedLabelColor = if (isLightTheme) Color(0xFF995D00) else Color(0xFFFFB184)
-    val unfocusedLabelColor = if (isLightTheme) Color(0xFF52443D) else Color(0xFFD8C2BA)
-    val disabledLabelColor = if (isLightTheme) Color(0xFF85736C) else Color(0xFFA08D85)
-    val errorLabelColor = if (isLightTheme) Color(0xFFBA1A1A) else Color(0xFFFFB4AB)
-    val focusedPlaceholderColor = if (isLightTheme) Color(0xFF995D00) else Color(0xFFFFB184)
-    val unfocusedPlaceholderColor = if (isLightTheme) Color(0xFF52443D) else Color(0xFFD8C2BA)
-    val disabledPlaceholderColor = if (isLightTheme) Color(0xFF85736C) else Color(0xFFA08D85)
-    val errorPlaceholderColor = if (isLightTheme) Color(0xFFBA1A1A) else Color(0xFFFFB4AB)
-    val focusedSupportingTextColor = if (isLightTheme) Color(0xFF995D00) else Color(0xFFFFB184)
-    val unfocusedSupportingTextColor = if (isLightTheme) Color(0xFF52443D) else Color(0xFFD8C2BA)
-    val disabledSupportingTextColor = if (isLightTheme) Color(0xFF85736C) else Color(0xFFA08D85)
-    val errorSupportingTextColor = if (isLightTheme) Color(0xFFBA1A1A) else Color(0xFFFFB4AB)
-    val focusedPrefixColor = if (isLightTheme) Color(0xFF995D00) else Color(0xFFFFB184)
-    val unfocusedPrefixColor = if (isLightTheme) Color(0xFF52443D) else Color(0xFFD8C2BA)
-    val disabledPrefixColor = if (isLightTheme) Color(0xFF85736C) else Color(0xFFA08D85)
-    val errorPrefixColor = if (isLightTheme) Color(0xFFBA1A1A) else Color(0xFFFFB4AB)
-    val focusedSuffixColor = if (isLightTheme) Color(0xFF995D00) else Color(0xFFFFB184)
-    val unfocusedSuffixColor = if (isLightTheme) Color(0xFF52443D) else Color(0xFFD8C2BA)
-    val disabledSuffixColor = if (isLightTheme) Color(0xFF85736C) else Color(0xFFA08D85)
-    val errorSuffixColor = if (isLightTheme) Color(0xFFBA1A1A) else Color(0xFFFFB4AB)
+
+    // Define colors based on the theme using your color scheme
+    val focusedTextColor = if (isLightTheme) onSurfaceLight else onSurfaceDark
+    val unfocusedTextColor = if (isLightTheme) onSurfaceVariantLight else onSurfaceVariantDark
+    val disabledTextColor = if (isLightTheme) onSurfaceVariantLight.copy(alpha = 0.4f) else onSurfaceVariantDark.copy(alpha = 0.4f)
+    val errorTextColor = if (isLightTheme) onErrorLight else onErrorDark
+
+    val focusedContainerColor = if (isLightTheme) surfaceLight else surfaceDark
+    val unfocusedContainerColor = if (isLightTheme) surfaceVariantLight else surfaceVariantDark
+    val disabledContainerColor = if (isLightTheme) surfaceVariantLight.copy(alpha = 0.4f) else surfaceVariantDark.copy(alpha = 0.4f)
+    val errorContainerColor = if (isLightTheme) errorContainerLight else errorContainerDark
+
+    val cursorColor = if (isLightTheme) primaryLight else primaryDark
+    val errorCursorColor = if (isLightTheme) errorLight else errorDark
+
+    val focusedIndicatorColor = if (isLightTheme) primaryLight else primaryDark
+    val unfocusedIndicatorColor = if (isLightTheme) onSurfaceVariantLight else onSurfaceVariantDark
+    val disabledIndicatorColor = if (isLightTheme) outlineVariantLight.copy(alpha = 0.4f) else outlineVariantDark.copy(alpha = 0.4f)
+    val errorIndicatorColor = if (isLightTheme) errorLight else errorDark
+
+    val focusedLeadingIconColor = if (isLightTheme) onSurfaceLight else onSurfaceDark
+    val unfocusedLeadingIconColor = if (isLightTheme) onSurfaceVariantLight else onSurfaceVariantDark
+    val disabledLeadingIconColor = if (isLightTheme) onSurfaceVariantLight.copy(alpha = 0.4f) else onSurfaceVariantDark.copy(alpha = 0.4f)
+    val errorLeadingIconColor = if (isLightTheme) errorLight else errorDark
+
+    val focusedTrailingIconColor = if (isLightTheme) onSurfaceLight else onSurfaceDark
+    val unfocusedTrailingIconColor = if (isLightTheme) onSurfaceVariantLight else onSurfaceVariantDark
+    val disabledTrailingIconColor = if (isLightTheme) onSurfaceVariantLight.copy(alpha = 0.4f) else onSurfaceVariantDark.copy(alpha = 0.4f)
+    val errorTrailingIconColor = if (isLightTheme) errorLight else errorDark
+
+    val focusedLabelColor = if (isLightTheme) primaryLight else primaryDark
+    val unfocusedLabelColor = if (isLightTheme) onSurfaceVariantLight else onSurfaceVariantDark
+    val disabledLabelColor = if (isLightTheme) onSurfaceVariantLight.copy(alpha = 0.4f) else onSurfaceVariantDark.copy(alpha = 0.4f)
+    val errorLabelColor = if (isLightTheme) errorLight else errorDark
+
+    val focusedPlaceholderColor = if (isLightTheme) onSurfaceLight.copy(alpha = 0.6f) else onSurfaceDark.copy(alpha = 0.6f)
+    val unfocusedPlaceholderColor = if (isLightTheme) onSurfaceVariantLight.copy(alpha = 0.6f) else onSurfaceVariantDark.copy(alpha = 0.6f)
+    val disabledPlaceholderColor = if (isLightTheme) onSurfaceVariantLight.copy(alpha = 0.4f) else onSurfaceVariantDark.copy(alpha = 0.4f)
+    val errorPlaceholderColor = if (isLightTheme) errorLight.copy(alpha = 0.6f) else errorDark.copy(alpha = 0.6f)
+
+    val focusedSupportingTextColor = if (isLightTheme) onSurfaceLight else onSurfaceDark
+    val unfocusedSupportingTextColor = if (isLightTheme) onSurfaceVariantLight else onSurfaceVariantDark
+    val disabledSupportingTextColor = if (isLightTheme) onSurfaceVariantLight.copy(alpha = 0.4f) else onSurfaceVariantDark.copy(alpha = 0.4f)
+    val errorSupportingTextColor = if (isLightTheme) errorLight else errorDark
+
+    val focusedPrefixColor = if (isLightTheme) onSurfaceLight else onSurfaceDark
+    val unfocusedPrefixColor = if (isLightTheme) onSurfaceVariantLight else onSurfaceVariantDark
+    val disabledPrefixColor = if (isLightTheme) onSurfaceVariantLight.copy(alpha = 0.4f) else onSurfaceVariantDark.copy(alpha = 0.4f)
+    val errorPrefixColor = if (isLightTheme) errorLight else errorDark
+
+    val focusedSuffixColor = if (isLightTheme) onSurfaceLight else onSurfaceDark
+    val unfocusedSuffixColor = if (isLightTheme) onSurfaceVariantLight else onSurfaceVariantDark
+    val disabledSuffixColor = if (isLightTheme) onSurfaceVariantLight.copy(alpha = 0.4f) else onSurfaceVariantDark.copy(alpha = 0.4f)
+    val errorSuffixColor = if (isLightTheme) errorLight else errorDark
 
     val textSelectionColors = TextSelectionColors(
-        handleColor = if (isLightTheme) Color(0xFF995D00) else Color(0xFFFFB184),
-        backgroundColor = if (isLightTheme) Color(0xFFEDD6BF) else Color(0xFF442A1F)
+        handleColor = if (isLightTheme) primaryLight else primaryDark,
+        backgroundColor = if (isLightTheme) primaryContainerLight else primaryContainerDark
     )
 
     return TextFieldColors(

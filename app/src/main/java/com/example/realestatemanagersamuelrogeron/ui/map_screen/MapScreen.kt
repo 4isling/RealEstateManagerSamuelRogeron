@@ -4,49 +4,32 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.realestatemanagersamuelrogeron.domain.usecases.EstateFilter
-import com.example.realestatemanagersamuelrogeron.ui.composable.utils.EstateItem
-import com.example.realestatemanagersamuelrogeron.ui.composable.utils.RemBottomAppBar
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.safeNavigate
 import com.example.realestatemanagersamuelrogeron.ui.map_screen.viewmodel.MapState
 import com.example.realestatemanagersamuelrogeron.ui.map_screen.viewmodel.MapViewModel
 import com.example.realestatemanagersamuelrogeron.ui.navigation.Screen
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MapUiSettings
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.rememberMarkerState
 
 @Composable
 fun MapScreen(
     navController: NavController,
     viewModel: MapViewModel = hiltViewModel(),
     windowSizeClass: WindowSizeClass,
-    ) {
+    onEstateSelected:(Long) -> Unit = {}
+) {
     val TAG = "MapScreen: "
     val uiState by viewModel.viewState.collectAsStateWithLifecycle()
 
@@ -95,90 +78,39 @@ fun MapScreenContent(
         }
 
         is MapState.Success -> {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                ) {
-                    GoogleMap(
-                        modifier = Modifier.fillMaxSize(),
-                        uiSettings = MapUiSettings(zoomControlsEnabled = false),
-                        properties = MapProperties(
-                            // mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.style_json)
-                        ),
-                        onMapClick = {
-                            onClickMap()
-                        }
-                        /*cameraPositionState = CameraPositionState(
-                            CameraPosition(
-                                LatLng(22.5726, 88.3639), 12f, 0f, 0f
-                            )
-                        ),*/
-                    ) {
-                        viewState.estates.forEach {
-                            val id = it.estate.estateId
-                            val markerState = rememberMarkerState(
-                                position = LatLng(
-                                    it.estate.lat!!,
-                                    it.estate.lng!!
-                                )
-                            )
-                            Marker(
-                                state = markerState,
-                                icon = setCustomMapIcon(
-                                    it.estate.title,
-                                    it.estate.price.toString() + if (it.estate.typeOfOffer == "Rent") {
-                                        " $/m"
-                                    } else {
-                                        " $"
-                                    }
-                                ),
-                                onClick = {
-                                    onEstateMakerClick(id)
-                                    false
-                                },
-                            )
-                        }
-                    }
-                    if (viewState.estateSelected != null) {
-                        Box(
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .align(Alignment.TopCenter)
-                                .fillMaxWidth()
-                        ) {
-                            EstateItem(
-                                entry = viewState.estateSelected,
-                                onEstateItemClick = onEstateItemClick,
-                                modifier = Modifier.wrapContentSize()
-                            )
-                        }
-                    }
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .fillMaxWidth()
-                            .height(100.dp)
-                            .background(
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color.Transparent,
-                                        Color(0x6F202020)
-                                    ),
-                                ),
-                            ),
-                        contentAlignment = Alignment.BottomCenter,
-                    ) {
-                        RemBottomAppBar(
-                            selectedScreen = "Map",
-                            onScreenSelected = onClickList,
-                            onClickSetting = onClickSetting,
-                            onClickAdd = onClickAddEstate,
-                        )
-                    }
+            when (windowSizeClass.widthSizeClass) {
+                WindowWidthSizeClass.Compact -> {
+                    MapPhoneScreen(
+                        estates = viewState.estates,
+                        isEuro = viewState.isEuro,
+                        estateSelected = viewState.estateSelected,
+                        onClickList = onClickList,
+                        onClickSetting = onClickSetting,
+                        onClickAddEstate = onClickAddEstate,
+                        onEstateMakerClick = onEstateMakerClick,
+                        onEstateItemClick = onEstateItemClick,
+                        onFilterChange = onFilterChange,
+                        onClickMap = onClickMap,
+                    )
                 }
+
+                WindowWidthSizeClass.Medium -> {
+
+                }
+
+                WindowWidthSizeClass.Expanded -> {
+                    MapTabletScreen(
+                        estates = viewState.estates,
+                        isEuro = viewState.isEuro,
+                        estateSelected = viewState.estateSelected,
+                        onEstateItemClick = onEstateItemClick,
+                        onClickMap = onClickMap,
+                        onEstateMakerClick = onEstateMakerClick,
+                    )
+                }
+
             }
+
         }
 
         is MapState.Error -> {
@@ -189,7 +121,7 @@ fun MapScreenContent(
     }
 }
 
-private fun setCustomMapIcon(line1: String, line2: String): BitmapDescriptor {
+fun setCustomMapIcon(line1: String, line2: String): BitmapDescriptor {
     val height = 200f // Adjusted height to accommodate two lines
     val widthPadding = 80.dp.value
     val lineHeight = 50f // Height for each line

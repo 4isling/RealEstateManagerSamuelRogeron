@@ -12,31 +12,54 @@ import androidx.compose.ui.unit.TextUnit
 @Composable
 fun PriceText(
     estatePrice: Int,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     fontSize: TextUnit = TextUnit.Unspecified,
     color: Color,
     style: TextStyle = LocalTextStyle.current,
     toEuro: Boolean = false,
-){
-    if (!toEuro){
-        Text(
-            text = "$estatePrice $",
-            modifier = modifier,
-            fontSize = fontSize,
-            fontWeight = FontWeight.Bold,
-            color = color,
-            style = style,
-        )
-    }else{
-        val price = (estatePrice * 0.92)
-        Text(
-            text = "$estatePrice €",
-            modifier = modifier,
-            fontSize = fontSize,
-            fontWeight = FontWeight.Bold,
-            color = color,
-            style = style,
-        )
-    }
+    offer: String,
+) {
+    if (!toEuro) {
+        if (offer == "Sell") {
+            Text(
+                text = "$estatePrice $",
+                modifier = modifier,
+                fontSize = fontSize,
+                fontWeight = FontWeight.Bold,
+                color = color,
+                style = style,
+            )
+        }else{
+            Text(
+                text = "$estatePrice $/m",
+                modifier = modifier,
+                fontSize = fontSize,
+                fontWeight = FontWeight.Bold,
+                color = color,
+                style = style,
+            )
+        }
 
+    } else {
+        val price = (estatePrice * 0.92).toInt()
+        if (offer == "Sell") {
+            Text(
+                text = "$price €",
+                modifier = modifier,
+                fontSize = fontSize,
+                fontWeight = FontWeight.Bold,
+                color = color,
+                style = style,
+            )
+        }else{
+            Text(
+                text = "$price €/m",
+                modifier = modifier,
+                fontSize = fontSize,
+                fontWeight = FontWeight.Bold,
+                color = color,
+                style = style,
+            )
+        }
+    }
 }

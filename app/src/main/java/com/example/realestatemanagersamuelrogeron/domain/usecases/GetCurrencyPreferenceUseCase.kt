@@ -12,6 +12,6 @@ class GetCurrencyPreferenceUseCaseImpl @Inject constructor(
     private val dataStorePreference: DataStorePreference
 ): GetCurrencyPreferenceUseCase {
     override suspend fun invoke(): Flow<Boolean> {
-        return dataStorePreference.exampleBooleanFlow
+        return dataStorePreference.displayEuroBooleanFlow
     }
 }

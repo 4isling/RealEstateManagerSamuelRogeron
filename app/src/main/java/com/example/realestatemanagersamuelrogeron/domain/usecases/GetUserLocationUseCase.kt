@@ -6,9 +6,11 @@ import android.content.pm.PackageManager
 import android.location.Location
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 interface GetUserLocationUseCase {
@@ -16,7 +18,7 @@ interface GetUserLocationUseCase {
 }
 
 class GetUserLocationUseCaseImpl @Inject constructor(
-    private val context: Context
+    @ApplicationContext private val context: Context
 ) : GetUserLocationUseCase {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -28,16 +30,22 @@ class GetUserLocationUseCaseImpl @Inject constructor(
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-            fusedLocationClient.lastLocation
-                .addOnSuccessListener { location: Location? ->
-                    {
-                        /* {@TODO} **/
-                    }
+            try {
+                val location = fusedLocationClient.lastLocation.await()
+
+                if (location != null) {
+                    trySend(location) // Send the location to the Flow
+                } else {
+                    close(Throwable("Location is null"))
                 }
+            } catch (e: Exception) {
+                close(e) // Close the Flow with an exception if something goes wrong
+            }
         } else {
             // Permission not granted, handle this case
             close(Throwable("Location permission not granted"))
         }
+
+        awaitClose { /* Clean up resources if needed */ }
     }
 }

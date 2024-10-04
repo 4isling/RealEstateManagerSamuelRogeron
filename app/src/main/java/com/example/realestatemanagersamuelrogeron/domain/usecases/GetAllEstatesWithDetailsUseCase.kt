@@ -6,10 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-enum class SortOrder {
-    ASCENDING,
-    DESCENDING
-}
+
 
 data class EstateFilter(
     val typeOfEstate: String? = null,
@@ -27,19 +24,16 @@ data class EstateFilter(
     val requireLatLng: Int = 0
 )
 
-interface GetAllEstatesWithPicturesUseCase {
+interface GetAllEstatesWithDetailsUseCase {
     suspend fun execute(filter: EstateFilter): Flow<List<EstateWithDetails>>
 }
 
-class GetAllEstatesWithPicturesUseCaseImpl @Inject constructor(private val estateRepository: EstateRepository) :
-    GetAllEstatesWithPicturesUseCase {
+class GetAllEstatesWithDetailsUseCaseImpl @Inject constructor(private val estateRepository: EstateRepository) :
+    GetAllEstatesWithDetailsUseCase {
     override suspend fun execute(filter: EstateFilter): Flow<List<EstateWithDetails>> {
-        val TAG = "GetEstateWithPictures"
-        return try {
-                estateRepository.getFilteredEstates(
-                    filter
-                )
 
+        return try {
+            estateRepository.getFilteredEstates(filter)
         } catch(e: Exception) {
             flow { emit(emptyList<EstateWithDetails>()) }
         }

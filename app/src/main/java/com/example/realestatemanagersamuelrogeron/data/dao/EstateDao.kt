@@ -1,5 +1,6 @@
 package com.example.realestatemanagersamuelrogeron.data.dao
 
+import android.database.Cursor
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -23,28 +24,28 @@ interface EstateDao {
     fun createEstate(estate: Estate): Long
 
     @Update
-    fun updateEstate(estate: Estate)
+    fun updateEstate(estate: Estate): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertEstatePicture(estateMedia: EstateMedia)
+    fun insertEstatePicture(estateMedia: EstateMedia): Long
 
     @Update
-    fun updatePicture(estateMedia: EstateMedia)
+    fun updatePicture(estateMedia: EstateMedia): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertEstateInterestPoints(estateInterestPoints: EstateInterestPoints): Long
 
     @Update
-    fun updateInterestPoint(estateInterestPoints: EstateInterestPoints)
+    fun updateInterestPoint(estateInterestPoints: EstateInterestPoints): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCrossRef(crossRef: EstateInterestPointCrossRef)
+    fun insertCrossRef(crossRef: EstateInterestPointCrossRef): Long
 
     @Update
-    fun updateCrossRef(crossRef: EstateInterestPointCrossRef)
+    fun updateCrossRef(crossRef: EstateInterestPointCrossRef): Int
 
     @Delete
-    fun deleteCrossRef(crossRef: EstateInterestPointCrossRef)
+    fun deleteCrossRef(crossRef: EstateInterestPointCrossRef): Int
 
     @Query("SELECT * FROM estates")
     fun getAllEstates(): Flow<List<Estate>>
@@ -58,25 +59,28 @@ interface EstateDao {
     fun getInterestPointsWithEstate(id: Long): Flow<List<InterestPointsWithEstate>>
 
     @Delete
-    fun delete(estate: Estate)
+    fun delete(estate: Estate): Int
 
     @Delete
     fun delete(interestPoint: EstateInterestPoints): Int
 
     @Delete
-    fun delete(pictures: EstateMedia)
+    fun delete(pictures: EstateMedia): Int
+
+    @Query("DELETE FROM estate_pictures WHERE id = :mediaId")
+    fun deleteEstateMediaById(mediaId: Long): Int
 
     @Query("DELETE FROM estate_interest_points WHERE estateInterestPointId = :interestPointId")
     fun deleteInterestPointById(interestPointId: Long): Int
 
     @Query("DELETE FROM estate_pictures WHERE estateId = :estateId")
-    fun deleteAllPicturesWithEstate(estateId: Long)
+    fun deleteAllPicturesWithEstate(estateId: Long): Int
 
     @Query("DELETE FROM estates WHERE estateId = :estateId")
-    fun deleteEstateById(estateId: Long)
+    fun deleteEstateById(estateId: Long): Int
 
     @Query("DELETE FROM estate_interest_point_cross_ref WHERE estateId = :estateId")
-    fun deleteAllCrossRefsWithEstate(estateId: Long)
+    fun deleteAllCrossRefsWithEstate(estateId: Long): Int
 
     @Query("SELECT * FROM estates ORDER BY price ASC")
     fun getAllEstatesOrderedByGrowPrice(): Flow<List<Estate>>
@@ -106,13 +110,13 @@ interface EstateDao {
     suspend fun getInterestPointsByName(interestPointsNames: List<String>): List<EstateInterestPoints>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertInterestPoints(interestPoints: List<EstateInterestPoints>)
+    suspend fun insertInterestPoints(interestPoints: List<EstateInterestPoints>): List<Long>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAllInterestPoints(interestPoints: List<EstateInterestPoints>)
+    fun insertAllInterestPoints(interestPoints: List<EstateInterestPoints>): List<Long>
 
     @Query("UPDATE estates SET lat = :lat, lng = :lng WHERE estateId = :estateId")
-    fun updateEstateLatLng(estateId: Long, lat: Double, lng: Double)
+    fun updateEstateLatLng(estateId: Long, lat: Double, lng: Double): Int
 
     @Transaction
     @Query("SELECT * FROM estates")
@@ -137,11 +141,13 @@ interface EstateDao {
     @Query("SELECT * FROM estates WHERE lat IS NULL OR lng IS NULL")
     fun getEstateWithoutLatLng(): Flow<List<Estate>>
 
-    @Query("""
+    @Query(
+        """
     SELECT estates.*
     FROM estates
     LEFT JOIN estate_pictures ON estates.estateId = estate_pictures.estateId
     WHERE (:typeOfEstate IS NULL OR typeOfEstate = :typeOfEstate)
+      AND (status IS 1)
       AND (:typeOfOffer IS NULL OR typeOfOffer = :typeOfOffer)
       AND (:minPrice IS NULL OR price >= :minPrice)
       AND (:maxPrice IS NULL OR price <= :maxPrice)
@@ -166,7 +172,8 @@ interface EstateDao {
     GROUP BY estates.estateId
     HAVING COUNT(DISTINCT estate_pictures.id) >= :minMediaCount
     ORDER BY price ASC
-""")
+"""
+    )
     fun getFilteredEstates(
         typeOfEstate: String? = null,
         typeOfOffer: String? = null,
@@ -222,4 +229,23 @@ interface EstateDao {
         userLat: Double,
         userLng: Double
     ): Flow<List<PicturesWithEstate>>
+
+    @Query("SELECT * FROM estates")
+    fun getAllEstatesCursor(): Cursor
+
+    @Query("SELECT * FROM estates WHERE estateId = :estateId")
+    fun getEstateByIdCursor(estateId: Long): Cursor
+
+    @Query("SELECT * FROM estate_interest_points")
+    fun getAllInterestPointsCursor(): Cursor
+
+    @Query("SELECT * FROM estate_interest_points WHERE estateInterestPointId = :id")
+    fun getInterestPointByIdCursor(id: Long): Cursor
+
+    @Query("SELECT * FROM estate_pictures")
+    fun getAllEstateMediaCursor(): Cursor
+
+    @Query("SELECT * FROM estate_pictures WHERE id = :id")
+    fun getEstateMediaByIdCursor(id: Long): Cursor
+
 }

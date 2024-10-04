@@ -1,5 +1,6 @@
 package com.example.realestatemanagersamuelrogeron.ui.composable.utils
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,15 +31,20 @@ fun InterestPointsBox(
         modifier = modifier.wrapContentSize(),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        FlowRow(modifier = modifier.padding(8.dp)) {
-            interestPointsList.forEach {interestPoint -> InterestPointItem(
-                iconCode = interestPoint.iconCode,
-                text = interestPoint.interestPointsName,
-                editEnable = editEnable,
-                onClickRemove = {
-                    onClickRemove(interestPoint)
-                }
-            )
+        FlowRow(
+            modifier = modifier.padding(8.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            interestPointsList.forEach { interestPoint ->
+                InterestPointItem(
+                    iconCode = interestPoint.iconCode,
+                    text = interestPoint.interestPointsName,
+                    editEnable = editEnable,
+                    onClickRemove = {
+                        onClickRemove(interestPoint)
+                    }
+                )
             }
         }
     }
@@ -52,7 +58,7 @@ fun InterestPointsBoxPreview() {
             InterestPointsBox(
                 modifier = Modifier,
                 interestPointsList = predefinedInterestPoints,
-                )
+            )
         }
     }
 }

@@ -34,7 +34,7 @@ class DataStorePreference @Inject constructor(@ApplicationContext context: Conte
         return preferences[dataStoreKey]
     }
 
-    val exampleBooleanFlow: Flow<Boolean> = dataStore.data
+    val displayEuroBooleanFlow: Flow<Boolean> = dataStore.data
         .catch { exception ->
             if (exception is IOException) {
                 emit(emptyPreferences())
@@ -48,5 +48,11 @@ class DataStorePreference @Inject constructor(@ApplicationContext context: Conte
 
     object PreferencesKeys {
         val display_euro = booleanPreferencesKey("display_euro")
+    }
+
+    suspend fun clearPreferences() {
+        dataStore.edit { preferences ->
+            preferences.clear()
+        }
     }
 }

@@ -9,6 +9,7 @@ sealed class ListViewState {
     data class Success(
         val estates: List<EstateWithDetails>,
         val estateFilter: EstateFilter,
+        val isEuro: Boolean
         ) : ListViewState()
 
     data class Error(val exception: String): ListViewState()

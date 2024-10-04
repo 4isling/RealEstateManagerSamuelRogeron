@@ -8,6 +8,8 @@ import com.example.realestatemanagersamuelrogeron.domain.usecases.AddInterestPoi
 import com.example.realestatemanagersamuelrogeron.domain.usecases.AddInterestPointUseCaseImpl
 import com.example.realestatemanagersamuelrogeron.domain.usecases.DeleteInterestPointUseCase
 import com.example.realestatemanagersamuelrogeron.domain.usecases.DeleteInterestPointUseCaseImpl
+import com.example.realestatemanagersamuelrogeron.domain.usecases.EditEstateUseCase
+import com.example.realestatemanagersamuelrogeron.domain.usecases.EditEstateUseCaseImpl
 import com.example.realestatemanagersamuelrogeron.domain.usecases.GetAllInterestPointUseCase
 import com.example.realestatemanagersamuelrogeron.domain.usecases.GetAllInterestPointUseCaseImpl
 import com.example.realestatemanagersamuelrogeron.domain.usecases.GetCurrencyPreferenceUseCase
@@ -18,6 +20,8 @@ import com.example.realestatemanagersamuelrogeron.domain.usecases.GetNetworkStat
 import com.example.realestatemanagersamuelrogeron.domain.usecases.GetNetworkStatusUseCaseImpl
 import com.example.realestatemanagersamuelrogeron.domain.usecases.GetStaticMapUseCase
 import com.example.realestatemanagersamuelrogeron.domain.usecases.GetStaticMapUseCaseImpl
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetUserLocationUseCase
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetUserLocationUseCaseImpl
 import com.example.realestatemanagersamuelrogeron.domain.usecases.SaveCurrencyPreferenceUseCase
 import com.example.realestatemanagersamuelrogeron.domain.usecases.SaveCurrencyPreferenceUseCaseImpl
 import com.example.realestatemanagersamuelrogeron.utils.DataStorePreference
@@ -108,5 +112,20 @@ object UseCaseModule {
         getNetworkStatusUseCase: GetNetworkStatusUseCase
     ): GetStaticMapUseCase {
         return GetStaticMapUseCaseImpl(getNetworkStatusUseCase)
+    }
+
+    @Provides
+    fun provideGetUserLocationUseCase(
+        @ApplicationContext context: Context
+    ): GetUserLocationUseCase {
+        return GetUserLocationUseCaseImpl(context)
+    }
+
+    @Provides
+    fun provideEditEstateUseCase(
+        estateRepository: EstateRepository,
+        @ApplicationContext context: Context
+    ): EditEstateUseCase {
+        return EditEstateUseCaseImpl(estateRepository, context)
     }
 }

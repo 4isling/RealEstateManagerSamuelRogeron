@@ -24,7 +24,7 @@ import com.example.realestatemanagersamuelrogeron.R
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
-import com.example.realestatemanagersamuelrogeron.ui.detail_screen.composable.MediaBox
+import com.example.realestatemanagersamuelrogeron.ui.composable.utils.MediaBox
 
 @Composable
 fun DetailScreenContent(
@@ -39,7 +39,7 @@ fun DetailScreenContent(
     ) {
         Column {
             // List of Pictures
-            MediaBox(mediaList = medias, modifier = Modifier.fillMaxWidth().height(156.dp))
+            MediaBox(medias = medias, modifier = Modifier.fillMaxWidth().height(156.dp))
 
             // Type of Estate
             Text(text = estate.typeOfEstate)

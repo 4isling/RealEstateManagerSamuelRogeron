@@ -33,6 +33,10 @@ class EstateRepository @Inject constructor(
         }
     }
 
+    fun getEstateById(id: Long): Flow<Estate>{
+        return estateDao.getEstateById(id)
+    }
+
     fun addEstateInterestPoint(estateInterestPoints: EstateInterestPoints): Long {
         return estateDao.insertEstateInterestPoints(estateInterestPoints)
     }
@@ -73,10 +77,6 @@ class EstateRepository @Inject constructor(
         estateDao.deleteAllCrossRefsWithEstate(estateId)
     }
 
-    fun getEstateById(id: Long): Flow<Estate> {
-        return estateDao.getEstateById(estateId = id)
-    }
-
 
     fun addEstatePicture(estateMedia: EstateMedia) {
         estateDao.insertEstatePicture(estateMedia = estateMedia)
@@ -88,66 +88,6 @@ class EstateRepository @Inject constructor(
 
     fun updateEstateLatLng(estateId: Long, lat: Double, lng: Double) {
         estateDao.updateEstateLatLng(estateId, lat, lng)
-    }
-
-    fun getAllEstatesWithPictures(): Flow<List<EstateWithPictures>> {
-        return estateDao.getAllEstatesWithPictures()
-            .map { list ->
-                list.map { picturesWithEstate ->
-                    EstateWithPictures(
-                        estate = picturesWithEstate.estate,
-                        pictures = picturesWithEstate.estatePictures
-                    )
-                }
-            }
-    }
-
-    fun getEstateWithPictureOrderedByGrowPrice(): Flow<List<EstateWithPictures>> {
-        return estateDao.getEstateWithPictureOrderedByGrowPrice()
-            .map { list ->
-                list.map { picturesWithEstate ->
-                    EstateWithPictures(
-                        estate = picturesWithEstate.estate,
-                        pictures = picturesWithEstate.estatePictures
-                    )
-                }
-            }
-    }
-
-    fun getAllEstatesWithPictureOrderedByDecendPrice(): Flow<List<EstateWithPictures>> {
-        return estateDao.getAllEstatesWithPictureOrderedByDecendPrice()
-            .map { list ->
-                list.map { picturesWithEstate ->
-                    EstateWithPictures(
-                        estate = picturesWithEstate.estate,
-                        pictures = picturesWithEstate.estatePictures
-                    )
-                }
-            }
-    }
-
-    fun getAllEstatesWithPictureOrderedByGrowRent(): Flow<List<EstateWithPictures>> {
-        return estateDao.getAllEstatesWithPictureOrderedByGrowRent()
-            .map { list ->
-                list.map { picturesWithEstate ->
-                    EstateWithPictures(
-                        estate = picturesWithEstate.estate,
-                        pictures = picturesWithEstate.estatePictures
-                    )
-                }
-            }
-    }
-
-    fun getAllEstatesWithPictureOrderedByDecendRent(): Flow<List<EstateWithPictures>> {
-        return estateDao.getAllEstatesWithPictureOrderedByDecendRent()
-            .map { list ->
-                list.map { picturesWithEstate ->
-                    EstateWithPictures(
-                        estate = picturesWithEstate.estate,
-                        pictures = picturesWithEstate.estatePictures
-                    )
-                }
-            }
     }
 
     fun getEstateWithoutLatLng(): Flow<List<Estate>> {
@@ -178,7 +118,13 @@ class EstateRepository @Inject constructor(
     fun updateCrossRef(crossRef: EstateInterestPointCrossRef) {
         estateDao.updateCrossRef(crossRef)
     }
+    fun deleteInterestPointCrossRef(crossRef:EstateInterestPointCrossRef){
+        estateDao.deleteCrossRef(crossRef)
+    }
 
+    fun deleteEstateMediaById(mediaId: Long): Boolean {
+        return estateDao.deleteEstateMediaById(mediaId) != 0
+    }
     fun delete(interestPoint: EstateInterestPoints):Int {
         return estateDao.delete(interestPoint)
     }

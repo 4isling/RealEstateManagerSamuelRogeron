@@ -9,7 +9,9 @@ import androidx.compose.material.icons.rounded.AttachMoney
 import androidx.compose.material.icons.rounded.Bathtub
 import androidx.compose.material.icons.rounded.BeachAccess
 import androidx.compose.material.icons.rounded.Bed
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.CropFree
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.DensitySmall
 import androidx.compose.material.icons.rounded.Euro
 import androidx.compose.material.icons.rounded.FilterList
@@ -49,6 +51,7 @@ object RemIcon {
     val Surface = Icons.Rounded.CropFree
     //Other
     val Remove = Icons.Default.RemoveCircleOutline
+    val Delete = Icons.Rounded.Delete
     val Edit = Icons.Default.Edit
     val Fav = Icons.Rounded.Star
     val Dollar = Icons.Rounded.AttachMoney
@@ -69,6 +72,8 @@ object RemIcon {
     val Mountain = Icons.Rounded.Terrain
     val Landscape = Icons.Rounded.Landscape
     val Hospital = Icons.Rounded.LocalHospital
+
+    val Save = Icons.Rounded.Check
 
     val iconMapping = mapOf(
         0 to Rooms,

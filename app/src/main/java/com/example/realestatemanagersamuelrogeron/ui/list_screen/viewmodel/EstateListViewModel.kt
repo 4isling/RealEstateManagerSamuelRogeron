@@ -4,7 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.realestatemanagersamuelrogeron.domain.usecases.EstateFilter
-import com.example.realestatemanagersamuelrogeron.domain.usecases.GetAllEstatesWithPicturesUseCaseImpl
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetAllEstatesWithDetailsUseCaseImpl
+import com.example.realestatemanagersamuelrogeron.domain.usecases.GetCurrencyPreferenceUseCaseImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EstatesListViewModel @Inject constructor(
-    private val getAllEstatesWithPicturesUseCaseImpl: GetAllEstatesWithPicturesUseCaseImpl
+    private val getAllEstatesWithPicturesUseCaseImpl: GetAllEstatesWithDetailsUseCaseImpl,
+    private val getCurrencyPreferenceUseCaseImpl: GetCurrencyPreferenceUseCaseImpl,
 ) : ViewModel() {
 
     private val TAG = "EstatesListViewModel:"
@@ -35,9 +37,16 @@ class EstatesListViewModel @Inject constructor(
     private val _filter = MutableStateFlow(EstateFilter())
     val filter: StateFlow<EstateFilter> = _filter.asStateFlow()
 
+    private val _currencyPreference = MutableStateFlow(false)
+
     init {
         Log.i(TAG, "init")
-        loadEstatesWithDetail()
+        viewModelScope.launch {
+            getCurrencyPreferenceUseCaseImpl.invoke().collectLatest { isEuro ->
+                _currencyPreference.value = isEuro
+                loadEstatesWithDetail()
+            }
+        }
     }
 
     private fun loadEstatesWithDetail() {
@@ -49,7 +58,11 @@ class EstatesListViewModel @Inject constructor(
                     _isLoading.emit(false)
                 }
                 .collectLatest { estatesWithDetail ->
-                    _viewState.emit(ListViewState.Success(estatesWithDetail, _filter.value))
+                    _viewState.emit(ListViewState.Success(
+                        estates = estatesWithDetail,
+                        estateFilter = _filter.value,
+                        isEuro = _currencyPreference.value
+                    ))
                     _isLoading.emit(false)
                 }
         }

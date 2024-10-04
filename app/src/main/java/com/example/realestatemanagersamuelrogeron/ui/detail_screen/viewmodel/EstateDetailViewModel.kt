@@ -76,65 +76,53 @@ class EstateDetailViewModel @Inject constructor(
                         isEuro = isEuro
                     )
 
+                    addLatLngToEstate()
+                    getStaticMapUrl()
                 } catch (e: Exception) {
                     _uiState.value = DetailViewState.Error(e.message ?: "Unknown error")
                 }
             }
-            if (_estate.value.estate.lat != null && _estate.value.estate.lng != null) {
-                viewModelScope.launch {
-                    try {
-                        getStaticMapUrl()
-                    } catch (e: Exception) {
-                        Log.e("DetailViewModel.init", "getDetailStaticMapError: ")
-                    }
-                }
-            }else {
-                addLatLngToEstate()
-            }
         }
     }
 
-    fun addLatLngToEstate() {
+    private fun addLatLngToEstate() {
         viewModelScope.launch {
             addLatLngToEstatesUseCaseImpl.invoke()
         }
     }
 
-    private fun getStaticMapUrl() {
-        viewModelScope.launch {
-            if (_estate.value.estate.lng != null && _estate.value.estate.lat != null) {
-                try {
-                    val url = getStaticMapUseCaseImpl.invoke(_estate.value.estate)
-                    val estateUpdate = Estate(
-                        estateId = _estate.value.estate.estateId,
-                        title = _estate.value.estate.title,
-                        typeOfEstate = _estate.value.estate.typeOfEstate,
-                        typeOfOffer = _estate.value.estate.typeOfOffer,
-                        etage = _estate.value.estate.etage,
-                        address = _estate.value.estate.address,
-                        zipCode = _estate.value.estate.zipCode,
-                        city = _estate.value.estate.city,
-                        region = _estate.value.estate.region,
-                        country = _estate.value.estate.country,
-                        description = _estate.value.estate.description,
-                        addDate = _estate.value.estate.addDate,
-                        sellDate = _estate.value.estate.sellDate,
-                        agent = _estate.value.estate.agent,
-                        price = _estate.value.estate.price,
-                        surface = _estate.value.estate.surface,
-                        nbRooms = _estate.value.estate.nbRooms,
-                        status = _estate.value.estate.status,
-                        isFav = _estate.value.estate.isFav,
-                        lat = _estate.value.estate.lat,
-                        lng = _estate.value.estate.lng,
-                        staticMapUrl = url
-                    )
-                    updateEstateUseCaseImpl.invoke(estateUpdate)
-                } catch (e: Exception) {
-                    Log.e("DetailViewModel.init", "getStaticMapUrl: $e")
-                }
+    private suspend fun getStaticMapUrl() {
+        if (_estate.value.estate.lng != null && _estate.value.estate.lat != null) {
+            try {
+                val url = getStaticMapUseCaseImpl.invoke(_estate.value.estate)
+                val estateUpdate = Estate(
+                    estateId = _estate.value.estate.estateId,
+                    title = _estate.value.estate.title,
+                    typeOfEstate = _estate.value.estate.typeOfEstate,
+                    typeOfOffer = _estate.value.estate.typeOfOffer,
+                    etage = _estate.value.estate.etage,
+                    address = _estate.value.estate.address,
+                    zipCode = _estate.value.estate.zipCode,
+                    city = _estate.value.estate.city,
+                    region = _estate.value.estate.region,
+                    country = _estate.value.estate.country,
+                    description = _estate.value.estate.description,
+                    addDate = _estate.value.estate.addDate,
+                    sellDate = _estate.value.estate.sellDate,
+                    agent = _estate.value.estate.agent,
+                    price = _estate.value.estate.price,
+                    surface = _estate.value.estate.surface,
+                    nbRooms = _estate.value.estate.nbRooms,
+                    status = _estate.value.estate.status,
+                    isFav = _estate.value.estate.isFav,
+                    lat = _estate.value.estate.lat,
+                    lng = _estate.value.estate.lng,
+                    staticMapUrl = url
+                )
+                updateEstateUseCaseImpl.invoke(estateUpdate)
+            } catch (e: Exception) {
+                Log.e("DetailViewModel.init", "getStaticMapUrl: $e")
             }
-
         }
     }
 
