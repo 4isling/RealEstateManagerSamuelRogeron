@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -17,15 +18,17 @@ import com.example.realestatemanagersamuelrogeron.ui.add_screen.AddEstateScreen
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.RemLeftBar
 import com.example.realestatemanagersamuelrogeron.ui.detail_screen.EstateDetailScreen
 import com.example.realestatemanagersamuelrogeron.ui.edit_screen.EstateEditScreen
-import com.example.realestatemanagersamuelrogeron.ui.list_screen.EstateListScreen
-import com.example.realestatemanagersamuelrogeron.ui.map_screen.MapScreen
 import com.example.realestatemanagersamuelrogeron.ui.settings_screen.SettingScreen
+import com.example.realestatemanagersamuelrogeron.ui.shared.list_screen.EstateListScreen
+import com.example.realestatemanagersamuelrogeron.ui.shared.map_screen.MapScreen
+import com.example.realestatemanagersamuelrogeron.ui.shared.viewmodel.SharedEstateViewModel
 
 @Composable
 fun TabletLayout(
     navController: NavHostController,
     windowSizeClass: WindowSizeClass
 ) {
+    val sharedViewModel: SharedEstateViewModel = hiltViewModel()
     Row(modifier = Modifier
         .background(MaterialTheme.colorScheme.primaryContainer),
         ) {
@@ -44,6 +47,7 @@ fun TabletLayout(
                     Column(modifier = Modifier.weight(1f)) {
                         EstateListScreen(
                             navController = navController,
+                            viewModel = sharedViewModel,
                             windowSizeClass = windowSizeClass,
                             onEstateSelected = { estateId ->
                                 navController.navigate("${Screen.EstateDetail.route}/$estateId")
@@ -53,6 +57,7 @@ fun TabletLayout(
                     Column(modifier = Modifier.weight(2f)) {
                         MapScreen(
                             navController = navController,
+                            viewModel = sharedViewModel,
                             windowSizeClass = windowSizeClass,
                             onEstateSelected = { estateId ->
                                 navController.navigate("${Screen.EstateDetail.route}/$estateId")
@@ -75,6 +80,7 @@ fun TabletLayout(
                             EstateListScreen(
                                 navController = navController,
                                 windowSizeClass = windowSizeClass,
+                                viewModel = sharedViewModel,
                                 onEstateSelected = { selectedEstateId ->
                                     navController.navigate("${Screen.EstateDetail.route}/$selectedEstateId")
                                 }
@@ -99,8 +105,10 @@ fun TabletLayout(
                     Row(modifier = Modifier.fillMaxSize()) {
                         Column(modifier = Modifier.weight(1f)) {
                             EstateListScreen(
+
                                 navController = navController,
                                 windowSizeClass = windowSizeClass,
+                                viewModel = sharedViewModel,
                                 onEstateSelected = { selectedEstateId ->
                                     navController.navigate("${Screen.EstateDetail.route}/$selectedEstateId")
                                 }

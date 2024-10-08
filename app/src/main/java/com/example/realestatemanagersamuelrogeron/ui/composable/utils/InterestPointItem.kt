@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
 import com.example.realestatemanagersamuelrogeron.ui.theme.AppTheme
 import com.example.realestatemanagersamuelrogeron.utils.RemIcon
 
@@ -58,6 +59,55 @@ fun InterestPointItem(
                 )
                 Text(
                     text = " $text ",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                if (editEnable) {
+                    Icon(
+                        imageVector = RemIcon.Remove,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .clickable { onClickRemove() },
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun InterestPointItem(
+    interestPoints: EstateInterestPoints,
+    editEnable: Boolean = false,
+    onClickRemove: () -> Unit = {},
+) {
+    Card(
+        modifier = Modifier.padding(4.dp)
+            .wrapContentWidth()
+            .wrapContentHeight()
+            .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp)),
+        elevation = CardDefaults.cardElevation(4.dp), // Set the desired elevation value here
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .height(30.dp)
+                .padding(4.dp)
+                .wrapContentWidth(),
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+            ) {
+                Icon(
+                    imageVector = RemIcon.iconMapping[interestPoints.iconCode]!!,
+                    contentDescription = null,
+                    modifier = Modifier.padding(4.dp),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Text(
+                    text = " ${interestPoints.interestPointsName} ",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )

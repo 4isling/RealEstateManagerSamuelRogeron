@@ -1,4 +1,4 @@
-package com.example.realestatemanagersamuelrogeron.ui.list_screen
+package com.example.realestatemanagersamuelrogeron.ui.shared.list_screen
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -25,15 +25,15 @@ import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithDetai
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.domain.usecases.EstateFilter
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.FilterDialog
-import com.example.realestatemanagersamuelrogeron.ui.list_screen.composable.EstateList
-import com.example.realestatemanagersamuelrogeron.ui.list_screen.viewmodel.ListViewState
+import com.example.realestatemanagersamuelrogeron.ui.shared.list_screen.composable.EstateList
+import com.example.realestatemanagersamuelrogeron.ui.shared.viewmodel.SharedEstateViewState
 import com.example.realestatemanagersamuelrogeron.ui.theme.AppTheme
 import com.example.realestatemanagersamuelrogeron.utils.RemIcon
 
 @Composable
 fun EstateListTabletScreen(
     modifier: Modifier = Modifier,
-    estateListState: ListViewState,
+    estateListState: SharedEstateViewState,
     onEstateItemClick: (Long) -> Unit,
     onFilterChange: (EstateFilter) -> Unit = {},
 ) {
@@ -50,12 +50,12 @@ fun EstateListTabletScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.padding(8.dp)) {
                 when (estateListState) {
-                    is ListViewState.Loading -> {
+                    is SharedEstateViewState.Loading -> {
                         Log.d("EstateListScreen", "EstateListScreen: loading")
                         Text(text = "loading")
                     }
 
-                    is ListViewState.Success -> {
+                    is SharedEstateViewState.Success -> {
                         Log.d("EstateListScreen", "EstateListScreen: Success")
 
                         EstateList(
@@ -76,7 +76,7 @@ fun EstateListTabletScreen(
                         }
                     }
 
-                    is ListViewState.Error -> {
+                    is SharedEstateViewState.Error -> {
                         Log.i("EstateListScreen", "EstateListScreen: Error")
                         Text(text = (estateListState.exception))
                     }
@@ -111,7 +111,7 @@ fun EstateListTabletScreen(
 fun EstateListTabletScreenPreview() {
     AppTheme {
         EstateListTabletScreen(
-            estateListState = ListViewState.Success(
+            estateListState = SharedEstateViewState.Success(
                 estates =
                 listOf(
                     EstateWithDetails(

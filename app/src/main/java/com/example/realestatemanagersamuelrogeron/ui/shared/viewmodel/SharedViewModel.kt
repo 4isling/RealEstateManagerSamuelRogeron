@@ -1,6 +1,5 @@
-package com.example.realestatemanagersamuelrogeron.ui.map_screen.viewmodel
+package com.example.realestatemanagersamuelrogeron.ui.shared.viewmodel
 
-import android.content.ContentValues
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,25 +18,24 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
-class MapViewModel @Inject constructor(
-    private val getAllEstatesWithPicturesUseCaseImpl: GetAllEstatesWithDetailsUseCaseImpl,
+class SharedEstateViewModel @Inject constructor(
+    private val getAllEstatesWithDetailsUseCaseImpl: GetAllEstatesWithDetailsUseCaseImpl,
     private val getCurrencyPreferenceUseCaseImpl: GetCurrencyPreferenceUseCaseImpl,
     private val addLatLngToEstatesUseCaseImpl: AddLatLngToEstatesUseCaseImpl,
     private val getEstateWithDetailUseCaseImpl: GetEstateWithDetailUseCaseImpl,
     private val getUserLocationUseCaseImpl: GetUserLocationUseCaseImpl,
 ) : ViewModel() {
-    private val TAG = "MapViewModel"
 
-    private val _viewState = MutableStateFlow<MapState>(MapState.Loading)
-    val viewState: StateFlow<MapState> = _viewState.asStateFlow()
+    private val TAG = "SharedEstateViewModel"
+
+    private val _viewState = MutableStateFlow<SharedEstateViewState>(SharedEstateViewState.Loading)
+    val viewState: StateFlow<SharedEstateViewState> = _viewState.asStateFlow()
 
     private val _filter = MutableStateFlow(EstateFilter())
     val filter: StateFlow<EstateFilter> = _filter.asStateFlow()
 
     private val _currencyPreference = MutableStateFlow(false)
-
 
     init {
         viewModelScope.launch {
@@ -51,7 +49,6 @@ class MapViewModel @Inject constructor(
         getUserLocation()
     }
 
-
     private fun addLatLngToEstates() {
         viewModelScope.launch {
             addLatLngToEstatesUseCaseImpl.invoke()
@@ -60,16 +57,19 @@ class MapViewModel @Inject constructor(
 
     private fun loadEstatesWithDetail() {
         viewModelScope.launch {
-            getAllEstatesWithPicturesUseCaseImpl.execute(filter = EstateFilter(requireLatLng = 1))
+            getAllEstatesWithDetailsUseCaseImpl.execute(filter = _filter.value.copy(requireLatLng = 1))
                 .catch { exception ->
-                    _viewState.emit(MapState.Error(exception.message ?: "Can't get the estate"))
-                    Log.w(ContentValues.TAG, "loadEstatesWithPictures: ", exception)
-                    // Handle exceptions, if any
+                    _viewState.emit(SharedEstateViewState.Error(exception.message ?: "Can't get the estates"))
+                    Log.e(TAG, "loadEstatesWithDetail: ", exception)
                 }
                 .collect { estatesWithDetail ->
-                    _viewState.emit(MapState.Success(
+                    val currentState = _viewState.value
+                    _viewState.emit(SharedEstateViewState.Success(
                         estates = estatesWithDetail,
-                        isEuro = _currencyPreference.value
+                        estateSelected = (currentState as? SharedEstateViewState.Success)?.estateSelected,
+                        userLocation = (currentState as? SharedEstateViewState.Success)?.userLocation,
+                        isEuro = _currencyPreference.value,
+                        estateFilter = _filter.value
                     ))
                 }
         }
@@ -79,20 +79,13 @@ class MapViewModel @Inject constructor(
         viewModelScope.launch {
             getEstateWithDetailUseCaseImpl.invoke(estateId)
                 .catch { exception ->
-                    Log.e(
-                        TAG,
-                        "updateSelectedEstate: error while getting estate: $estateId",
-                        exception
-                    )
+                    Log.e(TAG, "updateSelectedEstate: error while getting estate: $estateId", exception)
                 }
                 .collect { estateWithDetails ->
                     val currentState = _viewState.value
-                    if (currentState is MapState.Success) {
+                    if (currentState is SharedEstateViewState.Success) {
                         _viewState.emit(
-                            MapState.Success(
-                                estates = currentState.estates,
-                                estateSelected = estateWithDetails
-                            )
+                            currentState.copy(estateSelected = estateWithDetails)
                         )
                     }
                 }
@@ -102,12 +95,9 @@ class MapViewModel @Inject constructor(
     fun unselectEstate() {
         viewModelScope.launch {
             val currentState = _viewState.value
-            if (currentState is MapState.Success) {
+            if (currentState is SharedEstateViewState.Success) {
                 _viewState.emit(
-                    MapState.Success(
-                        estates = currentState.estates,
-                        estateSelected = null
-                    )
+                    currentState.copy(estateSelected = null)
                 )
             }
         }
@@ -115,25 +105,17 @@ class MapViewModel @Inject constructor(
 
     private fun getUserLocation() {
         viewModelScope.launch {
-            val currentState = _viewState.value
-            if (currentState is MapState.Success) {
-                getUserLocationUseCaseImpl.invoke()
-                    .catch { exception ->
-                        Log.e(
-                            TAG,
-                            "getUserLocation: error while getting user location",
-                            exception
-                        )
-                    }.collect { userLocation ->
+            getUserLocationUseCaseImpl.invoke()
+                .catch { exception ->
+                    Log.e(TAG, "getUserLocation: error while getting user location", exception)
+                }.collect { userLocation ->
+                    val currentState = _viewState.value
+                    if (currentState is SharedEstateViewState.Success) {
                         _viewState.emit(
-                            MapState.Success(
-                                estates = currentState.estates,
-                                estateSelected = currentState.estateSelected,
-                                userLocation = userLocation,
-                            )
+                            currentState.copy(userLocation = userLocation)
                         )
                     }
-            }
+                }
         }
     }
 

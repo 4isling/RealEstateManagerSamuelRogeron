@@ -1,4 +1,4 @@
-package com.example.realestatemanagersamuelrogeron.ui.list_screen.composable
+package com.example.realestatemanagersamuelrogeron.ui.shared.list_screen.composable
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

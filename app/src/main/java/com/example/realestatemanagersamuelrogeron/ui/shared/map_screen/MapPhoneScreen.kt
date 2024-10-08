@@ -1,4 +1,4 @@
-package com.example.realestatemanagersamuelrogeron.ui.map_screen
+package com.example.realestatemanagersamuelrogeron.ui.shared.map_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

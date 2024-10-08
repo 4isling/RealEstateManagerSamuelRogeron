@@ -1,4 +1,4 @@
-package com.example.realestatemanagersamuelrogeron.ui.map_screen
+package com.example.realestatemanagersamuelrogeron.ui.shared.map_screen
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -12,21 +12,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.realestatemanagersamuelrogeron.domain.usecases.EstateFilter
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.safeNavigate
-import com.example.realestatemanagersamuelrogeron.ui.map_screen.viewmodel.MapState
-import com.example.realestatemanagersamuelrogeron.ui.map_screen.viewmodel.MapViewModel
 import com.example.realestatemanagersamuelrogeron.ui.navigation.Screen
+import com.example.realestatemanagersamuelrogeron.ui.shared.viewmodel.SharedEstateViewModel
+import com.example.realestatemanagersamuelrogeron.ui.shared.viewmodel.SharedEstateViewState
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 
 @Composable
 fun MapScreen(
     navController: NavController,
-    viewModel: MapViewModel = hiltViewModel(),
+    viewModel: SharedEstateViewModel,
     windowSizeClass: WindowSizeClass,
     onEstateSelected:(Long) -> Unit = {}
 ) {
@@ -62,7 +61,7 @@ fun MapScreen(
 
 @Composable
 fun MapScreenContent(
-    viewState: MapState,
+    viewState: SharedEstateViewState,
     windowSizeClass: WindowSizeClass,
     onClickList: (String) -> Unit = {},
     onClickSetting: () -> Unit = {},
@@ -73,11 +72,11 @@ fun MapScreenContent(
     onClickMap: () -> Unit = {},
 ) {
     when (viewState) {
-        is MapState.Loading -> {
+        is SharedEstateViewState.Loading -> {
             CircularProgressIndicator()
         }
 
-        is MapState.Success -> {
+        is SharedEstateViewState.Success -> {
             when (windowSizeClass.widthSizeClass) {
                 WindowWidthSizeClass.Compact -> {
                     MapPhoneScreen(
@@ -113,8 +112,8 @@ fun MapScreenContent(
 
         }
 
-        is MapState.Error -> {
-            val state = viewState as MapState.Error
+        is SharedEstateViewState.Error -> {
+            val state = viewState
             // Show error message
             Text(text = "Error: ${state.exception}")
         }

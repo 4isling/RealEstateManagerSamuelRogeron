@@ -1,4 +1,4 @@
-package com.example.realestatemanagersamuelrogeron.ui.map_screen
+package com.example.realestatemanagersamuelrogeron.ui.shared.map_screen
 
 import androidx.compose.runtime.Composable
 

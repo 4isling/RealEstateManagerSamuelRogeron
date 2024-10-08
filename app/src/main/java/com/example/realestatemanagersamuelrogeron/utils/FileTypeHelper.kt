@@ -19,13 +19,4 @@ object FileTypeHelper {
         return mimeType
     }
 
-    // Function to check if the file is an image
-    fun isImage(mimeType: String?): Boolean {
-        return mimeType != null && mimeType.startsWith("image/")
-    }
-
-    // Function to check if the file is a video
-    fun isVideo(mimeType: String?): Boolean {
-        return mimeType != null && mimeType.startsWith("video/")
-    }
 }

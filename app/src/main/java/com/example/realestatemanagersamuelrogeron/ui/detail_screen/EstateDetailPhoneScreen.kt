@@ -86,7 +86,7 @@ fun EstateDetailPhoneScreen(
                     region = estateWithDetail.estate.region,
                     country = estateWithDetail.estate.country,
                     modifier = Modifier.padding(4.dp),
-                    staticMap = estateWithDetail.estate.staticMapUrl //@TODO
+                    staticMap = estateWithDetail.estate.staticMapUrl
                 )
             }
             item {

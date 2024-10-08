@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithDetails
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
+import com.example.realestatemanagersamuelrogeron.ui.add_screen.composable.CameraHandlerTablet
 import com.example.realestatemanagersamuelrogeron.ui.add_screen.composable.InterestPointsPickerDialog
 import com.example.realestatemanagersamuelrogeron.ui.add_screen.composable.MediaPickerDialog
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.InterestPointsBox
@@ -57,6 +58,7 @@ fun EditEstateTabletScreen(
     onFieldChange: (String, String) -> Unit,
     onMediaRemoved: (Uri) -> Unit = {},
     onMediaSelected: (List<Uri>) -> Unit = {},
+    onImageCaptured: (Uri) -> Unit = {},
     onInterestPointsSelected: (List<EstateInterestPoints>) -> Unit = {},
     onInterestPointItemRemove: (EstateInterestPoints) -> Unit = {},
     onInterestPointCreated: (String, Int) -> Unit,
@@ -98,6 +100,19 @@ fun EditEstateTabletScreen(
                 }
             }
         }
+        if (openCameraHandler) {
+            CameraHandlerTablet(
+                onImageCaptured = { uri ->
+                    if (uri != null) {
+                        onImageCaptured(uri)
+                    }
+                    openCameraHandler = false
+                },
+                onCloseCamera = {
+                    openCameraHandler = false
+                }
+            )
+        }
     }
 
     // Dialogs
@@ -129,6 +144,7 @@ fun EditEstateTabletScreen(
             launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
         }
     }
+
 
     if (openInterestPointDialog.value) {
         InterestPointsPickerDialog(
@@ -217,9 +233,17 @@ private fun PriceAndSurfaceSection(uiState: EditEstateState, onFieldChange: (Str
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         OutlinedTextField(
-            value = uiState.displayPrice,
+            value = uiState.estateWithDetails.estate.price.toString(),
             onValueChange = { onFieldChange("price", it) },
             label = { Text("Price") },
+            suffix = {
+                if (uiState.isEuro) {
+                    Text(text = "€")
+                }else {
+                    Text(text = "$")
+                }
+
+            },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.weight(1f)
         )
@@ -331,8 +355,8 @@ private fun InterestPointsSection(
 fun EditTabletScreenPreview() {
     AppTheme {
         EditEstateTabletScreen(
-            onSave = { /*TODO*/ },
-            onDelete = { /*TODO*/ },
+            onSave = {  },
+            onDelete = {  },
             onFieldChange = { _, _ -> },
             uiState = EditEstateState(
                 estateWithDetails = EstateWithDetails(

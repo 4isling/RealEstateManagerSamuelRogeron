@@ -32,6 +32,7 @@ import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithDetai
 import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateMedia
+import com.example.realestatemanagersamuelrogeron.ui.add_screen.composable.CameraHandler
 import com.example.realestatemanagersamuelrogeron.ui.add_screen.composable.MediaPickerDialog
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.InterestPointsBox
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.MediaCardList
@@ -47,6 +48,7 @@ fun EditEstatePhoneScreen(
     onSave: () -> Unit,
     onDelete: () -> Unit,
     onMediaSelected: (List<Uri>) -> Unit = {},
+    onImageCaptured: (Uri) -> Unit = {},
     onFieldChange: (String, String) -> Unit,
     onInterestPointsSelected: (List<EstateInterestPoints>) -> Unit = {},
     onInterestPointItemRemove: (EstateInterestPoints) -> Unit = {},
@@ -118,9 +120,17 @@ fun EditEstatePhoneScreen(
             item {
                 OutlinedTextField(
                     colors = remTextFieldColors(),
-                    value = uiState.displayPrice,
+                    value = uiState.estateWithDetails.estate.price.toString(),
                     isError = uiState.priceError,
                     onValueChange = { newValue -> onFieldChange("price", newValue) },
+                    suffix = {
+                        if (uiState.isEuro) {
+                            Text(text = "€")
+                        }else {
+                            Text(text = "$")
+                        }
+
+                    },
                     label = { Text(text = "Price") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier
@@ -223,7 +233,15 @@ fun EditEstatePhoneScreen(
                 },
             )
         }
-
+        if (openCameraHandler) {
+            CameraHandler(
+                onImageCaptured = { uri ->
+                    if (uri != null) {
+                        onImageCaptured(uri)
+                    }
+                    openCameraHandler = false
+                })
+        }
     }
 }
 
@@ -232,8 +250,8 @@ fun EditEstatePhoneScreen(
 fun EditPhoneScreenPreview() {
     AppTheme {
         EditEstatePhoneScreen(
-            onSave = { /*TODO*/ },
-            onDelete = { /*TODO*/ },
+            onSave = { },
+            onDelete = { },
             onFieldChange = { _, _ -> },
             uiState = EditEstateState(
                 estateWithDetails = EstateWithDetails(

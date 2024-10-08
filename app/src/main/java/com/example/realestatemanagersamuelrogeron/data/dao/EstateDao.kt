@@ -6,8 +6,10 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.RawQuery
 import androidx.room.Transaction
 import androidx.room.Update
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.realestatemanagersamuelrogeron.data.relations.EstateInterestPointCrossRef
 import com.example.realestatemanagersamuelrogeron.data.relations.EstateWithDetails
 import com.example.realestatemanagersamuelrogeron.data.relations.InterestPointsWithEstate
@@ -105,12 +107,6 @@ interface EstateDao {
 
     @Query("SELECT * FROM estate_interest_points WHERE interestPointsName = :name")
     fun getInterestPointByName(name: List<String>): Flow<EstateInterestPoints>
-
-    @Query("SELECT * FROM estate_interest_points WHERE interestPointsName IN (:interestPointsNames)")
-    suspend fun getInterestPointsByName(interestPointsNames: List<String>): List<EstateInterestPoints>
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertInterestPoints(interestPoints: List<EstateInterestPoints>): List<Long>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllInterestPoints(interestPoints: List<EstateInterestPoints>): List<Long>
@@ -248,4 +244,6 @@ interface EstateDao {
     @Query("SELECT * FROM estate_pictures WHERE id = :id")
     fun getEstateMediaByIdCursor(id: Long): Cursor
 
+    @RawQuery
+    fun rawQuery(query: SupportSQLiteQuery): Cursor
 }

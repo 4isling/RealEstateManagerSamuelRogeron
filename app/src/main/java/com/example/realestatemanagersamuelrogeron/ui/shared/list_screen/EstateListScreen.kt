@@ -1,4 +1,4 @@
-package com.example.realestatemanagersamuelrogeron.ui.list_screen
+package com.example.realestatemanagersamuelrogeron.ui.shared.list_screen
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
@@ -19,13 +19,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.realestatemanagersamuelrogeron.domain.usecases.EstateFilter
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.safeNavigate
-import com.example.realestatemanagersamuelrogeron.ui.list_screen.viewmodel.EstatesListViewModel
-import com.example.realestatemanagersamuelrogeron.ui.list_screen.viewmodel.ListViewState
 import com.example.realestatemanagersamuelrogeron.ui.navigation.Screen
+import com.example.realestatemanagersamuelrogeron.ui.shared.viewmodel.SharedEstateViewModel
+import com.example.realestatemanagersamuelrogeron.ui.shared.viewmodel.SharedEstateViewState
 
 @Composable
 fun EstateListScreen(
-    viewModel: EstatesListViewModel = hiltViewModel(),
+    viewModel: SharedEstateViewModel,
     navController: NavController,
     windowSizeClass: WindowSizeClass,
     onEstateSelected: (Long) -> Unit = {}
@@ -67,7 +67,7 @@ fun EstateListScreen(
 
 @Composable
 fun EstateListScreen(
-    estateListState: ListViewState,
+    estateListState: SharedEstateViewState,
     onEstateItemClick: (Long) -> Unit,
     onAddEstateClick: () -> Unit = {},
     onFilterChange: (EstateFilter) -> Unit = {},

@@ -182,6 +182,14 @@ fun AddEstatePhoneScreen(
                     value = uiState.estateWithDetails.estate.price.toString(),
                     onValueChange = { onFieldChange("price", it) },
                     label = { Text("Price") },
+                    suffix = {
+                        if (uiState.isEuro) {
+                            Text(text = "€")
+                        }else {
+                            Text(text = "$")
+                        }
+
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     isError = uiState.priceError

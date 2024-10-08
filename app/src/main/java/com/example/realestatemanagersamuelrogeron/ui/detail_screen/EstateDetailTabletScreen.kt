@@ -114,23 +114,6 @@ private fun TitleRow(estateWithDetails: EstateWithDetails, onEdit: (Long) -> Uni
 }
 
 @Composable
-private fun MediaCard(estatePictures: List<EstateMedia>) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(300.dp),
-        elevation = CardDefaults.cardElevation(4.dp),
-        shape = RoundedCornerShape(8.dp)
-    ) {
-        MediaCardList(
-            mediaList = estatePictures,
-            modifier = Modifier.fillMaxSize(),
-            isSuppressButtonEnable = false,
-        )
-    }
-}
-
-@Composable
 private fun PriceAndSurfaceRow(estateWithDetails: EstateWithDetails, isEuro: Boolean) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -214,7 +197,7 @@ fun DetailTabletScreenPreview() {
                 estatePictures = listOf(EstateMedia(0, 0, "HURI", "", "")),
                 estateInterestPoints = predefinedInterestPoints,
             ),
-            onEdit = { /*TODO*/ },
+            onEdit = {  },
             isEuro = true
         )
     }

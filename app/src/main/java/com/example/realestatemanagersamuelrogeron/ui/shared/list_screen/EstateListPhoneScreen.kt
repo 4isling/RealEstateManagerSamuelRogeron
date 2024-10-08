@@ -1,4 +1,4 @@
-package com.example.realestatemanagersamuelrogeron.ui.list_screen
+package com.example.realestatemanagersamuelrogeron.ui.shared.list_screen
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -25,15 +25,15 @@ import com.example.realestatemanagersamuelrogeron.domain.model.Estate
 import com.example.realestatemanagersamuelrogeron.domain.usecases.EstateFilter
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.FilterDialog
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.RemBottomAppBar
-import com.example.realestatemanagersamuelrogeron.ui.list_screen.composable.EstateList
-import com.example.realestatemanagersamuelrogeron.ui.list_screen.viewmodel.ListViewState
+import com.example.realestatemanagersamuelrogeron.ui.shared.list_screen.composable.EstateList
+import com.example.realestatemanagersamuelrogeron.ui.shared.viewmodel.SharedEstateViewState
 import com.example.realestatemanagersamuelrogeron.ui.theme.AppTheme
 import com.example.realestatemanagersamuelrogeron.utils.RemIcon
 
 @Composable
 fun EstateListPhoneScreen(
     modifier: Modifier = Modifier,
-    estateListState: ListViewState,
+    estateListState: SharedEstateViewState,
     onEstateItemClick: (Long) -> Unit,
     onAddEstateClick: () -> Unit = {},
     onFilterChange: (EstateFilter) -> Unit = {},
@@ -54,12 +54,12 @@ fun EstateListPhoneScreen(
         },
         content = { innerPadding ->
             when (estateListState) {
-                is ListViewState.Loading -> {
+                is SharedEstateViewState.Loading -> {
                     Log.d("EstateListScreen", "EstateListScreen: loading")
                     Text(text = "loading")
                 }
 
-                is ListViewState.Success -> {
+                is SharedEstateViewState.Success -> {
                     Log.d("EstateListScreen", "EstateListScreen: Success")
                     Box(modifier = modifier.padding(0.dp, 0.dp, 0.dp, 16.dp)) {
                         EstateList(
@@ -80,7 +80,7 @@ fun EstateListPhoneScreen(
                     }
                 }
 
-                is ListViewState.Error -> {
+                is SharedEstateViewState.Error -> {
                     Log.i("EstateListScreen", "EstateListScreen: Error")
                     Text(text = (estateListState.exception))
                 }
@@ -170,9 +170,9 @@ fun EstateListPhoneScreenPreview() {
 
     AppTheme {
         EstateListScreen(
-            estateListState = ListViewState.Success(
-                estateWithDetails,
-                EstateFilter(),
+            estateListState = SharedEstateViewState.Success(
+                estates =  estateWithDetails,
+                estateFilter =  EstateFilter(),
                 isEuro = false
             ),
             onEstateItemClick = {},

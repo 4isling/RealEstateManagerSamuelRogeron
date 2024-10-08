@@ -48,6 +48,7 @@ import com.example.realestatemanagersamuelrogeron.ui.add_screen.composable.Inter
 import com.example.realestatemanagersamuelrogeron.ui.add_screen.composable.MediaPickerDialog
 import com.example.realestatemanagersamuelrogeron.ui.add_screen.composable.SelectTextField
 import com.example.realestatemanagersamuelrogeron.ui.add_screen.viewmodel.AddEstateState
+import com.example.realestatemanagersamuelrogeron.ui.composable.utils.InterestPointItem
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.MediaCard
 import com.example.realestatemanagersamuelrogeron.ui.theme.AppTheme
 
@@ -200,6 +201,14 @@ fun AddEstateTabletScreen(
                         value = uiState.estateWithDetails.estate.price.toString() ,
                         onValueChange = { onFieldChange("price", it) },
                         label = { Text("Price") },
+                        suffix = {
+                            if (uiState.isEuro) {
+                                Text(text = "€")
+                            }else {
+                                Text(text = "$")
+                            }
+
+                        },
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         isError = uiState.priceError,
@@ -277,9 +286,10 @@ fun AddEstateTabletScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         uiState.estateWithDetails.estateInterestPoints.forEach { interestPoint ->
-                            InterestPointChip(
-                                interestPoint = interestPoint,
-                                onRemove = { onInterestPointItemRemove(interestPoint) }
+                            InterestPointItem(
+                                interestPoints = interestPoint,
+                                editEnable = false,
+                                onClickRemove = { onInterestPointItemRemove(interestPoint) }
                             )
                         }
                     }
@@ -386,8 +396,8 @@ fun AddEstateTabletScreenPreview() {
             onBackPress = {},
             onSavePress = {},
             uiState = AddEstateState(),
-            onFieldChange = { _, _ -> {} },
-            onMediaSelected = { it -> {} },
+            onFieldChange = { _, _ -> },
+            onMediaSelected = { _ ->  },
             onImageCaptured = {},
             onMediaRemoved = {},
             onInterestPointItemRemove = {},

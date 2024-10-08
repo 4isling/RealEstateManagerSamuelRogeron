@@ -2,6 +2,7 @@ package com.example.realestatemanagersamuelrogeron.ui.navigation
 
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -11,16 +12,17 @@ import androidx.navigation.navigation
 import com.example.realestatemanagersamuelrogeron.ui.add_screen.AddEstateScreen
 import com.example.realestatemanagersamuelrogeron.ui.detail_screen.EstateDetailScreen
 import com.example.realestatemanagersamuelrogeron.ui.edit_screen.EstateEditScreen
-import com.example.realestatemanagersamuelrogeron.ui.list_screen.EstateListScreen
-import com.example.realestatemanagersamuelrogeron.ui.map_screen.MapScreen
 import com.example.realestatemanagersamuelrogeron.ui.settings_screen.SettingScreen
+import com.example.realestatemanagersamuelrogeron.ui.shared.list_screen.EstateListScreen
+import com.example.realestatemanagersamuelrogeron.ui.shared.map_screen.MapScreen
+import com.example.realestatemanagersamuelrogeron.ui.shared.viewmodel.SharedEstateViewModel
 
 @Composable
 fun PhoneNavigation(
     navController: NavHostController,
     windowSizeClass: WindowSizeClass
 ) {
-
+    val sharedViewModel: SharedEstateViewModel = hiltViewModel()
     NavHost(
         navController = navController,
         startDestination = "estate",
@@ -34,7 +36,8 @@ fun PhoneNavigation(
             ) {
                 EstateListScreen(
                     navController = navController,
-                    windowSizeClass = windowSizeClass
+                    windowSizeClass = windowSizeClass,
+                    viewModel = sharedViewModel
                 )
             }
 
@@ -51,7 +54,8 @@ fun PhoneNavigation(
             composable(route = Screen.Map.route) {
                 MapScreen(
                     navController = navController,
-                    windowSizeClass = windowSizeClass
+                    windowSizeClass = windowSizeClass,
+                    viewModel = sharedViewModel,
                 )
             }
 

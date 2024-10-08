@@ -187,6 +187,7 @@ class EditEstateViewModel @Inject constructor(
             }
         }
     }
+
     private fun validateFields(state: EditEstateState): Boolean {
         val errors = mutableMapOf<String, Boolean>()
         errors["title"] = state.estateWithDetails.estate.title.isBlank()
@@ -225,23 +226,6 @@ class EditEstateViewModel @Inject constructor(
         ) }
 
         return !errors.values.any { it }
-    }
-
-    private fun saveUpdatedEstate() {
-        viewModelScope.launch {
-
-            val currentState = uiState.value
-            try {
-                val success = editEstateUseCase.updateEstateWithDetails(currentState.estateWithDetails)
-                if (success) {
-                    _uiState.update { it.copy(isEstateSaved = true) }
-                } else {
-                    _uiState.update { it.copy(error = "Failed to save estate") }
-                }
-            } catch (e: Exception) {
-                _uiState.update { it.copy(error = "Error saving estate: ${e.message}") }
-            }
-        }
     }
 
     private fun formatPrice(price: Int, isEuro: Boolean): String {
