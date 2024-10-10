@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.realestatemanagersamuelrogeron.ui.theme.AppTheme
@@ -50,7 +51,8 @@ fun MediaPickerDialog(
                     onClick = { onClickCamera() },
                     modifier = Modifier
                         .align(Alignment.End)
-                        .fillMaxWidth(0.5f),
+                        .fillMaxWidth(0.5f)
+                        .testTag("media_picker_dialog_camera"),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
                         contentColor = MaterialTheme.colorScheme.onSecondaryContainer
@@ -61,7 +63,8 @@ fun MediaPickerDialog(
                 Button(onClick = { onClickAlbum() },
                     modifier = Modifier
                         .align(Alignment.End)
-                        .fillMaxWidth(0.5f),
+                        .fillMaxWidth(0.5f)
+                        .testTag("media_picker_dialog_album"),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
                         contentColor = MaterialTheme.colorScheme.onSecondaryContainer

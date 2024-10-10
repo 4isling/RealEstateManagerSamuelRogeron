@@ -35,6 +35,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.realestatemanagersamuelrogeron.domain.model.EstateInterestPoints
@@ -43,6 +44,7 @@ import com.example.realestatemanagersamuelrogeron.ui.add_screen.composable.Inter
 import com.example.realestatemanagersamuelrogeron.ui.add_screen.composable.MediaPickerDialog
 import com.example.realestatemanagersamuelrogeron.ui.add_screen.composable.SelectTextField
 import com.example.realestatemanagersamuelrogeron.ui.add_screen.viewmodel.AddEstateState
+import com.example.realestatemanagersamuelrogeron.ui.composable.utils.InterestPointItem
 import com.example.realestatemanagersamuelrogeron.ui.composable.utils.MediaCard
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -69,12 +71,18 @@ fun AddEstatePhoneScreen(
             TopAppBar(
                 title = { Text("Add New Estate") },
                 navigationIcon = {
-                    IconButton(onClick = onBackPress) {
+                    IconButton(
+                        modifier = Modifier.testTag("add_estate_phone_screen_back_button"),
+                        onClick = onBackPress
+                    ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
-                    IconButton(onClick = onSavePress) {
+                    IconButton(
+                        modifier = Modifier.testTag("add_estate_phone_screen_save_button"),
+                        onClick = onSavePress
+                    ) {
                         Icon(Icons.Default.Check, contentDescription = "Save")
                     }
                 }
@@ -93,7 +101,9 @@ fun AddEstatePhoneScreen(
                     value = uiState.estateWithDetails.estate.title,
                     onValueChange = { onFieldChange("title", it) },
                     label = { Text("Title") },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("add_estate_phone_screen_title_text_field"),
                     isError = uiState.titleError
                 )
             }
@@ -118,7 +128,7 @@ fun AddEstatePhoneScreen(
 
                 Button(
                     onClick = { openMediaDialog.value = true },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().testTag("add_estate_phone_screen_open_media_picker_button")
                 ) {
                     Text("Select Pictures")
                 }
@@ -142,7 +152,9 @@ fun AddEstatePhoneScreen(
                         value = uiState.estateWithDetails.estate.etage,
                         onValueChange = { onFieldChange("etage", it) },
                         label = { Text("Etage") },
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag("add_estate_phone_screen_etage_text_field"),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         isError = uiState.etagesError
                     )
@@ -150,7 +162,9 @@ fun AddEstatePhoneScreen(
                         value = uiState.estateWithDetails.estate.nbRooms.toString(),
                         onValueChange = { onFieldChange("nbRooms", it) },
                         label = { Text("Rooms") },
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag("add_estate_phone_screen_nbrooms_text_field"),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         isError = uiState.nbRoomsError
                     )
@@ -162,7 +176,9 @@ fun AddEstatePhoneScreen(
                     value = uiState.estateWithDetails.estate.surface.toString(),
                     onValueChange = { onFieldChange("surface", it) },
                     label = { Text("Surface") },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("add_estate_phone_screen_surface_text_field"),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     isError = uiState.surfaceError
                 )
@@ -190,7 +206,9 @@ fun AddEstatePhoneScreen(
                         }
 
                     },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("add_estate_phone_screen_price_text_field"),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     isError = uiState.priceError
                 )
@@ -201,7 +219,9 @@ fun AddEstatePhoneScreen(
                     value = uiState.estateWithDetails.estate.address,
                     onValueChange = { onFieldChange("address", it) },
                     label = { Text("Address") },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("add_estate_phone_screen_address_text_field"),
                     isError = uiState.addressError
                 )
             }
@@ -215,14 +235,18 @@ fun AddEstatePhoneScreen(
                         value = uiState.estateWithDetails.estate.zipCode,
                         onValueChange = { onFieldChange("zipCode", it) },
                         label = { Text("Zip Code") },
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag("add_estate_phone_screen_zipcode_text_field"),
                         isError = uiState.zipCodeError
                     )
                     OutlinedTextField(
                         value = uiState.estateWithDetails.estate.city,
                         onValueChange = { onFieldChange("city", it) },
                         label = { Text("City") },
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag("add_estate_phone_screen_city_text_field"),
                         isError = uiState.cityError
                     )
                 }
@@ -233,7 +257,9 @@ fun AddEstatePhoneScreen(
                     value = uiState.estateWithDetails.estate.region,
                     onValueChange = { onFieldChange("region", it) },
                     label = { Text("Region") },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("add_estate_phone_screen_region_text_field"),
                     isError = uiState.regionError
                 )
             }
@@ -243,7 +269,9 @@ fun AddEstatePhoneScreen(
                     value = uiState.estateWithDetails.estate.country,
                     onValueChange = { onFieldChange("country", it) },
                     label = { Text("Country") },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("add_estate_phone_screen_country_text_field"),
                     isError = uiState.countryError
                 )
             }
@@ -253,7 +281,9 @@ fun AddEstatePhoneScreen(
                     value = uiState.estateWithDetails.estate.description,
                     onValueChange = { onFieldChange("description", it) },
                     label = { Text("Description") },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("add_estate_phone_screen_description_text_field"),
                     minLines = 3,
                     isError = uiState.descriptionError
                 )
@@ -262,19 +292,22 @@ fun AddEstatePhoneScreen(
             item {
                 Text("Interest Points", style = MaterialTheme.typography.titleMedium)
                 FlowRow(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().testTag("add_estate_phone_screen_interest_points_flow_row"),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     uiState.estateWithDetails.estateInterestPoints.forEach { interestPoint ->
-                        InterestPointChip(
-                            interestPoint = interestPoint,
-                            onRemove = { onInterestPointItemRemove(interestPoint) }
+                        InterestPointItem(
+                            interestPoints = interestPoint,
+                            editEnable = true,
+                            onClickRemove = { onInterestPointItemRemove(interestPoint) }
                         )
                     }
                 }
                 Button(
                     onClick = { openInterestPointDialog.value = true },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("add_estate_phone_screen_open_interest_point_dialog_button")
                 ) {
                     Text("Add Interest Points")
                 }

@@ -45,7 +45,7 @@ fun RemBottomAppBar(
         windowInsets = BottomAppBarDefaults.windowInsets,
         modifier = Modifier.fillMaxWidth(),
         contentColor = contentColorFor(backgroundColor = MaterialTheme.colorScheme.onPrimary),
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        containerColor = MaterialTheme.colorScheme.primary,
         actions = {
             // Toggle button between List and Map views
             IconButton(onClick = {

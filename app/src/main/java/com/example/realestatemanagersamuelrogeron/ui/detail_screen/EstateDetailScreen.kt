@@ -61,7 +61,7 @@ fun EstateDetailScreenContent(
             EstateDetailContent(
                 onEdit = onEdit,
                 windowSizeClass = windowSizeClass,
-                estateWithDetail = state.estate,
+                estateWithDetail = state.estateWithDetails,
                 onBackPress = onBackPress,
                 isEuro = state.isEuro,
             )

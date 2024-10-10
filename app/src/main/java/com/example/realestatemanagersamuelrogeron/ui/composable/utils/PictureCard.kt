@@ -79,7 +79,7 @@ fun PictureCard(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(url)
                 .build(),
-            contentDescription = null,
+            contentDescription = "Static map",
             contentScale = ContentScale.Crop
         )
     }

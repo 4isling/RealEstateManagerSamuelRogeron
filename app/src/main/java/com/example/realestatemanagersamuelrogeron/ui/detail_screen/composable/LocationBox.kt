@@ -1,6 +1,8 @@
 package com.example.realestatemanagersamuelrogeron.ui.detail_screen.composable
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -88,18 +91,26 @@ fun LocationBox(
             }
             Spacer(modifier = Modifier.height(16.dp))
             if (!staticMap.isNullOrEmpty()) {
-                Card(
-                    shape = RoundedCornerShape(8.dp),
-                    elevation = CardDefaults.cardElevation(2.dp)
-                ) {
                     PictureCard(
                         uri = staticMap.toUri(),
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
+                            .wrapContentSize()
                             .clip(RoundedCornerShape(8.dp)),
-                        isSuppressButtonEnable = false,
-                        onSuppressClick = {}
+                    )
+            } else {
+                // Show a placeholder or message when no map is available
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        "No map available",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -135,8 +146,6 @@ fun LocationChip(text: String?, icon: ImageVector) {
         }
     }
 }
-
-
 
 
 @Preview()

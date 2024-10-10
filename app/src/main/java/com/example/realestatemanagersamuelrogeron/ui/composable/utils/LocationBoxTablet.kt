@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -34,7 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
+import okhttp3.HttpUrl.Companion.toHttpUrl
 
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -129,15 +130,13 @@ private fun MapCard(staticMap: String) {
     Card(
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(2.dp),
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.wrapContentSize()
     ) {
         PictureCard(
-            uri = staticMap.toUri(),
+            url = staticMap.toHttpUrl(),
             modifier = Modifier
-                .fillMaxSize()
+                .wrapContentSize()
                 .clip(RoundedCornerShape(8.dp)),
-            isSuppressButtonEnable = false,
-            onSuppressClick = {}
         )
     }
 }
@@ -146,7 +145,7 @@ private fun MapCard(staticMap: String) {
 private fun PlaceholderMap() {
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .wrapContentSize()
             .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ) {

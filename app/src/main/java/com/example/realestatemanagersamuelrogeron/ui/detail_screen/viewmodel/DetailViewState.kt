@@ -6,11 +6,9 @@ sealed class DetailViewState {
     object Loading : DetailViewState()
 
     data class Success(
-        val estate: EstateWithDetails,
-        val isEuro: Boolean,
+        val estateWithDetails: EstateWithDetails,
+        val isEuro: Boolean
     ) : DetailViewState()
 
     data class Error(val exception: String) : DetailViewState()
-
-
 }

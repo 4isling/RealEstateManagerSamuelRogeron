@@ -15,7 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.example.realestatemanagersamuelrogeron.ui.theme.remTextFieldColors
+import androidx.compose.ui.platform.testTag
 
 @Composable
 fun SelectTextField(
@@ -27,11 +27,11 @@ fun SelectTextField(
     var expanded by remember { mutableStateOf(false) }
     Column {
         OutlinedTextField(
-            modifier = Modifier.
-            clickable {
-                expanded = !expanded
-            },
-            colors = remTextFieldColors(),
+            modifier = Modifier
+                .testTag("select_text_field_text_field")
+                .clickable {
+                    expanded = !expanded
+                },
             value = selectedOption,
             onValueChange = { },
             readOnly = true,
@@ -52,6 +52,7 @@ fun SelectTextField(
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
+                    modifier = Modifier.testTag("select_text_field_dropdown_menu_item"),
                     text = {
                         Text(text = option)
                     },

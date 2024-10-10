@@ -32,6 +32,7 @@ import com.example.realestatemanagersamuelrogeron.utils.predefinedInterestPoints
 @Composable
 fun EstateDetailPhoneScreen(
     estateWithDetail: EstateWithDetails,
+
     onBackPress: () -> Unit = {},
     onEdit: (Long) -> Unit = {},
     isEuro: Boolean
@@ -116,7 +117,7 @@ fun DetailPhoneScreenPreview() {
         ) {
             EstateDetailScreenContent(windowSizeClass = windowSizeClass,
                 uiState = DetailViewState.Success(
-                    estate = EstateWithDetails(
+                    estateWithDetails = EstateWithDetails(
                         Estate(
                             estateId = 0,
                             title = "La forge D'Entre Mont",

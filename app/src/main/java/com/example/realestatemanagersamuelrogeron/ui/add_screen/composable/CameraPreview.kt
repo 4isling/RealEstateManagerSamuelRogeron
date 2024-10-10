@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.example.realestatemanagersamuelrogeron.utils.PermissionUtils
@@ -70,7 +71,9 @@ fun CameraPreview(onImageCaptured: (Uri?) -> Unit){
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = {
+        Button(
+            modifier = Modifier.testTag("camera_preview_take_picture_button"),
+            onClick = {
             val photoFile = File(
                 context.externalMediaDirs.first(),
                 "${System.currentTimeMillis()}.jpg"
